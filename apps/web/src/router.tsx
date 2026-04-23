@@ -16,6 +16,7 @@ import { ClassesPage } from '@/pages/ClassesPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { LoginPage } from '@/pages/LoginPage';
 import { MyClassPage } from '@/pages/MyClassPage';
+import { ProfilePage } from '@/pages/ProfilePage';
 import { StudentsPage } from '@/pages/StudentsPage';
 import { UsersPage } from '@/pages/UsersPage';
 import { tokenStore } from '@/lib/token-store';
@@ -125,6 +126,18 @@ const myClassRoute = createRoute({
   component: MyClassPage,
 });
 
+const profileRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/profile',
+  component: ProfileRouteComponent,
+});
+
+function ProfileRouteComponent(): React.ReactElement | null {
+  const me = useCurrentUserQuery();
+  if (!me.data) return null;
+  return <ProfilePage user={me.data} />;
+}
+
 const routeTree = rootRoute.addChildren([
   loginRoute,
   authLayoutRoute.addChildren([
@@ -133,6 +146,7 @@ const routeTree = rootRoute.addChildren([
     classesRoute,
     studentsRoute,
     myClassRoute,
+    profileRoute,
   ]),
 ]);
 

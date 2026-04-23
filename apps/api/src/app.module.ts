@@ -14,6 +14,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { ClassesModule } from './modules/classes/classes.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { HealthModule } from './modules/health/health.module';
 import { StudentsModule } from './modules/students/students.module';
 import { TeachersModule } from './modules/teachers/teachers.module';
@@ -39,6 +40,7 @@ import { UsersModule } from './modules/users/users.module';
     TeachersModule,
     TelegramModule.forRoot(),
     AuditModule,
+    DashboardModule,
     HealthModule,
   ],
   providers: [
