@@ -2,6 +2,26 @@ import { RoleName } from '../enums/role.enum';
 
 export const EVENT_USER_CREATED = 'user.created';
 export const EVENT_USER_PASSWORD_RESET = 'user.password_reset';
+export const EVENT_AUDIT_WRITE = 'audit.write';
+
+/**
+ * Emitted by the AuditInterceptor after a mutating HTTP request. Consumed by
+ * AuditConsumer which persists the row to `audit_logs`. Sensitive fields
+ * (`password`, `passwordHash`, `refreshToken`, `generatedPassword`,
+ * `accessToken`, `token`) are stripped at interceptor time so the event
+ * payload is safe to sink anywhere.
+ */
+export interface AuditWriteEvent {
+  userId: string | null;
+  action: string;
+  entityType: string | null;
+  entityId: string | null;
+  ipAddress: string | null;
+  userAgent: string | null;
+  oldData: Record<string, unknown> | null;
+  newData: Record<string, unknown> | null;
+  statusCode: number;
+}
 
 /**
  * Emitted when a new user is provisioned by an admin/manager. The Telegram
