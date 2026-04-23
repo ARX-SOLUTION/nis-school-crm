@@ -8,14 +8,27 @@ interface Props {
   children: React.ReactNode;
 }
 
-const NAV = [
+interface NavItem {
+  to: string;
+  label: string;
+}
+
+const MANAGER_PLUS: NavItem[] = [
   { to: '/', label: 'Dashboard' },
   { to: '/users', label: 'Users' },
+  { to: '/classes', label: 'Classes' },
+  { to: '/students', label: 'Students' },
+];
+
+const TEACHER_NAV: NavItem[] = [
+  { to: '/', label: 'Dashboard' },
+  { to: '/my-class', label: 'My class' },
 ];
 
 export function AppShell({ user, children }: Props): React.ReactElement {
   const logout = useLogoutMutation();
   const state = useRouterState({ select: (s) => s.location.pathname });
+  const nav = user.role === 'TEACHER' ? TEACHER_NAV : MANAGER_PLUS;
 
   return (
     <div className="min-h-dvh flex flex-col bg-slate-50">
@@ -24,7 +37,7 @@ export function AppShell({ user, children }: Props): React.ReactElement {
           <div className="flex items-center gap-6">
             <span className="font-semibold tracking-tight text-slate-900">NIS School CRM</span>
             <nav aria-label="Primary" className="flex gap-4">
-              {NAV.map((item) => {
+              {nav.map((item) => {
                 const active = state === item.to || (item.to !== '/' && state.startsWith(item.to));
                 return (
                   <Link

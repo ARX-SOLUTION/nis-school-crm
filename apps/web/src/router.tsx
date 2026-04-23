@@ -12,8 +12,11 @@ import {
   useCurrentUserQuery,
   useIsAuthenticated,
 } from '@/features/auth/api/use-current-user-query';
-import { LoginPage } from '@/pages/LoginPage';
+import { ClassesPage } from '@/pages/ClassesPage';
 import { DashboardPage } from '@/pages/DashboardPage';
+import { LoginPage } from '@/pages/LoginPage';
+import { MyClassPage } from '@/pages/MyClassPage';
+import { StudentsPage } from '@/pages/StudentsPage';
 import { UsersPage } from '@/pages/UsersPage';
 import { tokenStore } from '@/lib/token-store';
 import { refreshSession } from '@/lib/session';
@@ -46,9 +49,8 @@ const authLayoutRoute = createRoute({
 
 function AuthenticatedShell(): React.ReactElement {
   const authed = useIsAuthenticated();
-  // The loading branch is hit only on a truly cold load; after a successful
-  // login, useLoginMutation already seeds authKeys.me() in the query cache
-  // so the shell renders immediately without a spinner flash.
+  // After a successful login, useLoginMutation already seeds authKeys.me()
+  // in the query cache, so the shell renders without a spinner flash.
   const me = useCurrentUserQuery();
 
   if (!authed) return <Navigate to="/login" />;
@@ -87,12 +89,51 @@ const usersRoute = createRoute({
 function UsersRouteComponent(): React.ReactElement | null {
   const me = useCurrentUserQuery();
   if (!me.data) return null;
+  if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
   return <UsersPage actorRole={me.data.role} />;
 }
 
+const classesRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/classes',
+  component: ClassesRouteComponent,
+});
+
+function ClassesRouteComponent(): React.ReactElement | null {
+  const me = useCurrentUserQuery();
+  if (!me.data) return null;
+  if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
+  return <ClassesPage />;
+}
+
+const studentsRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/students',
+  component: StudentsRouteComponent,
+});
+
+function StudentsRouteComponent(): React.ReactElement | null {
+  const me = useCurrentUserQuery();
+  if (!me.data) return null;
+  if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
+  return <StudentsPage isAdmin={me.data.role === 'ADMIN' || me.data.role === 'SUPER_ADMIN'} />;
+}
+
+const myClassRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/my-class',
+  component: MyClassPage,
+});
+
 const routeTree = rootRoute.addChildren([
   loginRoute,
-  authLayoutRoute.addChildren([dashboardRoute, usersRoute]),
+  authLayoutRoute.addChildren([
+    dashboardRoute,
+    usersRoute,
+    classesRoute,
+    studentsRoute,
+    myClassRoute,
+  ]),
 ]);
 
 export const router = createRouter({ routeTree });
