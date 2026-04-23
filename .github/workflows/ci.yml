@@ -111,12 +111,15 @@ jobs:
       JWT_ACCESS_SECRET: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
       JWT_ACCESS_EXPIRES: 15m
       JWT_REFRESH_EXPIRES: 1d
-      BCRYPT_COST: '4'
+      # BCRYPT_COST >= 10 is enforced by the Joi env schema. Slightly slower
+      # tests are fine — total time is dominated by docker + DB setup.
+      BCRYPT_COST: '10'
       AUTH_THROTTLE_TTL: '60'
       AUTH_THROTTLE_LIMIT: '5'
       CORS_ORIGINS: ''
       TELEGRAM_BOT_TOKEN: ''
-      SEED_SUPER_ADMIN_EMAIL: e2e-admin@nis.test
+      # Joi's default TLD allow-list rejects reserved TLDs (.test).
+      SEED_SUPER_ADMIN_EMAIL: e2e-admin@example.com
       SEED_SUPER_ADMIN_PASSWORD: e2e-super-admin-password!
     steps:
       - uses: actions/checkout@v4
