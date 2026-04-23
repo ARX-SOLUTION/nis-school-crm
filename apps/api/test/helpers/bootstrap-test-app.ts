@@ -1,7 +1,8 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import { getDataSourceToken } from '@nestjs/typeorm';
 import type { INestApplication } from '@nestjs/common';
-import type { DataSource } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { AppModule } from '../../src/app.module';
 
 export interface TestAppHandle {
@@ -30,7 +31,12 @@ export async function bootstrapTestApp(): Promise<TestAppHandle> {
   );
   app.getHttpAdapter().getInstance().set('trust proxy', 1);
   await app.init();
-  const dataSource = moduleRef.get<DataSource>('DataSource');
+  // Resolve via the official NestJS typeorm token so tests are robust
+  // against the exact internal injection name TypeOrmCoreModule chooses.
+  const dataSource = moduleRef.get<DataSource>(getDataSourceToken());
+  if (!dataSource) {
+    throw new Error('bootstrapTestApp: DataSource not resolved from AppModule');
+  }
   return {
     app,
     dataSource,
@@ -51,7 +57,7 @@ export async function resetDatabase(dataSource: DataSource): Promise<void> {
       '"classes", "refresh_tokens", "users" ' +
       'RESTART IDENTITY CASCADE',
   );
-  // students_code_seq is restarted by RESTART IDENTITY when it is owned by
-  // a table; ours is a standalone sequence so reset it explicitly.
+  // students_code_seq is standalone (not owned by any table) so RESTART
+  // IDENTITY above does not touch it — reset explicitly.
   await dataSource.query('ALTER SEQUENCE students_code_seq RESTART WITH 1');
 }
