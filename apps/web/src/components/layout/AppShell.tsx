@@ -18,11 +18,13 @@ const MANAGER_PLUS: NavItem[] = [
   { to: '/users', label: 'Users' },
   { to: '/classes', label: 'Classes' },
   { to: '/students', label: 'Students' },
+  { to: '/profile', label: 'Profile' },
 ];
 
 const TEACHER_NAV: NavItem[] = [
   { to: '/', label: 'Dashboard' },
   { to: '/my-class', label: 'My class' },
+  { to: '/profile', label: 'Profile' },
 ];
 
 export function AppShell({ user, children }: Props): React.ReactElement {
