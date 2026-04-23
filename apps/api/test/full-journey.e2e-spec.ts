@@ -31,7 +31,7 @@ describe('Full user journey (e2e)', () => {
   it('should_complete_the_full_onboarding_flow', async () => {
     // 1. SA logs in.
     const sa = await seedAndLogin(app, dataSource, {
-      email: 'sa@nis.test',
+      email: 'sa@example.com',
       password: 'sa-password-long',
       role: RoleName.SUPER_ADMIN,
     });
@@ -41,13 +41,13 @@ describe('Full user journey (e2e)', () => {
       .post('/api/v1/users')
       .set(authHeader(sa.tokens))
       .send({
-        email: 'mgr@nis.test',
+        email: 'mgr@example.com',
         fullName: 'The Manager',
         role: RoleName.MANAGER,
       })
       .expect(201);
     const managerPassword = mgrCreate.body.generatedPassword as string;
-    const managerTokens = await login(app, 'mgr@nis.test', managerPassword);
+    const managerTokens = await login(app, 'mgr@example.com', managerPassword);
 
     // 3. Manager creates a Teacher via /teachers (which runs User +
     //    TeacherProfile in one transaction).
@@ -55,7 +55,7 @@ describe('Full user journey (e2e)', () => {
       .post('/api/v1/teachers')
       .set(authHeader(managerTokens))
       .send({
-        email: 'teacher@nis.test',
+        email: 'teacher@example.com',
         fullName: 'The Teacher',
         subject: 'Mathematics',
       })
@@ -72,7 +72,7 @@ describe('Full user journey (e2e)', () => {
     void teacherPassword;
     const teacherTokens = await login(
       app,
-      'teacher@nis.test',
+      'teacher@example.com',
       resetRes.body.generatedPassword as string,
     );
 
@@ -135,7 +135,7 @@ describe('Full user journey (e2e)', () => {
 
   it('should_enforce_class_capacity_on_assign_class', async () => {
     const sa = await seedAndLogin(app, dataSource, {
-      email: 'sa@nis.test',
+      email: 'sa@example.com',
       password: 'sa-password-long',
       role: RoleName.SUPER_ADMIN,
     });
@@ -180,7 +180,7 @@ describe('Full user journey (e2e)', () => {
 
   it('should_reject_grade_level_mismatch_on_assign_class', async () => {
     const sa = await seedAndLogin(app, dataSource, {
-      email: 'sa@nis.test',
+      email: 'sa@example.com',
       password: 'sa-password-long',
       role: RoleName.SUPER_ADMIN,
     });

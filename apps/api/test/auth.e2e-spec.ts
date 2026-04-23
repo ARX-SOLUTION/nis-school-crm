@@ -23,13 +23,13 @@ describe('Auth (e2e)', () => {
 
   it('should_return_token_pair_on_valid_login', async () => {
     await seedUser(dataSource, {
-      email: 'admin@nis.test',
+      email: 'admin@example.com',
       password: 'admin-password-long-enough',
       role: RoleName.ADMIN,
     });
     const res = await request(app.getHttpServer())
       .post('/api/v1/auth/login')
-      .send({ email: 'admin@nis.test', password: 'admin-password-long-enough' })
+      .send({ email: 'admin@example.com', password: 'admin-password-long-enough' })
       .expect(200);
     expect(res.body.accessToken).toEqual(expect.any(String));
     expect(res.body.refreshToken).toEqual(expect.any(String));
@@ -38,25 +38,25 @@ describe('Auth (e2e)', () => {
 
   it('should_reject_bad_credentials_with_401', async () => {
     await seedUser(dataSource, {
-      email: 'admin@nis.test',
+      email: 'admin@example.com',
       password: 'admin-password-long-enough',
       role: RoleName.ADMIN,
     });
     await request(app.getHttpServer())
       .post('/api/v1/auth/login')
-      .send({ email: 'admin@nis.test', password: 'wrong-password' })
+      .send({ email: 'admin@example.com', password: 'wrong-password' })
       .expect(401);
   });
 
   it('should_rotate_refresh_token_and_reuse_should_revoke_family', async () => {
     await seedUser(dataSource, {
-      email: 'admin@nis.test',
+      email: 'admin@example.com',
       password: 'admin-password-long-enough',
       role: RoleName.ADMIN,
     });
     const login = await request(app.getHttpServer())
       .post('/api/v1/auth/login')
-      .send({ email: 'admin@nis.test', password: 'admin-password-long-enough' })
+      .send({ email: 'admin@example.com', password: 'admin-password-long-enough' })
       .expect(200);
 
     const originalRefresh = login.body.refreshToken as string;
@@ -82,7 +82,7 @@ describe('Auth (e2e)', () => {
 
   it('should_return_me_with_bearer_token', async () => {
     const user = await seedUser(dataSource, {
-      email: 'teacher@nis.test',
+      email: 'teacher@example.com',
       password: 'teacher-password-long',
       role: RoleName.TEACHER,
     });

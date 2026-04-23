@@ -23,12 +23,15 @@ process.env['JWT_ACCESS_SECRET'] =
   '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
 process.env['JWT_ACCESS_EXPIRES'] = process.env['JWT_ACCESS_EXPIRES'] ?? '15m';
 process.env['JWT_REFRESH_EXPIRES'] = process.env['JWT_REFRESH_EXPIRES'] ?? '1d';
-process.env['BCRYPT_COST'] = process.env['BCRYPT_COST'] ?? '4';
+// Joi enforces BCRYPT_COST >= 10 so auth stays prod-strength.
+process.env['BCRYPT_COST'] = process.env['BCRYPT_COST'] ?? '10';
 process.env['CORS_ORIGINS'] = process.env['CORS_ORIGINS'] ?? '';
 process.env['TELEGRAM_BOT_TOKEN'] = process.env['TELEGRAM_BOT_TOKEN'] ?? '';
 process.env['AUTH_THROTTLE_TTL'] = process.env['AUTH_THROTTLE_TTL'] ?? '60';
 process.env['AUTH_THROTTLE_LIMIT'] = process.env['AUTH_THROTTLE_LIMIT'] ?? '5';
+// Joi's default TLD allow-list rejects reserved TLDs like `.test`, so we
+// use `.com` here to pass @IsEmail validation inside the seeder.
 process.env['SEED_SUPER_ADMIN_EMAIL'] =
-  process.env['SEED_SUPER_ADMIN_EMAIL'] ?? 'e2e-admin@nis.test';
+  process.env['SEED_SUPER_ADMIN_EMAIL'] ?? 'e2e-admin@example.com';
 process.env['SEED_SUPER_ADMIN_PASSWORD'] =
   process.env['SEED_SUPER_ADMIN_PASSWORD'] ?? 'e2e-super-admin-password!';

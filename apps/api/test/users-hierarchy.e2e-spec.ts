@@ -22,7 +22,7 @@ describe('Users role hierarchy (e2e)', () => {
   beforeEach(async () => resetDatabase(dataSource));
 
   const uniqueEmail = (prefix: string): string =>
-    `${prefix}-${Math.random().toString(36).slice(2, 8)}@nis.test`;
+    `${prefix}-${Math.random().toString(36).slice(2, 8)}@example.com`;
 
   it('should_let_admin_create_a_manager', async () => {
     const admin = await seedAndLogin(app, dataSource, {
