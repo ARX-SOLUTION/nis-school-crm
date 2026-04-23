@@ -16,7 +16,9 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { ClassesModule } from './modules/classes/classes.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { HealthModule } from './modules/health/health.module';
+import { RoomsModule } from './modules/rooms/rooms.module';
 import { StudentsModule } from './modules/students/students.module';
+import { SubjectsModule } from './modules/subjects/subjects.module';
 import { TeachersModule } from './modules/teachers/teachers.module';
 import { TelegramModule } from './modules/telegram/telegram.module';
 import { UsersModule } from './modules/users/users.module';
@@ -38,6 +40,8 @@ import { UsersModule } from './modules/users/users.module';
     ClassesModule,
     StudentsModule,
     TeachersModule,
+    SubjectsModule,
+    RoomsModule,
     TelegramModule.forRoot(),
     AuditModule,
     DashboardModule,
