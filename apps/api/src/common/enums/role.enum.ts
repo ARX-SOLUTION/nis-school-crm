@@ -21,3 +21,29 @@ export function hasRoleAtLeast(userRole: RoleName, requiredRoles: RoleName[]): b
   const userLevel = HIERARCHY[userRole];
   return requiredRoles.some((r) => userLevel >= HIERARCHY[r]);
 }
+
+/**
+ * Which roles can a given role provision via the API?
+ * SUPER_ADMIN exists only via seed and is intentionally excluded from every
+ * row — it must never be created over the network.
+ */
+const CREATABLE_BY: Record<RoleName, ReadonlyArray<RoleName>> = {
+  [RoleName.SUPER_ADMIN]: [RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER],
+  [RoleName.ADMIN]: [RoleName.MANAGER, RoleName.TEACHER],
+  [RoleName.MANAGER]: [RoleName.TEACHER],
+  [RoleName.TEACHER]: [],
+};
+
+export function canCreateRole(actor: RoleName, target: RoleName): boolean {
+  return CREATABLE_BY[actor].includes(target);
+}
+
+/**
+ * Whether `actor` is allowed to manage (edit / soft-delete / reset password)
+ * a user with `target` role. Currently identical to `canCreateRole` so the
+ * provisioning hierarchy doubles as the management hierarchy. Kept as a
+ * separate function so the two policies can diverge later.
+ */
+export function canManageRole(actor: RoleName, target: RoleName): boolean {
+  return canCreateRole(actor, target);
+}

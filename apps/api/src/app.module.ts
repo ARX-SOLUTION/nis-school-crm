@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { EventBusModule } from './common/events/event-bus.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { LoggerModule } from './common/logger/logger.module';
@@ -11,6 +12,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { HealthModule } from './modules/health/health.module';
+import { TeachersModule } from './modules/teachers/teachers.module';
 import { UsersModule } from './modules/users/users.module';
 
 @Module({
@@ -24,8 +26,10 @@ import { UsersModule } from './modules/users/users.module';
     LoggerModule,
     DatabaseModule,
     RedisModule,
+    EventBusModule,
     UsersModule,
     AuthModule,
+    TeachersModule,
     HealthModule,
   ],
   providers: [
