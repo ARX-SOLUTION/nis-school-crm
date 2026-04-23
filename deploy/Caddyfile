@@ -1,0 +1,64 @@
+{
+  # Global options
+  email {$ACME_EMAIL}
+  admin off
+  # Default to JSON logs; a log file is mounted as a volume below.
+  log {
+    output stdout
+    format json
+  }
+}
+
+{$PUBLIC_HOST} {
+  encode gzip zstd
+
+  # Standard hardening headers. CSP is conservative — tighten once the
+  # frontend's third-party dependencies are known (Phase 2).
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "DENY"
+    Referrer-Policy "strict-origin-when-cross-origin"
+    Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+    -Server
+  }
+
+  # API — reverse-proxied to the NestJS container. Caddy already sets
+  # X-Forwarded-For; the app reads req.ip with trust proxy = 1.
+  handle /api/* {
+    reverse_proxy api:3000 {
+      header_up Host {host}
+      header_up X-Real-IP {remote_host}
+    }
+  }
+
+  # Telegram webhook (if TELEGRAM_WEBHOOK_URL is configured in prod).
+  # Bot verifies X-Telegram-Bot-Api-Secret-Token, so we just forward.
+  handle /telegram/webhook {
+    reverse_proxy api:3000
+  }
+
+  # SPA — everything else. The web container (nginx-unprivileged on :8080)
+  # serves `index.html` for missing paths so TanStack Router can handle
+  # client-side routing.
+  handle {
+    reverse_proxy web:8080
+  }
+
+  # Per-site log file (rotated daily).
+  log {
+    output file /data/access.log {
+      roll_size 50mb
+      roll_keep 7
+      roll_keep_for 720h
+    }
+    format json
+  }
+}
+
+# Health endpoint for external load balancers — not TLS-terminated, just
+# listens on :80 of the Caddy container network interface.
+:80 {
+  respond /caddy-health 200
+}

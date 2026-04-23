@@ -1,0 +1,192 @@
+name: nis-crm-prod
+
+# Production compose. Reads every secret from .env in the same directory.
+# NEVER commit a filled .env — only `.env.prod.example` (without values) is
+# checked in. Ship via `docker compose -f docker-compose.prod.yml up -d`.
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: nis-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - nis_postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    mem_limit: 1g
+    cpus: 2.0
+    networks:
+      - nis-net
+    # Only exposed internally — Caddy fronts the public network.
+    expose:
+      - '5432'
+
+  redis:
+    image: redis:7-alpine
+    container_name: nis-redis
+    restart: unless-stopped
+    command: >
+      sh -c 'redis-server --requirepass "$$REDIS_PASSWORD" --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru'
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - nis_redis_data:/data
+    healthcheck:
+      test: ['CMD-SHELL', 'redis-cli -a "$$REDIS_PASSWORD" ping | grep PONG']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    mem_limit: 384m
+    cpus: 1.0
+    networks:
+      - nis-net
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: nis-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-/}
+    volumes:
+      - nis_rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ['CMD', 'rabbitmq-diagnostics', 'ping']
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    mem_limit: 512m
+    cpus: 1.0
+    networks:
+      - nis-net
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    image: nis-crm/api:${IMAGE_TAG:-latest}
+    container_name: nis-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: '3000'
+      APP_URL: ${APP_URL}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DB_HOST: postgres
+      DB_PORT: '5432'
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_SSL: 'false'
+      REDIS_HOST: redis
+      REDIS_PORT: '6379'
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      RABBITMQ_URL: amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672${RABBITMQ_VHOST:-/}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_ACCESS_EXPIRES: ${JWT_ACCESS_EXPIRES:-15m}
+      JWT_REFRESH_EXPIRES: ${JWT_REFRESH_EXPIRES:-7d}
+      BCRYPT_COST: ${BCRYPT_COST:-12}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      AUTH_THROTTLE_TTL: ${AUTH_THROTTLE_TTL:-900}
+      AUTH_THROTTLE_LIMIT: ${AUTH_THROTTLE_LIMIT:-5}
+      THROTTLE_TTL: ${THROTTLE_TTL:-60}
+      THROTTLE_LIMIT: ${THROTTLE_LIMIT:-100}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_WEBHOOK_URL: ${TELEGRAM_WEBHOOK_URL}
+      TELEGRAM_WEBHOOK_SECRET: ${TELEGRAM_WEBHOOK_SECRET}
+      SEED_SUPER_ADMIN_EMAIL: ${SEED_SUPER_ADMIN_EMAIL}
+      SEED_SUPER_ADMIN_PASSWORD: ${SEED_SUPER_ADMIN_PASSWORD}
+      SEED_SUPER_ADMIN_NAME: ${SEED_SUPER_ADMIN_NAME:-Super Admin}
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      rabbitmq: { condition: service_healthy }
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -fsS http://localhost:3000/api/v1/health || exit 1']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    mem_limit: 768m
+    cpus: 1.5
+    networks:
+      - nis-net
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    image: nis-crm/web:${IMAGE_TAG:-latest}
+    container_name: nis-web
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:8080/']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    mem_limit: 128m
+    cpus: 0.5
+    networks:
+      - nis-net
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: nis-caddy
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      PUBLIC_HOST: ${PUBLIC_HOST}
+      ACME_EMAIL: ${ACME_EMAIL}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - nis_caddy_data:/data
+      - nis_caddy_config:/config
+    depends_on:
+      - api
+      - web
+    networks:
+      - nis-net
+
+  backup:
+    build:
+      context: ./deploy
+      dockerfile: backup.Dockerfile
+    image: nis-crm/backup:latest
+    container_name: nis-backup
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-30}
+    volumes:
+      - ./backups:/backups
+    depends_on:
+      postgres: { condition: service_healthy }
+    networks:
+      - nis-net
+
+volumes:
+  nis_postgres_data:
+  nis_redis_data:
+  nis_rabbitmq_data:
+  nis_caddy_data:
+  nis_caddy_config:
+
+networks:
+  nis-net:
+    driver: bridge
