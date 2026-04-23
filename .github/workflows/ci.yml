@@ -1,0 +1,132 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  lint-build:
+    name: Lint + Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run lint
+
+  unit-tests:
+    name: Unit tests (api + web)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run build:shared
+      - name: API unit tests with coverage
+        run: npm run test:cov:api
+      - name: Web unit tests with coverage
+        run: npm run test:cov:web
+      - name: Upload api coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-coverage
+          path: coverage/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Upload web coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-coverage
+          path: apps/web/coverage/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  e2e-tests:
+    name: E2E tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: nis_crm_test
+          POSTGRES_USER: nis_admin
+          POSTGRES_PASSWORD: change_me_strong
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U nis_admin"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      rabbitmq:
+        image: rabbitmq:3.13-management-alpine
+        env:
+          RABBITMQ_DEFAULT_USER: nis_mq
+          RABBITMQ_DEFAULT_PASS: change_me_strong
+        ports:
+          - 5672:5672
+        options: >-
+          --health-cmd "rabbitmq-diagnostics ping"
+          --health-interval 15s
+          --health-timeout 10s
+          --health-retries 5
+    env:
+      NODE_ENV: test
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: nis_admin
+      DB_PASSWORD: change_me_strong
+      DB_NAME: nis_crm_test
+      REDIS_HOST: localhost
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ''
+      RABBITMQ_URL: amqp://nis_mq:change_me_strong@localhost:5672
+      JWT_ACCESS_SECRET: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+      JWT_ACCESS_EXPIRES: 15m
+      JWT_REFRESH_EXPIRES: 1d
+      BCRYPT_COST: '4'
+      AUTH_THROTTLE_TTL: '60'
+      AUTH_THROTTLE_LIMIT: '5'
+      CORS_ORIGINS: ''
+      TELEGRAM_BOT_TOKEN: ''
+      SEED_SUPER_ADMIN_EMAIL: e2e-admin@nis.test
+      SEED_SUPER_ADMIN_PASSWORD: e2e-super-admin-password!
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run build:shared
+      - name: Apply migrations
+        run: npm run migration:run
+      - name: Run e2e suite
+        run: npm run test:e2e

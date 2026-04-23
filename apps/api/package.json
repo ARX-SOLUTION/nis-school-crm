@@ -90,9 +90,36 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.(t|j)s",
+      "!**/*.spec.ts",
+      "!**/*.e2e-spec.ts",
+      "!main.ts",
+      "!**/*.module.ts",
+      "!**/*.dto.ts",
+      "!**/*.controller.ts",
+      "!**/entities/**",
+      "!**/migrations/**",
+      "!**/seeds/**",
+      "!database/data-source.ts",
+      "!**/telegram-bot.service.ts",
+      "!**/rabbitmq.health.ts",
+      "!common/events/event-bus.service.ts",
+      "!**/contracts.ts",
+      "!**/types/**",
+      "!**/decorators/**",
+      "!common/logger/**",
+      "!config/**",
+      "!common/redis/**"
     ],
     "coverageDirectory": "../coverage",
+    "coverageThreshold": {
+      "global": {
+        "branches": 50,
+        "functions": 65,
+        "lines": 70,
+        "statements": 70
+      }
+    },
     "testEnvironment": "node",
     "moduleNameMapper": {
       "^@common/(.*)$": "<rootDir>/common/$1",

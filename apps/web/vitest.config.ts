@@ -17,5 +17,21 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/test/setup.ts',
     css: false,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'lcov'],
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: ['src/**/*.test.{ts,tsx}', 'src/test/**', 'src/main.tsx', 'src/**/*.d.ts'],
+      // MVP thresholds: exercised surfaces (components + hooks + schemas) are
+      // well covered; pages and large feature dialogs are reserved for
+      // Playwright e2e (Stage 9), so global numbers are lower than the
+      // backend's on purpose.
+      thresholds: {
+        lines: 25,
+        functions: 20,
+        branches: 70,
+        statements: 25,
+      },
+    },
   },
 });
