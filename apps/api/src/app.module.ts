@@ -17,6 +17,7 @@ import { ClassesModule } from './modules/classes/classes.module';
 import { HealthModule } from './modules/health/health.module';
 import { StudentsModule } from './modules/students/students.module';
 import { TeachersModule } from './modules/teachers/teachers.module';
+import { TelegramModule } from './modules/telegram/telegram.module';
 import { UsersModule } from './modules/users/users.module';
 
 @Module({
@@ -36,6 +37,7 @@ import { UsersModule } from './modules/users/users.module';
     ClassesModule,
     StudentsModule,
     TeachersModule,
+    TelegramModule,
     AuditModule,
     HealthModule,
   ],

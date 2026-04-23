@@ -4,5 +4,6 @@ export * from './users';
 export * from './classes';
 export * from './students';
 export * from './audit';
+export * from './telegram';
 export * from './pagination';
 export * from './errors';
