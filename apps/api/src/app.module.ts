@@ -37,7 +37,7 @@ import { UsersModule } from './modules/users/users.module';
     ClassesModule,
     StudentsModule,
     TeachersModule,
-    TelegramModule,
+    TelegramModule.forRoot(),
     AuditModule,
     HealthModule,
   ],
