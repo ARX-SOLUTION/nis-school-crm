@@ -1,7 +1,7 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import type { INestApplication } from '@nestjs/common';
-import type { DataSource } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { AppModule } from '../../src/app.module';
 
 export interface TestAppHandle {
@@ -30,7 +30,13 @@ export async function bootstrapTestApp(): Promise<TestAppHandle> {
   );
   app.getHttpAdapter().getInstance().set('trust proxy', 1);
   await app.init();
-  const dataSource = moduleRef.get<DataSource>('DataSource');
+  // @nestjs/typeorm registers the default DataSource under the DataSource
+  // class token (not the string 'DataSource'). Resolving by the class
+  // matches the token TypeOrmCoreModule actually uses.
+  const dataSource = moduleRef.get(DataSource);
+  if (!dataSource) {
+    throw new Error('bootstrapTestApp: DataSource not resolved from AppModule');
+  }
   return {
     app,
     dataSource,
