@@ -9,6 +9,10 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.useLogger(app.get(PinoLogger));
   app.enableShutdownHooks();
+  // Trust the first proxy hop (Caddy in production). Express then derives
+  // `req.ip` from `X-Forwarded-For` only when the request actually came through
+  // a trusted proxy, defeating spoofed XFF headers from direct callers.
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
 
   const logger = new Logger('Bootstrap');
 
