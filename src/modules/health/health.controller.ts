@@ -6,6 +6,7 @@ import {
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Public } from '../auth/decorators/public.decorator';
 import { RedisHealthIndicator } from '../../common/redis/redis.health';
 import { RabbitMqHealthIndicator } from './rabbitmq.health';
 
@@ -19,6 +20,7 @@ export class HealthController {
     private readonly rabbit: RabbitMqHealthIndicator,
   ) {}
 
+  @Public()
   @Get()
   @HealthCheck()
   @ApiOperation({ summary: 'Liveness + readiness probe (db, redis, rabbitmq)' })

@@ -28,8 +28,10 @@ export const envValidationSchema = Joi.object({
     .required(),
 
   JWT_ACCESS_SECRET: Joi.string().min(32).required(),
-  JWT_REFRESH_SECRET: Joi.string().min(32).required(),
   JWT_ACCESS_EXPIRES: Joi.string().default('15m'),
+  // Refresh tokens are opaque random bytes (sha256-hashed in DB), not signed
+  // JWTs, so no JWT_REFRESH_SECRET is needed. JWT_REFRESH_EXPIRES drives the
+  // DB row TTL only.
   JWT_REFRESH_EXPIRES: Joi.string().default('7d'),
 
   BCRYPT_COST: Joi.number().integer().min(10).max(15).default(12),
