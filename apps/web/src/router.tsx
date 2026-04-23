@@ -12,6 +12,8 @@ import {
   useCurrentUserQuery,
   useIsAuthenticated,
 } from '@/features/auth/api/use-current-user-query';
+import { TelegramLoginPage } from '@/features/telegram-auth/pages/TelegramLoginPage';
+import { ParentInviteAcceptPage } from '@/features/telegram-auth/pages/ParentInviteAcceptPage';
 import { ClassesPage } from '@/pages/ClassesPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { LoginPage } from '@/pages/LoginPage';
@@ -28,6 +30,18 @@ const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
   component: LoginPage,
+});
+
+const telegramLoginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/login/telegram',
+  component: TelegramLoginPage,
+});
+
+const inviteRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/invite/$token',
+  component: ParentInviteAcceptPage,
 });
 
 const authLayoutRoute = createRoute({
@@ -140,6 +154,8 @@ function ProfileRouteComponent(): React.ReactElement | null {
 
 const routeTree = rootRoute.addChildren([
   loginRoute,
+  telegramLoginRoute,
+  inviteRoute,
   authLayoutRoute.addChildren([
     dashboardRoute,
     usersRoute,
