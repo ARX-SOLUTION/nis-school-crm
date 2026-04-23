@@ -17,6 +17,7 @@ import { ClassesModule } from './modules/classes/classes.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { HealthModule } from './modules/health/health.module';
 import { StudentsModule } from './modules/students/students.module';
+import { ParentsModule } from './modules/parents/parents.module';
 import { TeachersModule } from './modules/teachers/teachers.module';
 import { TelegramModule } from './modules/telegram/telegram.module';
 import { UsersModule } from './modules/users/users.module';
@@ -35,6 +36,7 @@ import { UsersModule } from './modules/users/users.module';
     EventBusModule,
     UsersModule,
     AuthModule,
+    ParentsModule,
     ClassesModule,
     StudentsModule,
     TeachersModule,
