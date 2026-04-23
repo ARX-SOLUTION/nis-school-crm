@@ -8,3 +8,4 @@ export * from './dashboard';
 export * from './telegram';
 export * from './pagination';
 export * from './errors';
+export * from './subjects';
