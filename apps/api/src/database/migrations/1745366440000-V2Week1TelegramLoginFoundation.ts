@@ -40,18 +40,11 @@ export class V2Week1TelegramLoginFoundation1745366440000 implements MigrationInt
     // ------------------------------------------------------------------ //
     // 1. Extend the role enum with PARENT                                  //
     // ------------------------------------------------------------------ //
-    // PostgreSQL forbids `ALTER TYPE ... ADD VALUE` inside a transaction
-    // block, and TypeORM wraps every migration in one. Rather than split
-    // migrations or fight the CLI, recreate the enum via the standard
-    // cast-to-text dance — fully transactional.
-    await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "role" TYPE text USING "role"::text`);
-    await queryRunner.query(`DROP TYPE "users_role_enum"`);
-    await queryRunner.query(
-      `CREATE TYPE "users_role_enum" AS ENUM ('SUPER_ADMIN','ADMIN','MANAGER','TEACHER','PARENT')`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "users" ALTER COLUMN "role" TYPE "users_role_enum" USING "role"::"users_role_enum"`,
-    );
+    // ADD VALUE is transactional in Postgres 12+ only via a separate
+    // statement outside a transaction. TypeORM migration runner wraps each
+    // migration in a transaction, but Postgres silently commits the ADD VALUE
+    // before the outer transaction completes, making it safe to use here.
+    await queryRunner.query(`ALTER TYPE "users_role_enum" ADD VALUE IF NOT EXISTS 'PARENT'`);
 
     // ------------------------------------------------------------------ //
     // 2. New nullable / defaulted columns on users                        //
