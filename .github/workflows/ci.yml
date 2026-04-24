@@ -117,7 +117,21 @@ jobs:
       AUTH_THROTTLE_TTL: '60'
       AUTH_THROTTLE_LIMIT: '5'
       CORS_ORIGINS: ''
-      TELEGRAM_BOT_TOKEN: ''
+      # Non-secret placeholder — the telegram-login e2e spec signs payloads
+      # against this token via test/helpers/telegram-hash.ts. Empty string
+      # would cause TelegramAuthService to 503 every request.
+      TELEGRAM_BOT_TOKEN: e2e-test-bot-token-not-a-real-secret
+      TELEGRAM_BOT_USERNAME: nis_school_bot_e2e
+      TELEGRAM_LOGIN_DOMAIN: portal.nis.example
+      # v2 feature flags — enable the ones whose e2e specs are in the suite.
+      # Others stay off so unwired controllers (attendance, grades, schedule,
+      # websocket) don't surprise the suite.
+      FEATURE_TELEGRAM_LOGIN_ENABLED: 'true'
+      FEATURE_PARENT_PORTAL_ENABLED: 'true'
+      FEATURE_ATTENDANCE_ENABLED: 'false'
+      FEATURE_GRADES_ENABLED: 'false'
+      FEATURE_SCHEDULE_ENABLED: 'false'
+      FEATURE_WEBSOCKET_ENABLED: 'false'
       # Joi's default TLD allow-list rejects reserved TLDs (.test).
       SEED_SUPER_ADMIN_EMAIL: e2e-admin@example.com
       SEED_SUPER_ADMIN_PASSWORD: e2e-super-admin-password!

@@ -98,6 +98,117 @@ export async function seedParentInvite(
   return { id, token, studentId: opts.studentId, expiresAt };
 }
 
+interface SeedClassOptions {
+  name?: string;
+  gradeLevel?: number;
+  academicYear?: string;
+  classTeacherId?: string;
+  maxStudents?: number;
+}
+
+export async function seedClass(
+  dataSource: DataSource,
+  opts: SeedClassOptions = {},
+): Promise<{ id: string; name: string; academicYear: string }> {
+  const name = opts.name ?? `${opts.gradeLevel ?? 5}-A`;
+  const academicYear = opts.academicYear ?? '2025-2026';
+  const rows = await dataSource.query(
+    `INSERT INTO "classes" ("name", "grade_level", "academic_year", "class_teacher_id", "max_students")
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING id`,
+    [name, opts.gradeLevel ?? 5, academicYear, opts.classTeacherId ?? null, opts.maxStudents ?? 30],
+  );
+  const id = (rows[0] as { id: string }).id;
+  return { id, name, academicYear };
+}
+
+interface SeedSubjectOptions {
+  code?: string;
+  name?: string;
+  gradeLevels?: number[];
+  defaultHoursPerWeek?: number;
+  isActive?: boolean;
+}
+
+export async function seedSubject(
+  dataSource: DataSource,
+  opts: SeedSubjectOptions = {},
+): Promise<{ id: string; code: string }> {
+  const code = opts.code ?? `SUBJ_${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+  const rows = await dataSource.query(
+    `INSERT INTO "subjects"
+       ("code", "name", "grade_levels", "default_hours_per_week", "is_active")
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING id`,
+    [
+      code,
+      opts.name ?? 'Test Subject',
+      opts.gradeLevels ?? [5, 6, 7],
+      opts.defaultHoursPerWeek ?? 2,
+      opts.isActive ?? true,
+    ],
+  );
+  return { id: (rows[0] as { id: string }).id, code };
+}
+
+interface SeedRoomOptions {
+  roomNumber?: string;
+  name?: string;
+  capacity?: number;
+  type?: 'CLASSROOM' | 'LAB' | 'SPORTS' | 'AUDITORIUM' | 'OTHER';
+  floor?: number;
+  isActive?: boolean;
+}
+
+export async function seedRoom(
+  dataSource: DataSource,
+  opts: SeedRoomOptions = {},
+): Promise<{ id: string; roomNumber: string }> {
+  const roomNumber = opts.roomNumber ?? `R-${Math.random().toString(36).slice(2, 8)}`;
+  const rows = await dataSource.query(
+    `INSERT INTO "rooms" ("room_number", "name", "capacity", "type", "floor", "is_active")
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING id`,
+    [
+      roomNumber,
+      opts.name ?? null,
+      opts.capacity ?? 30,
+      opts.type ?? 'CLASSROOM',
+      opts.floor ?? null,
+      opts.isActive ?? true,
+    ],
+  );
+  return { id: (rows[0] as { id: string }).id, roomNumber };
+}
+
+interface SeedClassSubjectOptions {
+  classId: string;
+  subjectId: string;
+  teacherId: string;
+  hoursPerWeek?: number;
+  academicYear?: string;
+}
+
+export async function seedClassSubject(
+  dataSource: DataSource,
+  opts: SeedClassSubjectOptions,
+): Promise<{ id: string }> {
+  const rows = await dataSource.query(
+    `INSERT INTO "class_subjects"
+       ("class_id", "subject_id", "teacher_id", "hours_per_week", "academic_year")
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING id`,
+    [
+      opts.classId,
+      opts.subjectId,
+      opts.teacherId,
+      opts.hoursPerWeek ?? 2,
+      opts.academicYear ?? '2025-2026',
+    ],
+  );
+  return { id: (rows[0] as { id: string }).id };
+}
+
 interface LoginTokens {
   accessToken: string;
   refreshToken: string;
