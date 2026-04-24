@@ -6,6 +6,7 @@ export * from './students';
 export * from './audit';
 export * from './dashboard';
 export * from './telegram';
+export * from './telegram-auth';
 export * from './pagination';
 export * from './errors';
 export * from './subjects';

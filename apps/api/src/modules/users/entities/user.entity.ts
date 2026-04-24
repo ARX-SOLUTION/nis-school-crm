@@ -31,6 +31,26 @@ export class User extends BaseEntity {
   @Column({ name: 'telegram_username', type: 'varchar', length: 100, nullable: true })
   telegramUsername!: string | null;
 
+  /** Given name as returned by Telegram Login Widget / bot getChat. */
+  @Column({ name: 'telegram_first_name', type: 'varchar', length: 64, nullable: true })
+  telegramFirstName!: string | null;
+
+  /** Family name as returned by Telegram Login Widget / bot getChat. */
+  @Column({ name: 'telegram_last_name', type: 'varchar', length: 64, nullable: true })
+  telegramLastName!: string | null;
+
+  /** Profile photo URL from Telegram (can change; treat as a hint, not authoritative). */
+  @Column({ name: 'telegram_photo_url', type: 'varchar', length: 500, nullable: true })
+  telegramPhotoUrl!: string | null;
+
+  /**
+   * UI language preference. Stored as a BCP-47-ish short code.
+   * Constrained to supported locales at DB level via a CHECK constraint
+   * added in migration 1745366440000.
+   */
+  @Column({ name: 'language', type: 'varchar', length: 5, default: 'uz' })
+  language!: string;
+
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive!: boolean;
 

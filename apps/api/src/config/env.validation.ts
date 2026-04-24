@@ -53,4 +53,15 @@ export const envValidationSchema = Joi.object({
   SEED_SUPER_ADMIN_EMAIL: Joi.string().email().required(),
   SEED_SUPER_ADMIN_PASSWORD: Joi.string().min(8).required(),
   SEED_SUPER_ADMIN_NAME: Joi.string().default('Super Admin'),
+
+  TELEGRAM_BOT_USERNAME: Joi.string().allow('').default(''),
+  TELEGRAM_LOGIN_DOMAIN: Joi.string().allow('').default(''),
+
+  // Feature flags — all default to false. Enable per-environment via env vars.
+  FEATURE_TELEGRAM_LOGIN_ENABLED: Joi.boolean().default(false),
+  FEATURE_PARENT_PORTAL_ENABLED: Joi.boolean().default(false),
+  FEATURE_ATTENDANCE_ENABLED: Joi.boolean().default(false),
+  FEATURE_GRADES_ENABLED: Joi.boolean().default(false),
+  FEATURE_SCHEDULE_ENABLED: Joi.boolean().default(false),
+  FEATURE_WEBSOCKET_ENABLED: Joi.boolean().default(false),
 });

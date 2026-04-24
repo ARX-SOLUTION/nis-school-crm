@@ -53,7 +53,8 @@ export async function bootstrapTestApp(): Promise<TestAppHandle> {
 export async function resetDatabase(dataSource: DataSource): Promise<void> {
   await dataSource.query(
     'TRUNCATE TABLE ' +
-      '"audit_logs", "student_class_history", "students", "teacher_profiles", ' +
+      '"audit_logs", "student_class_history", "parent_students", "parent_invites", ' +
+      '"students", "teacher_profiles", ' +
       '"classes", "refresh_tokens", "users" ' +
       'RESTART IDENTITY CASCADE',
   );

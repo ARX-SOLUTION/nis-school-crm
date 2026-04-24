@@ -28,7 +28,12 @@ process.env['JWT_REFRESH_EXPIRES'] = process.env['JWT_REFRESH_EXPIRES'] ?? '1d';
 // setup, not password hashing.
 process.env['BCRYPT_COST'] = process.env['BCRYPT_COST'] ?? '10';
 process.env['CORS_ORIGINS'] = process.env['CORS_ORIGINS'] ?? '';
-process.env['TELEGRAM_BOT_TOKEN'] = process.env['TELEGRAM_BOT_TOKEN'] ?? '';
+process.env['TELEGRAM_BOT_TOKEN'] =
+  process.env['TELEGRAM_BOT_TOKEN'] ?? 'e2e-test-bot-token-not-a-real-secret';
+process.env['FEATURE_TELEGRAM_LOGIN_ENABLED'] =
+  process.env['FEATURE_TELEGRAM_LOGIN_ENABLED'] ?? 'true';
+process.env['FEATURE_PARENT_PORTAL_ENABLED'] =
+  process.env['FEATURE_PARENT_PORTAL_ENABLED'] ?? 'true';
 process.env['AUTH_THROTTLE_TTL'] = process.env['AUTH_THROTTLE_TTL'] ?? '60';
 process.env['AUTH_THROTTLE_LIMIT'] = process.env['AUTH_THROTTLE_LIMIT'] ?? '5';
 // Joi's default TLD allow-list rejects reserved TLDs like `.test`, so
