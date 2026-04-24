@@ -14,10 +14,7 @@ import { ParentInvite, ParentRelationship } from '../entities/parent-invite.enti
 import { ParentStudent } from '../entities/parent-student.entity';
 import { Student } from '../../students/entities/student.entity';
 import { User } from '../../users/entities/user.entity';
-import {
-  TelegramAuthService,
-  TelegramAuthPayload,
-} from '../../auth/services/telegram-auth.service';
+import type { TelegramAuthPayload } from '../../auth/services/telegram-auth.service';
 import { RoleName, isParent } from '../../../common/enums/role.enum';
 
 interface CreateInviteInput {
@@ -72,7 +69,6 @@ export class ParentInviteService {
     private readonly users: Repository<User>,
     @InjectDataSource()
     private readonly dataSource: DataSource,
-    private readonly telegramAuth: TelegramAuthService,
     config: ConfigService,
   ) {
     this.bcryptCost = config.getOrThrow<number>('BCRYPT_COST');
@@ -138,10 +134,10 @@ export class ParentInviteService {
    * 8. Commit.
    */
   async acceptInvite(input: AcceptInviteInput): Promise<AcceptInviteResult> {
-    // Verify outside transaction — pure computation, no DB access.
-    // Throws UnauthorizedException on invalid hash or expired auth_date.
-    this.telegramAuth.validate(input.telegramPayload);
-
+    // Telegram hash verification is the caller's responsibility: see
+    // TelegramLoginService.acceptInviteAndLogin. Doing it here would require
+    // this module to import AuthModule (for TelegramAuthService), which would
+    // create a circular dependency with AuthModule importing ParentsModule.
     return this.dataSource.transaction(async (manager) => {
       // --- Step 3: Load + lock invite row ---
       // TypeORM's QueryRunner.manager does not expose a clean FOR UPDATE API;
