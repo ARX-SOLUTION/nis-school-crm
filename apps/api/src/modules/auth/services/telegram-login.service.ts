@@ -131,11 +131,6 @@ export class TelegramLoginService {
     telegramPayload: TelegramAuthPayload;
     meta: LoginMeta;
   }): Promise<LoginResponseDto> {
-    // Telegram hash verification lives here rather than inside
-    // ParentInviteService so that the parents module does not need to import
-    // AuthModule, which would create a circular module dependency with
-    // AuthModule importing ParentsModule for ParentInviteService.
-    this.telegramAuth.validate(input.telegramPayload);
     const { user } = await this.parentInvites.acceptInvite({
       token: input.token,
       telegramPayload: input.telegramPayload,

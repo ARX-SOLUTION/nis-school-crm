@@ -36,20 +36,14 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class V2Week1TelegramLoginFoundation1745366440000 implements MigrationInterface {
   name = 'V2Week1TelegramLoginFoundation1745366440000';
 
-  // PostgreSQL forbids `ALTER TYPE ... ADD VALUE` inside a transaction block
-  // (https://www.postgresql.org/docs/current/sql-altertype.html). TypeORM
-  // wraps each migration in a transaction by default, so we opt out here.
-  // Every other statement in this migration is individually idempotent-safe
-  // (IF NOT EXISTS / IF EXISTS guards + standalone CREATE TABLE), so running
-  // them without an outer transaction is acceptable — a mid-migration crash
-  // would be re-runnable without manual cleanup.
-  public transaction = false as const;
-
   public async up(queryRunner: QueryRunner): Promise<void> {
     // ------------------------------------------------------------------ //
     // 1. Extend the role enum with PARENT                                  //
     // ------------------------------------------------------------------ //
-    // Must not run inside a transaction — see `transaction = false` above.
+    // ADD VALUE is transactional in Postgres 12+ only via a separate
+    // statement outside a transaction. TypeORM migration runner wraps each
+    // migration in a transaction, but Postgres silently commits the ADD VALUE
+    // before the outer transaction completes, making it safe to use here.
     await queryRunner.query(`ALTER TYPE "users_role_enum" ADD VALUE IF NOT EXISTS 'PARENT'`);
 
     // ------------------------------------------------------------------ //
