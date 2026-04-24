@@ -8,7 +8,10 @@ import { ParentStudent } from '../entities/parent-student.entity';
 import { Student } from '../../students/entities/student.entity';
 import { User } from '../../users/entities/user.entity';
 import { RoleName } from '../../../common/enums/role.enum';
-import type { TelegramAuthPayload } from '../../auth/services/telegram-auth.service';
+import {
+  TelegramAuthService,
+  TelegramAuthPayload,
+} from '../../auth/services/telegram-auth.service';
 
 // ---------------------------------------------------------------------------
 // Hash helper — same algorithm as TelegramAuthService
@@ -113,6 +116,7 @@ interface Built {
   studentRepo: jest.Mocked<Repository<Student>>;
   userRepo: jest.Mocked<Repository<User>>;
   dataSource: jest.Mocked<DataSource>;
+  telegramAuth: jest.Mocked<TelegramAuthService>;
   txManager: jest.Mocked<EntityManager>;
 }
 
@@ -158,6 +162,11 @@ function buildService(): Built {
     ),
   } as unknown as jest.Mocked<DataSource>;
 
+  const telegramAuth = {
+    validate: jest.fn((payload: TelegramAuthPayload) => payload),
+    verifyHash: jest.fn(() => true),
+  } as unknown as jest.Mocked<TelegramAuthService>;
+
   const config = {
     getOrThrow: jest.fn((key: string) => (key === 'BCRYPT_COST' ? 4 : undefined)),
   } as unknown as ConfigService;
@@ -168,6 +177,7 @@ function buildService(): Built {
     studentRepo as Repository<Student>,
     userRepo as Repository<User>,
     dataSource as DataSource,
+    telegramAuth as TelegramAuthService,
     config,
   );
 
@@ -178,6 +188,7 @@ function buildService(): Built {
     studentRepo,
     userRepo,
     dataSource,
+    telegramAuth,
     txManager,
   };
 }
@@ -245,7 +256,7 @@ describe('ParentInviteService.createInvite', () => {
 
 describe('ParentInviteService.acceptInvite', () => {
   it('should_create_new_parent_user_and_link_to_student_when_invite_is_valid', async () => {
-    const { service, txManager } = buildService();
+    const { service, txManager, telegramAuth } = buildService();
 
     const payload = freshTelegramPayload(777001);
     const invite = makeInvite({ id: 'invite-id-1', studentId: 'student-uuid-1' });
@@ -255,6 +266,8 @@ describe('ParentInviteService.acceptInvite', () => {
       telegramChatId: '777001',
     });
     const parentStudentLink = makeParentStudent();
+
+    telegramAuth.validate.mockReturnValue(payload);
 
     // Step 3 — FOR UPDATE row lock returns the invite id
     txManager.query.mockResolvedValue([{ id: invite.id }]);
@@ -277,6 +290,7 @@ describe('ParentInviteService.acceptInvite', () => {
 
     const result = await service.acceptInvite({ token: invite.token, telegramPayload: payload });
 
+    expect(telegramAuth.validate).toHaveBeenCalledWith(payload);
     expect(txManager.query).toHaveBeenCalledWith(expect.stringContaining('parent_invites'), [
       invite.token,
     ]);
@@ -284,11 +298,12 @@ describe('ParentInviteService.acceptInvite', () => {
   });
 
   it('should_throw_BadRequestException_when_invite_is_already_used', async () => {
-    const { service, txManager } = buildService();
+    const { service, txManager, telegramAuth } = buildService();
 
     const payload = freshTelegramPayload();
     const usedInvite = makeInvite({ usedAt: new Date(Date.now() - 1000) });
 
+    telegramAuth.validate.mockReturnValue(payload);
     // Use mockResolvedValue (persistent) so the mock survives re-entrant calls.
     txManager.query.mockResolvedValue([{ id: usedInvite.id }]);
     (txManager.findOne as jest.Mock).mockResolvedValue(usedInvite);
@@ -302,7 +317,7 @@ describe('ParentInviteService.acceptInvite', () => {
   });
 
   it('should_throw_BadRequestException_when_invite_has_expired', async () => {
-    const { service, txManager } = buildService();
+    const { service, txManager, telegramAuth } = buildService();
 
     const payload = freshTelegramPayload();
     const expiredInvite = makeInvite({
@@ -310,6 +325,7 @@ describe('ParentInviteService.acceptInvite', () => {
       usedAt: null,
     });
 
+    telegramAuth.validate.mockReturnValue(payload);
     txManager.query.mockResolvedValue([{ id: expiredInvite.id }]);
     (txManager.findOne as jest.Mock).mockResolvedValue(expiredInvite);
 
@@ -322,7 +338,7 @@ describe('ParentInviteService.acceptInvite', () => {
   });
 
   it('should_reuse_existing_parent_user_when_same_telegram_id_is_seen_again', async () => {
-    const { service, txManager } = buildService();
+    const { service, txManager, telegramAuth } = buildService();
 
     const payload = freshTelegramPayload(555001);
     const invite = makeInvite({ id: 'invite-2nd', studentId: 'student-uuid-2' });
@@ -333,6 +349,7 @@ describe('ParentInviteService.acceptInvite', () => {
     });
     const parentStudentLink = makeParentStudent();
 
+    telegramAuth.validate.mockReturnValue(payload);
     txManager.query.mockResolvedValue([{ id: invite.id }]);
 
     (txManager.findOne as jest.Mock)
@@ -360,12 +377,13 @@ describe('ParentInviteService.acceptInvite', () => {
   });
 
   it('should_throw_ConflictException_when_telegram_id_belongs_to_a_staff_user', async () => {
-    const { service, txManager } = buildService();
+    const { service, txManager, telegramAuth } = buildService();
 
     const payload = freshTelegramPayload(333001);
     const invite = makeInvite();
     const staffUser = makeUser({ role: RoleName.ADMIN, telegramChatId: '333001' });
 
+    telegramAuth.validate.mockReturnValue(payload);
     txManager.query.mockResolvedValue([{ id: invite.id }]);
 
     // Use persistent mocks (mockResolvedValue) so the sequence works for both
@@ -385,9 +403,10 @@ describe('ParentInviteService.acceptInvite', () => {
   });
 
   it('should_throw_NotFoundException_when_invite_token_is_not_found', async () => {
-    const { service, txManager } = buildService();
+    const { service, txManager, telegramAuth } = buildService();
 
     const payload = freshTelegramPayload();
+    telegramAuth.validate.mockReturnValue(payload);
     txManager.query.mockResolvedValue([]); // empty result — no row found
 
     await expect(
@@ -395,7 +414,21 @@ describe('ParentInviteService.acceptInvite', () => {
     ).rejects.toThrow(NotFoundException);
   });
 
-  // Note: hash validation was moved to TelegramLoginService.acceptInviteAndLogin
-  // to break the AuthModule <-> ParentsModule circular dependency. The test
-  // for that flow now lives alongside TelegramLoginService.
+  it('should_delegate_hash_validation_to_TelegramAuthService_before_opening_transaction', async () => {
+    const { service, txManager, telegramAuth, dataSource } = buildService();
+
+    const payload = freshTelegramPayload();
+    // Simulate TelegramAuthService throwing (bad hash)
+    telegramAuth.validate.mockImplementation(() => {
+      throw new Error('Telegram validation failed');
+    });
+
+    await expect(
+      service.acceptInvite({ token: 'c'.repeat(64), telegramPayload: payload }),
+    ).rejects.toThrow('Telegram validation failed');
+
+    // The transaction must never have been opened
+    expect(dataSource.transaction).not.toHaveBeenCalled();
+    expect(txManager.query).not.toHaveBeenCalled();
+  });
 });
