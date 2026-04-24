@@ -36,21 +36,22 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class V2Week1TelegramLoginFoundation1745366440000 implements MigrationInterface {
   name = 'V2Week1TelegramLoginFoundation1745366440000';
 
-  // PostgreSQL forbids `ALTER TYPE ... ADD VALUE` inside a transaction block
-  // (https://www.postgresql.org/docs/current/sql-altertype.html). TypeORM
-  // wraps each migration in a transaction by default, so we opt out here.
-  // Every other statement in this migration is individually idempotent-safe
-  // (IF NOT EXISTS / IF EXISTS guards + standalone CREATE TABLE), so running
-  // them without an outer transaction is acceptable — a mid-migration crash
-  // would be re-runnable without manual cleanup.
-  public transaction = false as const;
-
   public async up(queryRunner: QueryRunner): Promise<void> {
     // ------------------------------------------------------------------ //
     // 1. Extend the role enum with PARENT                                  //
     // ------------------------------------------------------------------ //
-    // Must not run inside a transaction — see `transaction = false` above.
-    await queryRunner.query(`ALTER TYPE "users_role_enum" ADD VALUE IF NOT EXISTS 'PARENT'`);
+    // PostgreSQL forbids `ALTER TYPE ... ADD VALUE` inside a transaction
+    // block, and TypeORM wraps every migration in one. Rather than split
+    // migrations or fight the CLI, recreate the enum via the standard
+    // cast-to-text dance — fully transactional.
+    await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "role" TYPE text USING "role"::text`);
+    await queryRunner.query(`DROP TYPE "users_role_enum"`);
+    await queryRunner.query(
+      `CREATE TYPE "users_role_enum" AS ENUM ('SUPER_ADMIN','ADMIN','MANAGER','TEACHER','PARENT')`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "users" ALTER COLUMN "role" TYPE "users_role_enum" USING "role"::"users_role_enum"`,
+    );
 
     // ------------------------------------------------------------------ //
     // 2. New nullable / defaulted columns on users                        //
