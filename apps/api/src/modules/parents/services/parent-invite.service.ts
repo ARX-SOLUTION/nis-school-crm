@@ -1,6 +1,8 @@
 import {
   BadRequestException,
   ConflictException,
+  forwardRef,
+  Inject,
   Injectable,
   Logger,
   NotFoundException,
@@ -72,6 +74,7 @@ export class ParentInviteService {
     private readonly users: Repository<User>,
     @InjectDataSource()
     private readonly dataSource: DataSource,
+    @Inject(forwardRef(() => TelegramAuthService))
     private readonly telegramAuth: TelegramAuthService,
     config: ConfigService,
   ) {

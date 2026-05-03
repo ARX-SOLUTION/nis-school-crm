@@ -147,3 +147,32 @@ jobs:
         run: npm run migration:run
       - name: Run e2e suite
         run: npm run test:e2e
+
+  deploy:
+    name: Deploy → Hetzner
+    runs-on: ubuntu-latest
+    needs: [lint-build, unit-tests, e2e-tests]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          port: ${{ secrets.HETZNER_SSH_PORT || 22 }}
+          script: |
+            set -euo pipefail
+            cd /root/project/nis-school-crm
+            echo "[deploy] $(date -u +%Y-%m-%dT%H:%M:%SZ) — pulling ${{ github.sha }}"
+            git fetch origin main
+            git reset --hard origin/main
+            echo "[deploy] building images"
+            docker compose -f docker-compose.prod.yml build --pull
+            echo "[deploy] running migrations"
+            docker compose -f docker-compose.prod.yml run --rm api npm run migration:run:prod
+            echo "[deploy] starting services"
+            docker compose -f docker-compose.prod.yml up -d
+            echo "[deploy] pruning old images"
+            docker image prune -f
+            echo "[deploy] done — $(git rev-parse --short HEAD)"
