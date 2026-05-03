@@ -8,7 +8,10 @@ import { DashboardService } from './dashboard.service';
 
 describe('DashboardService', () => {
   const build = () => {
-    const dailyRows = [{ date: '2026-04-23', count: '3' }];
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    const dateStr = threeDaysAgo.toISOString().slice(0, 10);
+    const dailyRows = [{ date: dateStr, count: '3' }];
     const fillRows = [
       { id: 'c-1', max: 30, filled: '15' },
       { id: 'c-2', max: 30, filled: '30' },

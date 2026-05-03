@@ -5,6 +5,13 @@ export class V2Week2SubjectsAndRooms1745366450000 implements MigrationInterface 
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
+      CREATE OR REPLACE FUNCTION check_grade_levels_valid(levels int[]) RETURNS boolean
+      LANGUAGE sql IMMUTABLE STRICT AS $$
+        SELECT bool_and(g BETWEEN 1 AND 11) FROM unnest(levels) AS g;
+      $$
+    `);
+
+    await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS "subjects" (
         "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
         "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -17,8 +24,7 @@ export class V2Week2SubjectsAndRooms1745366450000 implements MigrationInterface 
         "is_active" boolean NOT NULL DEFAULT true,
         CONSTRAINT "uq_subjects_code" UNIQUE ("code"),
         CONSTRAINT "chk_subjects_grade_levels" CHECK (
-          array_length("grade_levels", 1) IS NULL
-          OR (SELECT bool_and(g BETWEEN 1 AND 11) FROM unnest("grade_levels") AS g)
+          array_length("grade_levels", 1) IS NULL OR check_grade_levels_valid("grade_levels")
         ),
         CONSTRAINT "chk_subjects_hours_per_week" CHECK ("default_hours_per_week" BETWEEN 1 AND 40)
       )
@@ -87,5 +93,6 @@ export class V2Week2SubjectsAndRooms1745366450000 implements MigrationInterface 
     await queryRunner.query(`DROP TABLE IF EXISTS "class_subjects"`);
     await queryRunner.query(`DROP TABLE IF EXISTS "subjects"`);
     await queryRunner.query(`DROP TABLE IF EXISTS "rooms"`);
+    await queryRunner.query(`DROP FUNCTION IF EXISTS check_grade_levels_valid(int[])`);
   }
 }
