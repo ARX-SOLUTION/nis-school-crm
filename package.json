@@ -18,7 +18,7 @@
     "dev:web": "npm run dev --workspace @nis/web",
     "build:api": "npm run build:shared && npm run build --workspace @nis/api",
     "build:web": "npm run build:shared && npm run build --workspace @nis/web",
-    "deploy:web": "npm run build:web && npx wrangler pages deploy apps/web/dist",
+    "deploy:web": "npm run build:web && npx wrangler deploy",
     "test:api": "npm run test --workspace @nis/api",
     "test:web": "npm run test --workspace @nis/web",
     "test:e2e": "npm run test:e2e --workspace @nis/api",
