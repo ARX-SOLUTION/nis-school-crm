@@ -53,6 +53,7 @@ export async function bootstrapTestApp(): Promise<TestAppHandle> {
 export async function resetDatabase(dataSource: DataSource): Promise<void> {
   await dataSource.query(
     'TRUNCATE TABLE ' +
+      '"schedule_substitutions", "schedule_entries", ' +
       '"audit_logs", "student_class_history", "parent_students", "parent_invites", ' +
       '"class_subjects", "subjects", "rooms", ' +
       '"students", "teacher_profiles", ' +
