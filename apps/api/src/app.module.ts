@@ -17,6 +17,7 @@ import { ClassesModule } from './modules/classes/classes.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { HealthModule } from './modules/health/health.module';
 import { RoomsModule } from './modules/rooms/rooms.module';
+import { ScheduleModule } from './modules/schedule/schedule.module';
 import { StudentsModule } from './modules/students/students.module';
 import { SubjectsModule } from './modules/subjects/subjects.module';
 import { ParentsModule } from './modules/parents/parents.module';
@@ -44,6 +45,7 @@ import { UsersModule } from './modules/users/users.module';
     TeachersModule,
     SubjectsModule,
     RoomsModule,
+    ScheduleModule,
     TelegramModule.forRoot(),
     AuditModule,
     DashboardModule,
