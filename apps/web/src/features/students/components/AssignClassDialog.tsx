@@ -18,7 +18,7 @@ export function AssignClassDialog({ open, onClose, student, classes }: Props): R
   const [reason, setReason] = useState('');
   const mutation = useAssignClassMutation(student?.id ?? '');
 
-  // Only show classes that actually match the student's grade — the backend
+  // Only show classes that actually match the student's grade: the backend
   // will reject others, no reason to offer them.
   const options = useMemo(
     () => (student ? classes.filter((c) => c.isActive && c.gradeLevel === student.gradeLevel) : []),
@@ -64,7 +64,7 @@ export function AssignClassDialog({ open, onClose, student, classes }: Props): R
             value={classId}
             onChange={(e) => setClassId(e.target.value)}
           >
-            <option value="">— pick a class —</option>
+            <option value="">Select a class</option>
             {options.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name} · {c.academicYear} ({c.maxStudents} cap)

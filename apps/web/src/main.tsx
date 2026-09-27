@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
 import './styles/globals.css';
 
-// staleTime defaults to 0 — every individual query opts in to caching with
+// staleTime defaults to 0: every individual query opts in to caching with
 // an explicit value. RBAC- and session-sensitive queries should never inherit
 // a global stale window from this provider.
 const queryClient = new QueryClient({

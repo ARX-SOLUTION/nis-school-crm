@@ -18,7 +18,7 @@ import {
 interface Props {
   open: boolean;
   onClose: () => void;
-  /** The caller's role — filters the role dropdown. UX ONLY; the backend
+  /** The caller's role: filters the role dropdown. UX ONLY; the backend
    *  is the authoritative source of RBAC enforcement. */
   actorRole: RoleName;
 }

@@ -63,7 +63,7 @@ export function UsersTable({
                   {u.isActive ? 'Active' : 'Disabled'}
                 </span>
               </Td>
-              <Td>{u.telegramUsername ? `@${u.telegramUsername}` : '—'}</Td>
+              <Td>{u.telegramUsername ? `@${u.telegramUsername}` : '-'}</Td>
               <Td className="text-right space-x-2 whitespace-nowrap">
                 {onResetPassword ? (
                   <Button

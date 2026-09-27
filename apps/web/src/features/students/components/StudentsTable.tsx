@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button';
 interface Props {
   data: StudentResponseDto[];
   isLoading?: boolean;
+  onViewProfile?: (student: StudentResponseDto) => void;
   onAssignClass?: (student: StudentResponseDto) => void;
   onArchive?: (student: StudentResponseDto) => void;
 }
@@ -11,6 +12,7 @@ interface Props {
 export function StudentsTable({
   data,
   isLoading,
+  onViewProfile,
   onAssignClass,
   onArchive,
 }: Props): React.ReactElement {
@@ -50,9 +52,20 @@ export function StudentsTable({
                 <code className="text-xs text-slate-600">{s.studentCode}</code>
               </Td>
               <Td>
-                <span className="font-medium text-slate-900">
-                  {s.lastName} {s.firstName}
-                </span>
+                {onViewProfile ? (
+                  <button
+                    type="button"
+                    onClick={() => onViewProfile(s)}
+                    className="font-medium text-blue-600 hover:text-blue-800 hover:underline text-left"
+                    aria-label={`View profile of ${s.lastName} ${s.firstName}`}
+                  >
+                    {s.lastName} {s.firstName}
+                  </button>
+                ) : (
+                  <span className="font-medium text-slate-900">
+                    {s.lastName} {s.firstName}
+                  </span>
+                )}
                 {s.middleName ? <span className="text-slate-500"> {s.middleName}</span> : null}
               </Td>
               <Td>{s.gradeLevel}</Td>
@@ -60,8 +73,18 @@ export function StudentsTable({
                 <StatusBadge status={s.status} />
               </Td>
               <Td>{s.classId ? 'Assigned' : <span className="text-slate-400">None</span>}</Td>
-              <Td>{s.parentFullName ?? '—'}</Td>
+              <Td>{s.parentFullName ?? '-'}</Td>
               <Td className="text-right whitespace-nowrap space-x-2">
+                {onViewProfile ? (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => onViewProfile(s)}
+                    aria-label={`View profile for ${s.lastName} ${s.firstName}`}
+                  >
+                    Profil
+                  </Button>
+                ) : null}
                 {onAssignClass && s.status === 'ACTIVE' ? (
                   <Button
                     size="sm"

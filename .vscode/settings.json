@@ -1,0 +1,12 @@
+{
+  "sqltools.connections": [
+    {
+      "ssh": "Disabled",
+      "previewLimit": 50,
+      "server": "localhost",
+      "driver": "PostgreSQL",
+      "name": "test",
+      "connectString": "postgresql://postgres:rQSByiSiVipoouwFMsPsBpdRqcdKnvHu@metro.proxy.rlwy.net:57440/railway"
+    }
+  ]
+}

@@ -2,6 +2,8 @@ import { DynamicModule, Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TelegrafModule } from 'nestjs-telegraf';
+import { Student } from '../students/entities/student.entity';
+import { ParentStudent } from '../parents/entities/parent-student.entity';
 import { User } from '../users/entities/user.entity';
 import { LinkCodeService } from './services/link-code.service';
 import { TelegramBotService } from './telegram-bot.service';
@@ -42,7 +44,7 @@ export class TelegramModule {
 
     return {
       module: TelegramModule,
-      imports: [TypeOrmModule.forFeature([User]), ...botImports],
+      imports: [TypeOrmModule.forFeature([User, ParentStudent, Student]), ...botImports],
       controllers: [TelegramController],
       providers: [
         LinkCodeService,

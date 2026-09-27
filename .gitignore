@@ -42,6 +42,10 @@ junit.xml
 backups/
 *.sql.gz
 *.sql.backup
+*.session.sql
+
+# Knowledge graph cache
+graphify-out/
 
 # Docker / local data
 docker-data/

@@ -1,15 +1,17 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { StudentResponseDto, StudentStatus, StudentsListQueryDto } from '@nis/shared';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
+import { Pagination } from '@/components/ui/Pagination';
 import { useClassesQuery } from '@/features/classes/api/use-classes-query';
 import { useStudentsQuery } from '@/features/students/api/use-students-query';
 import { studentsApi } from '@/features/students/api/students-api';
 import { ArchiveStudentDialog } from '@/features/students/components/ArchiveStudentDialog';
 import { AssignClassDialog } from '@/features/students/components/AssignClassDialog';
 import { CreateStudentDialog } from '@/features/students/components/CreateStudentDialog';
+import { StudentProfileModal } from '@/features/students/components/StudentProfileModal';
 import { StudentsTable } from '@/features/students/components/StudentsTable';
 
 interface Props {
@@ -21,12 +23,20 @@ const STATUSES: StudentStatus[] = ['ACTIVE', 'INACTIVE', 'GRADUATED'];
 export function StudentsPage({ isAdmin }: Props): React.ReactElement {
   const [query, setQuery] = useState<StudentsListQueryDto>({ page: 1, limit: 20 });
   const [createOpen, setCreateOpen] = useState(false);
+  const [viewingProfile, setViewingProfile] = useState<StudentResponseDto | null>(null);
   const [assigning, setAssigning] = useState<StudentResponseDto | null>(null);
   const [archiving, setArchiving] = useState<StudentResponseDto | null>(null);
 
   const { data, isLoading, error } = useStudentsQuery(query);
   const classesQ = useClassesQuery({ page: 1, limit: 100 });
   const classes = classesQ.data?.data ?? [];
+
+  const classNameLookup = useMemo(() => {
+    return classes.reduce<Record<string, string>>((acc, c) => {
+      acc[c.id] = c.name;
+      return acc;
+    }, {});
+  }, [classes]);
 
   const downloadCsv = async (): Promise<void> => {
     const blob = await studentsApi.exportCsv();
@@ -125,40 +135,31 @@ export function StudentsPage({ isAdmin }: Props): React.ReactElement {
           <StudentsTable
             data={data?.data ?? []}
             isLoading={isLoading}
+            onViewProfile={(s) => setViewingProfile(s)}
             onAssignClass={(s) => setAssigning(s)}
             onArchive={(s) => setArchiving(s)}
           />
         )}
 
-        {data ? (
-          <div className="flex items-center justify-between border-t border-slate-200 px-4 py-3 text-sm text-slate-600">
-            <span>
-              {data.meta.total === 0
-                ? 'No results'
-                : `Page ${data.meta.page} of ${data.meta.totalPages} (${data.meta.total} total)`}
-            </span>
-            <div className="space-x-2">
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={data.meta.page <= 1}
-                onClick={() => setQuery((q) => ({ ...q, page: (q.page ?? 1) - 1 }))}
-              >
-                Previous
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={data.meta.page >= data.meta.totalPages}
-                onClick={() => setQuery((q) => ({ ...q, page: (q.page ?? 1) + 1 }))}
-              >
-                Next
-              </Button>
-            </div>
-          </div>
+        {data && data.meta ? (
+          <Pagination
+            page={data.meta.page}
+            totalPages={data.meta.totalPages}
+            total={data.meta.total}
+            limit={data.meta.limit}
+            onPageChange={(page) => setQuery((q) => ({ ...q, page }))}
+            onLimitChange={(limit) => setQuery((q) => ({ ...q, limit, page: 1 }))}
+          />
         ) : null}
       </Card>
 
+      <StudentProfileModal
+        open={viewingProfile !== null}
+        student={viewingProfile}
+        classNameLookup={classNameLookup}
+        onClose={() => setViewingProfile(null)}
+        onAssignClass={(s) => setAssigning(s)}
+      />
       <CreateStudentDialog
         open={createOpen}
         onClose={() => setCreateOpen(false)}

@@ -88,7 +88,7 @@ export function CreateStudentDialog({ open, onClose, classes }: Props): React.Re
             className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm"
             {...register('gender')}
           >
-            <option value="">—</option>
+            <option value="">Select gender</option>
             <option value="MALE">Male</option>
             <option value="FEMALE">Female</option>
           </select>
@@ -99,7 +99,7 @@ export function CreateStudentDialog({ open, onClose, classes }: Props): React.Re
             className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm"
             {...register('classId')}
           >
-            <option value="">—</option>
+            <option value="">Unassigned</option>
             {classes.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name} · grade {c.gradeLevel} · {c.academicYear}

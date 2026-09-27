@@ -30,8 +30,14 @@ export function Dialog({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (open && !el.open) el.showModal();
-    if (!open && el.open) el.close();
+    if (open && !el.open) {
+      if (typeof el.showModal === 'function') el.showModal();
+      else el.open = true;
+    }
+    if (!open && el.open) {
+      if (typeof el.close === 'function') el.close();
+      else el.open = false;
+    }
   }, [open]);
 
   useEffect(() => {

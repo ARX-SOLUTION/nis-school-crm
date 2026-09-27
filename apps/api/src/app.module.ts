@@ -13,14 +13,22 @@ import { AuditModule } from './modules/audit/audit.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
+import { BranchesModule } from './modules/branches/branches.module';
 import { ClassesModule } from './modules/classes/classes.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { ClubsModule } from './modules/clubs/clubs.module';
 import { HealthModule } from './modules/health/health.module';
 import { RoomsModule } from './modules/rooms/rooms.module';
 import { ScheduleModule } from './modules/schedule/schedule.module';
 import { StudentsModule } from './modules/students/students.module';
 import { SubjectsModule } from './modules/subjects/subjects.module';
+import { AttendanceModule } from './modules/attendance/attendance.module';
+import { GradesModule } from './modules/grades/grades.module';
+import { BillingModule } from './modules/billing/billing.module';
+import { LeadsModule } from './modules/leads/leads.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 import { ParentsModule } from './modules/parents/parents.module';
+import { ReportsModule } from './modules/reports/reports.module';
 import { TeachersModule } from './modules/teachers/teachers.module';
 import { TelegramModule } from './modules/telegram/telegram.module';
 import { UsersModule } from './modules/users/users.module';
@@ -37,6 +45,7 @@ import { UsersModule } from './modules/users/users.module';
     DatabaseModule,
     RedisModule,
     EventBusModule,
+    BranchesModule,
     UsersModule,
     AuthModule,
     ParentsModule,
@@ -46,6 +55,13 @@ import { UsersModule } from './modules/users/users.module';
     SubjectsModule,
     RoomsModule,
     ScheduleModule,
+    AttendanceModule,
+    GradesModule,
+    BillingModule,
+    LeadsModule,
+    ClubsModule,
+    NotificationsModule,
+    ReportsModule,
     TelegramModule.forRoot(),
     AuditModule,
     DashboardModule,

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { RoleName, UserResponseDto, UsersListQueryDto } from '@nis/shared';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { Pagination } from '@/components/ui/Pagination';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { useUsersQuery } from '@/features/users/api/use-users-query';
 import { useDeleteUserMutation } from '@/features/users/api/use-delete-user-mutation';
@@ -58,32 +59,15 @@ export function UsersPage({ actorRole }: Props): React.ReactElement {
           />
         )}
 
-        {data ? (
-          <div className="flex items-center justify-between border-t border-slate-200 px-4 py-3 text-sm text-slate-600">
-            <span>
-              {data.meta.total === 0
-                ? 'No results'
-                : `Page ${data.meta.page} of ${data.meta.totalPages} (${data.meta.total} total)`}
-            </span>
-            <div className="space-x-2">
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={data.meta.page <= 1}
-                onClick={() => setQuery({ ...query, page: (query.page ?? 1) - 1 })}
-              >
-                Previous
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={data.meta.page >= data.meta.totalPages}
-                onClick={() => setQuery({ ...query, page: (query.page ?? 1) + 1 })}
-              >
-                Next
-              </Button>
-            </div>
-          </div>
+        {data && data.meta ? (
+          <Pagination
+            page={data.meta.page}
+            totalPages={data.meta.totalPages}
+            total={data.meta.total}
+            limit={data.meta.limit}
+            onPageChange={(page) => setQuery((q) => ({ ...q, page }))}
+            onLimitChange={(limit) => setQuery((q) => ({ ...q, limit, page: 1 }))}
+          />
         ) : null}
       </Card>
 
@@ -102,7 +86,7 @@ export function UsersPage({ actorRole }: Props): React.ReactElement {
         title="Delete user"
         description={
           deleting
-            ? `${deleting.fullName} will be marked inactive and all sessions revoked. Soft delete — reversible by a super admin.`
+            ? `${deleting.fullName} will be marked inactive and all sessions revoked. Soft delete (reversible by a super admin).`
             : undefined
         }
         confirmLabel="Delete"

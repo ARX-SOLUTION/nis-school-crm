@@ -60,4 +60,11 @@ describe('StudentsTable', () => {
     await userEvent.click(screen.getByRole('button', { name: /archive karimov/i }));
     expect(fn).toHaveBeenCalledWith(expect.objectContaining({ id: 's-1' }));
   });
+
+  it('should_call_onViewProfile_when_clicked', async () => {
+    const fn = vi.fn();
+    render(<StudentsTable data={[student()]} onViewProfile={fn} />);
+    await userEvent.click(screen.getByRole('button', { name: /view profile for karimov/i }));
+    expect(fn).toHaveBeenCalledWith(expect.objectContaining({ id: 's-1' }));
+  });
 });
