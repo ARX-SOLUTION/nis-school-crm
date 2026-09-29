@@ -56,7 +56,7 @@ export function ClassesTable({
               </Td>
               <Td>{c.academicYear}</Td>
               <Td>{c.maxStudents}</Td>
-              <Td>{c.roomNumber ?? '—'}</Td>
+              <Td>{c.roomNumber ?? '-'}</Td>
               <Td>
                 {c.classTeacherId ? 'Assigned' : <span className="text-slate-400">None</span>}
               </Td>

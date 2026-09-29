@@ -48,7 +48,7 @@ export function ResetPasswordDialog({ open, user, onClose }: Props): React.React
           <p className="text-sm text-slate-600">
             {notified
               ? 'Password generated. A Telegram message has been queued for this user.'
-              : 'Password generated. The user has no linked Telegram account — deliver this manually.'}
+              : 'Password generated. The user has no linked Telegram account: deliver this manually.'}
           </p>
           <CopyableSecret value={generatedPassword} />
           <div className="flex justify-end">

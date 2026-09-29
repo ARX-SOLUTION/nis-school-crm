@@ -14,7 +14,7 @@ export function DevPayloadInput({ onAuth }: DevPayloadInputProps): React.ReactEl
     setParseError(null);
     try {
       const parsed: unknown = JSON.parse(text);
-      // Minimal structural check before casting — keeps TypeScript strict
+      // Minimal structural check before casting: keeps TypeScript strict
       if (
         typeof parsed !== 'object' ||
         parsed === null ||
@@ -28,14 +28,14 @@ export function DevPayloadInput({ onAuth }: DevPayloadInputProps): React.ReactEl
       }
       onAuth(parsed as TelegramAuthRequestDto);
     } catch {
-      setParseError('Invalid JSON — paste the raw Telegram widget payload object.');
+      setParseError('Invalid JSON: paste the raw Telegram widget payload object.');
     }
   }
 
   return (
     <div className="space-y-2">
       <p className="text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2">
-        DEV FALLBACK — VITE_TELEGRAM_BOT_USERNAME is not set. Paste a pre-signed Telegram auth
+        DEV FALLBACK: VITE_TELEGRAM_BOT_USERNAME is not set. Paste a pre-signed Telegram auth
         payload below to test the backend flow.
       </p>
       <label htmlFor="dev-payload" className="block text-sm font-medium text-slate-700">

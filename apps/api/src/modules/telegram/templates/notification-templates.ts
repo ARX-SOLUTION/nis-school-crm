@@ -1,4 +1,11 @@
-import { UserCreatedEvent, UserPasswordResetEvent } from '../../../common/events/contracts';
+import {
+  UserCreatedEvent,
+  UserPasswordResetEvent,
+  AttendanceRecordedEvent,
+  GradeRecordedEvent,
+  PaymentRecordedEvent,
+  BroadcastAnnouncementEvent,
+} from '../../../common/events/contracts';
 
 export const LOCALES = ['uz', 'ru', 'en'] as const;
 export type Locale = (typeof LOCALES)[number];
@@ -64,7 +71,7 @@ export function renderUserPasswordReset(event: UserPasswordResetEvent, locale: L
         `🔐 *${name}*, ваш пароль был сброшен администратором\\.\n` +
         `Новый одноразовый пароль:\n\n` +
         `\`${pw}\`\n\n` +
-        `Если вы не запрашивали сброс — свяжитесь с администрацией\\.`
+        `Если вы не запрашивали сброс - свяжитесь с администрацией\\.`
       );
     case 'en':
       return (
@@ -79,7 +86,57 @@ export function renderUserPasswordReset(event: UserPasswordResetEvent, locale: L
         `🔐 *${name}*, parolingiz administrator tomonidan qayta o'rnatildi\\.\n` +
         `Yangi bir martalik parol:\n\n` +
         `\`${pw}\`\n\n` +
-        `Agar bu so'rovni siz yubormagan bo'lsangiz — administratsiyaga murojaat qiling\\.`
+        `Agar bu so'rovni siz yubormagan bo'lsangiz - administratsiyaga murojaat qiling\\.`
       );
   }
+}
+
+export function renderAttendanceAlert(event: AttendanceRecordedEvent, _locale: Locale): string {
+  const name = escapeMd(event.studentName || 'Farzandingiz');
+  const date = escapeMd(event.date);
+  const statusUz = event.status === 'ABSENT' ? 'darsga kelmadi' : 'darsga kechikib keldi';
+  return (
+    `⚠️ *Davomat xabarnomasi*\n\n` +
+    `Hurmatli ota-ona\\!\n` +
+    `*${name}* bugun \\(${date}\\) ${statusUz}\\.\n` +
+    (event.remarks ? `Izoh: _${escapeMd(event.remarks)}_\n` : '')
+  );
+}
+
+export function renderGradeAlert(event: GradeRecordedEvent, _locale: Locale): string {
+  const name = escapeMd(event.studentName || 'Farzandingiz');
+  const subj = escapeMd(event.subjectName || 'Fan');
+  const score = escapeMd(String(event.score));
+  const max = escapeMd(String(event.maxScore));
+  return (
+    `📊 *Yangi baho qayd etildi*\n\n` +
+    `*${name}* *${subj}* fanidan yangi baho oldi:\n` +
+    `Baho: *${score}* / *${max}*\n` +
+    `Tur: \`${escapeMd(event.gradeType)}\`\n` +
+    (event.comment ? `Izoh: _${escapeMd(event.comment)}_\n` : '')
+  );
+}
+
+export function renderPaymentReceipt(event: PaymentRecordedEvent, _locale: Locale): string {
+  const name = escapeMd(event.studentName || "O'quvchi");
+  const amount = escapeMd(Number(event.amount).toLocaleString());
+  const receipt = escapeMd(event.receiptNumber);
+  const method = escapeMd(event.method);
+  return (
+    `💳 *To'lov qabul qilindi*\n\n` +
+    `O'quvchi: *${name}*\n` +
+    `To'langan summa: *${amount} UZS*\n` +
+    `To'lov usuli: \`${method}\`\n` +
+    `Kvitansiya: \`#${receipt}\`\n\n` +
+    `To'lovingiz uchun rahmat\\!`
+  );
+}
+
+export function renderBroadcastAnnouncement(
+  event: BroadcastAnnouncementEvent,
+  _locale: Locale,
+): string {
+  const title = escapeMd(event.title);
+  const message = escapeMd(event.message);
+  return `📢 *${title}*\n\n${message}`;
 }

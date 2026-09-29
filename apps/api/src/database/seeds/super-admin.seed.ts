@@ -18,18 +18,26 @@ export async function seedSuperAdmin(dataSource: DataSource, cfg: SeedConfig): P
     .where('LOWER(u.email) = LOWER(:email)', { email: cfg.email })
     .getOne();
 
+  const passwordHash = await bcrypt.hash(cfg.password, cfg.bcryptCost);
+
   if (existing) {
-    return existing;
+    existing.passwordHash = passwordHash;
+    existing.role = RoleName.SUPER_ADMIN;
+    existing.isActive = true;
+    if (cfg.fullName) {
+      existing.fullName = cfg.fullName;
+    }
+    existing.mustChangePassword = false;
+    return repo.save(existing);
   }
 
-  const passwordHash = await bcrypt.hash(cfg.password, cfg.bcryptCost);
   const user = repo.create({
     email: cfg.email,
     passwordHash,
     fullName: cfg.fullName,
     role: RoleName.SUPER_ADMIN,
     isActive: true,
-    mustChangePassword: true,
+    mustChangePassword: false,
   });
   return repo.save(user);
 }

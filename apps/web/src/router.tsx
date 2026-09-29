@@ -14,12 +14,23 @@ import {
 } from '@/features/auth/api/use-current-user-query';
 import { TelegramLoginPage } from '@/features/telegram-auth/pages/TelegramLoginPage';
 import { ParentInviteAcceptPage } from '@/features/telegram-auth/pages/ParentInviteAcceptPage';
+import { AttendancePage } from '@/pages/AttendancePage';
+import { BillingPage } from '@/pages/BillingPage';
+import { BranchesPage } from '@/pages/BranchesPage';
 import { ClassesPage } from '@/pages/ClassesPage';
+import { ClubsPage } from '@/pages/ClubsPage';
 import { DashboardPage } from '@/pages/DashboardPage';
+import { GradesPage } from '@/pages/GradesPage';
+import { LeadsPage } from '@/pages/LeadsPage';
 import { LoginPage } from '@/pages/LoginPage';
 import { MyClassPage } from '@/pages/MyClassPage';
+import { NotificationsPage } from '@/pages/NotificationsPage';
 import { ProfilePage } from '@/pages/ProfilePage';
+import { ReportsPage } from '@/pages/ReportsPage';
+import { RoomsPage } from '@/pages/RoomsPage';
+import { SchedulePage } from '@/pages/SchedulePage';
 import { StudentsPage } from '@/pages/StudentsPage';
+import { SubjectsPage } from '@/pages/SubjectsPage';
 import { UsersPage } from '@/pages/UsersPage';
 import { tokenStore } from '@/lib/token-store';
 import { refreshSession } from '@/lib/session';
@@ -134,11 +145,119 @@ function StudentsRouteComponent(): React.ReactElement | null {
   return <StudentsPage isAdmin={me.data.role === 'ADMIN' || me.data.role === 'SUPER_ADMIN'} />;
 }
 
+const clubsRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/clubs',
+  component: ClubsPage,
+});
+
 const myClassRoute = createRoute({
   getParentRoute: () => authLayoutRoute,
   path: '/my-class',
   component: MyClassPage,
 });
+
+const subjectsRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/subjects',
+  component: SubjectsRouteComponent,
+});
+
+function SubjectsRouteComponent(): React.ReactElement | null {
+  const me = useCurrentUserQuery();
+  if (!me.data) return null;
+  if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
+  return <SubjectsPage actorRole={me.data.role} />;
+}
+
+const roomsRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/rooms',
+  component: RoomsRouteComponent,
+});
+
+function RoomsRouteComponent(): React.ReactElement | null {
+  const me = useCurrentUserQuery();
+  if (!me.data) return null;
+  if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
+  return <RoomsPage actorRole={me.data.role} />;
+}
+
+const scheduleRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/schedule',
+  component: ScheduleRouteComponent,
+});
+
+function ScheduleRouteComponent(): React.ReactElement | null {
+  const me = useCurrentUserQuery();
+  if (!me.data) return null;
+  return <SchedulePage actorRole={me.data.role} />;
+}
+
+const attendanceRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/attendance',
+  component: AttendancePage,
+});
+
+const gradesRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/grades',
+  component: GradesPage,
+});
+
+const billingRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/billing',
+  component: BillingRouteComponent,
+});
+
+function BillingRouteComponent(): React.ReactElement | null {
+  const me = useCurrentUserQuery();
+  if (!me.data) return null;
+  if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
+  return <BillingPage />;
+}
+
+const leadsRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/leads',
+  component: LeadsRouteComponent,
+});
+
+function LeadsRouteComponent(): React.ReactElement | null {
+  const me = useCurrentUserQuery();
+  if (!me.data) return null;
+  if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
+  return <LeadsPage />;
+}
+
+const notificationsRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/notifications',
+  component: NotificationsRouteComponent,
+});
+
+function NotificationsRouteComponent(): React.ReactElement | null {
+  const me = useCurrentUserQuery();
+  if (!me.data) return null;
+  if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
+  return <NotificationsPage />;
+}
+
+const reportsRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/reports',
+  component: ReportsRouteComponent,
+});
+
+function ReportsRouteComponent(): React.ReactElement | null {
+  const me = useCurrentUserQuery();
+  if (!me.data) return null;
+  if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
+  return <ReportsPage />;
+}
 
 const profileRoute = createRoute({
   getParentRoute: () => authLayoutRoute,
@@ -152,15 +271,41 @@ function ProfileRouteComponent(): React.ReactElement | null {
   return <ProfilePage user={me.data} />;
 }
 
+const branchesRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/branches',
+  component: BranchesRouteComponent,
+});
+
+function BranchesRouteComponent(): React.ReactElement | null {
+  const me = useCurrentUserQuery();
+  if (!me.data) return null;
+  if (me.data.role === 'TEACHER' || me.data.role === 'PARENT') {
+    return <Navigate to="/" />;
+  }
+  return <BranchesPage />;
+}
+
 const routeTree = rootRoute.addChildren([
   loginRoute,
   telegramLoginRoute,
   inviteRoute,
   authLayoutRoute.addChildren([
     dashboardRoute,
+    branchesRoute,
     usersRoute,
     classesRoute,
     studentsRoute,
+    subjectsRoute,
+    roomsRoute,
+    scheduleRoute,
+    attendanceRoute,
+    gradesRoute,
+    clubsRoute,
+    billingRoute,
+    leadsRoute,
+    notificationsRoute,
+    reportsRoute,
     myClassRoute,
     profileRoute,
   ]),

@@ -1,6 +1,6 @@
 /**
  * Minimal token store with pub-sub. The access token lives only in memory
- * (never localStorage — an XSS exfil would drain it). The refresh token
+ * (never localStorage: an XSS exfil would drain it). The refresh token
  * is stored in sessionStorage so a tab reload can reauth without losing
  * the session, but a closed tab clears it.
  */

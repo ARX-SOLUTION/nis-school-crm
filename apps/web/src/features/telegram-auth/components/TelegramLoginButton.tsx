@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import type { TelegramAuthRequestDto } from '@nis/shared';
 import { DevPayloadInput } from './DevPayloadInput';
 
-// Ambient extension of Window — no `any`, strictly typed.
+// Ambient extension of Window: no `any`, strictly typed.
 declare global {
   interface Window {
     onTelegramAuth: ((user: TelegramAuthRequestDto) => void) | undefined;

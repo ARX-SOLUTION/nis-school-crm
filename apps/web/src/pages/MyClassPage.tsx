@@ -35,7 +35,7 @@ export function MyClassPage(): React.ReactElement {
             </div>
             <div>
               <span className="text-slate-500">Room: </span>
-              {klass.data.roomNumber ?? '—'}
+              {klass.data.roomNumber ?? '-'}
             </div>
             <div>
               <span className="text-slate-500">Capacity: </span>

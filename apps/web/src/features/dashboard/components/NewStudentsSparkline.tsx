@@ -5,7 +5,7 @@ interface Props {
 }
 
 /**
- * Minimal SVG sparkline — no chart library needed for 7 data points. A bar
+ * Minimal SVG sparkline: no chart library needed for 7 data points. A bar
  * for each day, height scaled to the max value; zero-count days render as a
  * 1-pixel baseline so the axis remains visible.
  */
