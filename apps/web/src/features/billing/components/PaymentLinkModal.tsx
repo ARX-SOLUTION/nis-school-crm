@@ -86,21 +86,21 @@ export function PaymentLinkModal({ debtor, onClose }: Props): React.ReactElement
       aria-modal="true"
       aria-labelledby="payment-link-title"
     >
-      <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
+      <div className="relative w-full max-w-lg rounded-xl bg-surface p-6 shadow-2xl border border-border animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div className="flex items-center justify-between border-b border-border pb-4">
           <div>
-            <h2 id="payment-link-title" className="text-lg font-semibold text-slate-900">
+            <h2 id="payment-link-title" className="text-lg font-semibold text-tertiary">
               Payme & Click To&apos;lov Havolasi
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-neutral-500 mt-0.5">
               Ota-onaga yuborish yoki to&apos;g&apos;ridan-to&apos;g&apos;ri to&apos;lash
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-500 hover:bg-muted-surface transition-colors"
             aria-label="Oynani yopish"
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -115,18 +115,18 @@ export function PaymentLinkModal({ debtor, onClose }: Props): React.ReactElement
         </div>
 
         {/* Student & Debt Summary Card */}
-        <div className="mt-4 rounded-xl bg-slate-50 p-4 border border-slate-200/70">
+        <div className="mt-4 rounded-xl bg-muted-surface p-4 border border-border">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500">O&apos;quvchi</span>
-            <span className="text-xs font-mono font-semibold px-2 py-0.5 bg-blue-100 text-blue-800 rounded">
+            <span className="text-xs font-medium text-neutral-500">O&apos;quvchi</span>
+            <span className="text-xs font-mono font-semibold px-2 py-0.5 bg-[#DBEAFE] text-secondary rounded">
               {debtor.studentCode}
             </span>
           </div>
-          <div className="mt-1 font-semibold text-slate-900 text-base">{debtor.studentName}</div>
-          <div className="text-xs text-slate-500">{debtor.className || 'Sinf belgilanmagan'}</div>
+          <div className="mt-1 font-semibold text-tertiary text-base">{debtor.studentName}</div>
+          <div className="text-xs text-neutral-500">{debtor.className || 'Sinf belgilanmagan'}</div>
 
-          <div className="mt-3 pt-3 border-t border-slate-200/80 flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-600">Qarzdorlik miqdori:</span>
+          <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
+            <span className="text-xs font-medium text-neutral-500">Qarzdorlik miqdori:</span>
             <span className="text-base font-bold text-red-600 tabular-nums font-mono">
               {formatUzbekSum(debtor.debtAmount)}
             </span>
@@ -134,9 +134,9 @@ export function PaymentLinkModal({ debtor, onClose }: Props): React.ReactElement
         </div>
 
         {successMsg ? (
-          <div className="mt-4 rounded-lg bg-emerald-50 border border-emerald-200 p-3 text-xs text-emerald-800 font-medium flex items-center gap-2">
+          <div className="mt-4 rounded-lg bg-[#E8F7D0] border border-success p-3 text-xs text-success font-medium flex items-center gap-2">
             <svg
-              className="h-4 w-4 text-emerald-600 shrink-0"
+              className="h-4 w-4 text-success shrink-0"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -160,7 +160,7 @@ export function PaymentLinkModal({ debtor, onClose }: Props): React.ReactElement
 
         {/* Gateway Action Buttons */}
         {loading ? (
-          <div className="py-8 text-center text-sm text-slate-400">Havolalar yuklanmoqda...</div>
+          <div className="py-8 text-center text-sm text-neutral-400">Havolalar yuklanmoqda...</div>
         ) : (
           <div className="mt-5 space-y-3">
             {/* Payme Row */}
@@ -254,8 +254,8 @@ export function PaymentLinkModal({ debtor, onClose }: Props): React.ReactElement
             </div>
 
             {/* Test Simulation Zone for Staff */}
-            <div className="mt-4 pt-3 border-t border-slate-100">
-              <div className="text-xs font-medium text-slate-500 mb-2">
+            <div className="mt-4 pt-3 border-t border-border">
+              <div className="text-xs font-medium text-neutral-500 mb-2">
                 Webhook simulyatsiyasi (Kassir / Test):
               </div>
               <div className="flex gap-2">
@@ -285,7 +285,7 @@ export function PaymentLinkModal({ debtor, onClose }: Props): React.ReactElement
           <button
             type="button"
             onClick={onClose}
-            className="min-h-[44px] px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium transition-colors"
+            className="min-h-[44px] px-4 py-2 rounded-lg bg-muted-surface hover:bg-border text-tertiary text-sm font-medium transition-colors"
           >
             Yopish
           </button>

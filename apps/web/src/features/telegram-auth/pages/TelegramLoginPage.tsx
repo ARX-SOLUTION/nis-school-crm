@@ -17,15 +17,15 @@ export function TelegramLoginPage(): React.ReactElement {
     : null;
 
   return (
-    <div className="min-h-dvh flex items-center justify-center px-6 bg-slate-50">
+    <div className="min-h-dvh flex items-center justify-center px-6 bg-muted-surface">
       <Card className="w-full max-w-sm p-8">
         <h1 className="text-2xl font-semibold tracking-tight">Sign in with Telegram</h1>
-        <p className="mt-1 text-sm text-slate-600">NIS School CRM</p>
+        <p className="mt-1 text-sm text-neutral-500">NIS School CRM</p>
         <div className="mt-6">
           <TelegramLogin onAuth={handleAuth} />
         </div>
         {login.isPending ? (
-          <p aria-busy="true" className="mt-4 text-sm text-slate-500 text-center">
+          <p aria-busy="true" className="mt-4 text-sm text-neutral-500 text-center">
             Verifying…
           </p>
         ) : null}

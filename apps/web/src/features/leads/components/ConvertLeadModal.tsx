@@ -47,29 +47,29 @@ export function ConvertLeadModal({
     <Dialog open={open} onClose={onClose} title="O'quvchiga qabul qilish">
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="rounded-lg bg-rose-50 p-3 text-xs font-medium text-rose-800 border border-rose-200">
+          <div className="rounded-lg bg-[#FEE2E2] p-3 text-xs font-medium text-error border border-error">
             {error}
           </div>
         )}
 
-        <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs space-y-1">
-          <div className="font-bold text-slate-800 text-sm">{lead.fullName}</div>
-          <div className="text-slate-600">
+        <div className="bg-muted-surface p-3 rounded-lg border border-border text-xs space-y-1">
+          <div className="font-bold text-tertiary text-sm">{lead.fullName}</div>
+          <div className="text-neutral-500">
             Telefon: <span className="font-mono">{lead.phone}</span>
           </div>
           {lead.targetGradeLevel && (
-            <div className="text-slate-600">Mo'ljallangan sinf: {lead.targetGradeLevel}-sinf</div>
+            <div className="text-neutral-500">Mo'ljallangan sinf: {lead.targetGradeLevel}-sinf</div>
           )}
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
+          <label className="block text-xs font-semibold text-tertiary mb-1">
             Biriktiriladigan sinf
           </label>
           <select
             value={classId}
             onChange={(e) => setClassId(e.target.value)}
-            className="w-full text-sm rounded-lg border border-slate-300 p-2 text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="w-full text-sm rounded-lg border border-border p-2 text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <option value="">Sinf keyinroq biriktiriladi (biriktirmaslik)</option>
             {classes.map((c) => (
@@ -82,26 +82,26 @@ export function ConvertLeadModal({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Tug'ilgan sana <span className="text-rose-500">*</span>
+            <label className="block text-xs font-semibold text-tertiary mb-1">
+              Tug'ilgan sana <span className="text-error">*</span>
             </label>
             <input
               type="date"
               value={birthDate}
               onChange={(e) => setBirthDate(e.target.value)}
               required
-              className="w-full text-sm rounded-lg border border-slate-300 p-2 text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="w-full text-sm rounded-lg border border-border p-2 text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Jinsi <span className="text-rose-500">*</span>
+            <label className="block text-xs font-semibold text-tertiary mb-1">
+              Jinsi <span className="text-error">*</span>
             </label>
             <select
               value={gender}
               onChange={(e) => setGender(e.target.value as 'MALE' | 'FEMALE')}
-              className="w-full text-sm rounded-lg border border-slate-300 p-2 text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="w-full text-sm rounded-lg border border-border p-2 text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="MALE">O'g'il bola (MALE)</option>
               <option value="FEMALE">Qiz bola (FEMALE)</option>
@@ -109,7 +109,7 @@ export function ConvertLeadModal({
           </div>
         </div>
 
-        <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <div className="flex justify-end gap-2 pt-3 border-t border-border">
           <Button variant="outline" type="button" onClick={onClose} disabled={isSubmitting}>
             Bekor qilish
           </Button>

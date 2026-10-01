@@ -11,13 +11,13 @@ export function StatCard({ label, value, hint, className }: Props): React.ReactE
   return (
     <div
       className={cn(
-        'rounded-lg border border-slate-200 bg-white shadow-sm p-4 space-y-1',
+        'rounded-xl border-none ring-1 ring-border bg-surface shadow-sm p-6 space-y-2 flex flex-col justify-center',
         className,
       )}
     >
-      <div className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</div>
-      <div className="text-2xl font-semibold tracking-tight text-slate-900">{value}</div>
-      {hint ? <div className="text-xs text-slate-500">{hint}</div> : null}
+      <div className="text-xs font-semibold uppercase tracking-wider text-neutral-400">{label}</div>
+      <div className="text-3xl font-bold tracking-tight text-tertiary">{value}</div>
+      {hint ? <div className="text-sm font-medium text-neutral-500 mt-1">{hint}</div> : null}
     </div>
   );
 }

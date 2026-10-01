@@ -22,14 +22,14 @@ export function TelegramLinkCard(): React.ReactElement {
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-slate-700">
+      <p className="text-sm text-tertiary">
         Link your Telegram account to receive notifications (new user passwords, password resets).
       </p>
-      <ol className="text-sm text-slate-600 list-decimal pl-5 space-y-1">
+      <ol className="text-sm text-neutral-500 list-decimal pl-5 space-y-1">
         <li>Click the button below to generate a 6-digit code.</li>
         <li>
           Open the NIS bot on Telegram and send{' '}
-          <code className="bg-slate-100 px-1 rounded">/link 123456</code> (with your code).
+          <code className="bg-muted-surface px-1 rounded">/link 123456</code> (with your code).
         </li>
       </ol>
 
@@ -37,7 +37,7 @@ export function TelegramLinkCard(): React.ReactElement {
         <div className="space-y-2">
           <CopyableSecret value={code} />
           {secondsLeft !== null ? (
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-neutral-500">
               Expires in roughly {Math.max(0, Math.round(secondsLeft / 60))} minutes.
             </p>
           ) : null}

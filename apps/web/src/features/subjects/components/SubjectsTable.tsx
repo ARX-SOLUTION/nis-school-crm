@@ -38,9 +38,9 @@ export function SubjectsTable({ subjects, canManage, onOpenCreate }: Props): Rea
 
   return (
     <>
-      <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
-        <table className="w-full text-left text-sm text-slate-700">
-          <thead className="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
+      <div className="overflow-x-auto rounded-lg border border-border bg-surface shadow-sm">
+        <table className="w-full text-left text-sm text-tertiary">
+          <thead className="border-b border-border bg-muted-surface text-xs font-semibold uppercase tracking-wider text-neutral-500">
             <tr>
               <th scope="col" className="px-4 py-3">
                 Code
@@ -66,21 +66,21 @@ export function SubjectsTable({ subjects, canManage, onOpenCreate }: Props): Rea
           </thead>
           <tbody className="divide-y divide-slate-100">
             {subjects.map((s) => (
-              <tr key={s.id} className="hover:bg-slate-50/60 transition-colors">
-                <td className="px-4 py-3 font-mono font-semibold text-slate-900">{s.code}</td>
-                <td className="px-4 py-3 font-medium text-slate-900">{s.name}</td>
-                <td className="px-4 py-3 text-slate-600">
+              <tr key={s.id} className="hover:bg-muted-surface transition-colors">
+                <td className="px-4 py-3 font-mono font-semibold text-tertiary">{s.code}</td>
+                <td className="px-4 py-3 font-medium text-tertiary">{s.name}</td>
+                <td className="px-4 py-3 text-neutral-500">
                   {s.gradeLevels && s.gradeLevels.length > 0
                     ? s.gradeLevels.sort((a, b) => a - b).join(', ')
                     : 'All'}
                 </td>
-                <td className="px-4 py-3 text-slate-600">{s.defaultHoursPerWeek} hrs</td>
+                <td className="px-4 py-3 text-neutral-500">{s.defaultHoursPerWeek} hrs</td>
                 <td className="px-4 py-3">
                   <span
                     className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
                       s.isActive
-                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                        : 'bg-slate-100 text-slate-600 border border-slate-200'
+                        ? 'bg-[#E8F7D0] text-success border border-success'
+                        : 'bg-muted-surface text-neutral-500 border border-border'
                     }`}
                   >
                     {s.isActive ? 'Active' : 'Inactive'}

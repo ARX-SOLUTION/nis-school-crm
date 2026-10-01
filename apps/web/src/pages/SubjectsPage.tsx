@@ -28,10 +28,10 @@ export function SubjectsPage({ actorRole }: Props): React.ReactElement {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Subjects</h1>
-          <p className="text-sm text-slate-600 mt-1">
+          <h1 className="text-2xl font-semibold tracking-tight text-tertiary">Subjects</h1>
+          <p className="text-sm text-neutral-500 mt-1">
             Curriculum subjects, grade-level requirements, and weekly lesson allocations.
           </p>
         </div>
@@ -64,7 +64,7 @@ export function SubjectsPage({ actorRole }: Props): React.ReactElement {
           onRetry={() => refetch()}
         />
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+        <div className="bg-surface rounded-xl border border-border overflow-hidden shadow-xs">
           <SubjectsTable
             subjects={data?.data ?? []}
             canManage={canManage}

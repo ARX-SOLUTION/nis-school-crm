@@ -2,6 +2,8 @@ import { Repository } from 'typeorm';
 import { AttendanceService } from './attendance.service';
 import { AttendanceRecord } from './entities/attendance.entity';
 
+import { EventsGateway } from '../events/events.gateway';
+
 describe('AttendanceService', () => {
   let repo: jest.Mocked<Repository<AttendanceRecord>>;
   let service: AttendanceService;
@@ -15,7 +17,10 @@ describe('AttendanceService', () => {
       createQueryBuilder: jest.fn(),
     } as unknown as jest.Mocked<Repository<AttendanceRecord>>;
 
-    service = new AttendanceService(repo);
+    service = new AttendanceService(repo, undefined, {
+      broadcastToRole: jest.fn(),
+      broadcastToUser: jest.fn(),
+    } as unknown as EventsGateway);
   });
 
   describe('bulkRecord', () => {

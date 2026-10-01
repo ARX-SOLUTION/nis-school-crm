@@ -9,6 +9,7 @@ export interface UserResponseDto {
   telegramUsername: string | null;
   isActive: boolean;
   mustChangePassword: boolean;
+  notificationPrefs: Record<string, boolean>;
   lastLoginAt: string | null;
   createdAt: string;
 }

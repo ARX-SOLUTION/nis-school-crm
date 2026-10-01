@@ -34,12 +34,10 @@ export function SchedulePage({ actorRole: _actorRole }: Props): React.ReactEleme
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-            Academic Schedule
-          </h1>
-          <p className="text-sm text-slate-600 mt-1">
+          <h1 className="text-2xl font-semibold tracking-tight text-tertiary">Academic Schedule</h1>
+          <p className="text-sm text-neutral-500 mt-1">
             Weekly lesson timetable, room allocations, and teacher assignments.
           </p>
         </div>
@@ -53,7 +51,7 @@ export function SchedulePage({ actorRole: _actorRole }: Props): React.ReactEleme
       {/* Class Selector Bar */}
       <Card className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <label htmlFor="class-select" className="text-sm font-medium text-slate-700">
+          <label htmlFor="class-select" className="text-sm font-medium text-tertiary">
             Select Class:
           </label>
           <select
@@ -61,7 +59,7 @@ export function SchedulePage({ actorRole: _actorRole }: Props): React.ReactEleme
             value={activeClassId}
             onChange={(e) => setSelectedClassId(e.target.value)}
             disabled={classesLoading || classes.length === 0}
-            className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="rounded-lg border border-border bg-surface px-3 py-1.5 text-sm font-medium text-tertiary focus:outline-none focus:ring-2 focus:ring-primary"
           >
             {classes.length === 0 ? (
               <option value="">No classes available</option>
@@ -76,14 +74,14 @@ export function SchedulePage({ actorRole: _actorRole }: Props): React.ReactEleme
         </div>
 
         {selectedClass ? (
-          <div className="text-xs text-slate-500">
+          <div className="text-xs text-neutral-500">
             Academic Year:{' '}
-            <span className="font-semibold text-slate-700">{selectedClass.academicYear}</span>
+            <span className="font-semibold text-tertiary">{selectedClass.academicYear}</span>
             {selectedClass.roomNumber ? (
               <>
                 {' '}
                 | Default Room:{' '}
-                <span className="font-semibold text-slate-700">{selectedClass.roomNumber}</span>
+                <span className="font-semibold text-tertiary">{selectedClass.roomNumber}</span>
               </>
             ) : null}
           </div>

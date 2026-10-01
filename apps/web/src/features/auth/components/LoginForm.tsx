@@ -10,12 +10,14 @@ export interface LoginFormProps {
   onSubmit: (values: LoginFormValues) => void | Promise<void>;
   isSubmitting?: boolean;
   errorMessage?: string | null;
+  onForgotPassword?: () => void;
 }
 
 export function LoginForm({
   onSubmit,
   isSubmitting,
   errorMessage,
+  onForgotPassword,
 }: LoginFormProps): React.ReactElement {
   const {
     register,
@@ -42,7 +44,20 @@ export function LoginForm({
       </div>
 
       <div>
-        <Label htmlFor="password">Password</Label>
+        <div className="flex items-center justify-between mb-1.5">
+          <Label htmlFor="password" className="mb-0">
+            Password
+          </Label>
+          {onForgotPassword && (
+            <button
+              type="button"
+              onClick={onForgotPassword}
+              className="text-xs font-medium text-secondary hover:text-secondary focus:outline-none focus:underline"
+            >
+              Forgot password?
+            </button>
+          )}
+        </div>
         <Input
           id="password"
           type="password"
@@ -55,7 +70,7 @@ export function LoginForm({
       </div>
 
       {errorMessage ? (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-error font-medium">
           {errorMessage}
         </p>
       ) : null}

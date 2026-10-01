@@ -20,7 +20,7 @@ export function NewStudentsSparkline({ series }: Props): React.ReactElement {
     <div role="img" aria-label="New students per day, last 7 days">
       <svg
         viewBox={`0 0 ${width} ${height + 20}`}
-        className="w-full h-32 text-blue-600"
+        className="w-full h-32 text-secondary"
         preserveAspectRatio="xMidYMid meet"
       >
         {series.map((d, i) => {

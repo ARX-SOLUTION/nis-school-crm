@@ -51,7 +51,7 @@ export function UsersFilters({ value, onChange }: Props): React.ReactElement {
         <Label htmlFor="users-role">Role</Label>
         <select
           id="users-role"
-          className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm"
+          className="h-10 rounded-lg border border-border bg-surface px-3 text-sm"
           value={value.role ?? ''}
           onChange={selectRole}
         >

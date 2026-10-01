@@ -60,6 +60,11 @@ async function bootstrap(): Promise<void> {
     SwaggerModule.setup('api/docs', app, document);
   }
 
+  const { RedisIoAdapter } = await import('./common/websockets/redis-io.adapter');
+  const redisIoAdapter = new RedisIoAdapter(app);
+  await redisIoAdapter.connectToRedis();
+  app.useWebSocketAdapter(redisIoAdapter);
+
   const port = Number(process.env.PORT ?? 3000);
   await app.listen(port);
   logger.log(`NIS API listening on port ${port} (${process.env.NODE_ENV ?? 'development'})`);

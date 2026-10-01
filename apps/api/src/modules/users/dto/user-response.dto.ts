@@ -27,6 +27,9 @@ export class UserResponseDto {
   @ApiProperty()
   mustChangePassword!: boolean;
 
+  @ApiProperty({ type: 'object', additionalProperties: { type: 'boolean' } })
+  notificationPrefs!: Record<string, boolean>;
+
   @ApiProperty({ type: 'string', format: 'date-time', nullable: true })
   lastLoginAt!: Date | null;
 
@@ -43,6 +46,7 @@ export class UserResponseDto {
     dto.telegramUsername = user.telegramUsername;
     dto.isActive = user.isActive;
     dto.mustChangePassword = user.mustChangePassword;
+    dto.notificationPrefs = user.notificationPrefs ?? {};
     dto.lastLoginAt = user.lastLoginAt;
     dto.createdAt = user.createdAt;
     return dto;

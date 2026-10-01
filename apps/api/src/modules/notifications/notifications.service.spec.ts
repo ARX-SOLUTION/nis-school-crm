@@ -4,6 +4,7 @@ import { EventBusService } from '../../common/events/event-bus.service';
 import { User } from '../users/entities/user.entity';
 import { NotificationLog } from './entities/notification-log.entity';
 import { NotificationsService } from './notifications.service';
+import { EventsGateway } from '../events/events.gateway';
 
 describe('NotificationsService', () => {
   let service: NotificationsService;
@@ -51,6 +52,10 @@ describe('NotificationsService', () => {
         { provide: getRepositoryToken(NotificationLog), useValue: logsRepo },
         { provide: getRepositoryToken(User), useValue: usersRepo },
         { provide: EventBusService, useValue: eventBus },
+        {
+          provide: EventsGateway,
+          useValue: { broadcastToRole: jest.fn(), broadcastToUser: jest.fn() },
+        },
       ],
     }).compile();
 

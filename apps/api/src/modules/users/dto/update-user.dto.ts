@@ -29,4 +29,8 @@ export class UpdateUserDto {
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
+
+  @ApiProperty({ required: false, type: 'object', additionalProperties: { type: 'boolean' } })
+  @IsOptional()
+  notificationPrefs?: Record<string, boolean>;
 }

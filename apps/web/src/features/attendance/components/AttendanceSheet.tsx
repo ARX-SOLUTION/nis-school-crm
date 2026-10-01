@@ -17,23 +17,23 @@ const STATUS_CONFIG: Record<
 > = {
   PRESENT: {
     label: 'Bor',
-    activeClass: 'bg-emerald-600 text-white border-emerald-600 font-semibold shadow-xs',
-    inactiveClass: 'bg-white text-emerald-700 border-slate-200 hover:bg-emerald-50',
+    activeClass: 'bg-success text-white border-success font-semibold shadow-xs',
+    inactiveClass: 'bg-surface text-success border-border hover:bg-[#E8F7D0]',
   },
   LATE: {
     label: 'Kechikdi',
-    activeClass: 'bg-amber-500 text-white border-amber-500 font-semibold shadow-xs',
-    inactiveClass: 'bg-white text-amber-700 border-slate-200 hover:bg-amber-50',
+    activeClass: 'bg-neutral-500 text-white border-amber-500 font-semibold shadow-xs',
+    inactiveClass: 'bg-surface text-neutral-500 border-border hover:bg-muted-surface',
   },
   EXCUSED: {
     label: 'Sababli',
-    activeClass: 'bg-blue-600 text-white border-blue-600 font-semibold shadow-xs',
-    inactiveClass: 'bg-white text-blue-700 border-slate-200 hover:bg-blue-50',
+    activeClass: 'bg-primary text-tertiary border-primary font-semibold shadow-xs',
+    inactiveClass: 'bg-surface text-secondary border-border hover:bg-[#DBEAFE]',
   },
   ABSENT: {
     label: "Yo'q",
     activeClass: 'bg-rose-600 text-white border-rose-600 font-semibold shadow-xs',
-    inactiveClass: 'bg-white text-rose-700 border-slate-200 hover:bg-rose-50',
+    inactiveClass: 'bg-surface text-error border-border hover:bg-[#FEE2E2]',
   },
 };
 
@@ -134,24 +134,24 @@ export function AttendanceSheet({
   return (
     <div className="space-y-4">
       {/* Top action & metrics bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-surface p-4 rounded-xl border border-border">
         <div className="flex flex-wrap items-center gap-3 text-xs">
-          <div className="bg-slate-100 px-3 py-1.5 rounded-lg font-medium text-slate-700">
-            Jami: <span className="font-bold text-slate-900">{total}</span>
+          <div className="bg-muted-surface px-3 py-1.5 rounded-lg font-medium text-tertiary">
+            Jami: <span className="font-bold text-tertiary">{total}</span>
           </div>
-          <div className="bg-emerald-50 text-emerald-800 px-3 py-1.5 rounded-lg font-medium">
+          <div className="bg-[#E8F7D0] text-success px-3 py-1.5 rounded-lg font-medium">
             Bor: <span className="font-bold">{present}</span>
           </div>
-          <div className="bg-amber-50 text-amber-800 px-3 py-1.5 rounded-lg font-medium">
+          <div className="bg-muted-surface text-neutral-500 px-3 py-1.5 rounded-lg font-medium">
             Kechikdi: <span className="font-bold">{late}</span>
           </div>
-          <div className="bg-blue-50 text-blue-800 px-3 py-1.5 rounded-lg font-medium">
+          <div className="bg-[#DBEAFE] text-secondary px-3 py-1.5 rounded-lg font-medium">
             Sababli: <span className="font-bold">{excused}</span>
           </div>
-          <div className="bg-rose-50 text-rose-800 px-3 py-1.5 rounded-lg font-medium">
+          <div className="bg-[#FEE2E2] text-error px-3 py-1.5 rounded-lg font-medium">
             Yo'q: <span className="font-bold">{absent}</span>
           </div>
-          <div className="bg-blue-600 text-white px-3 py-1.5 rounded-lg font-semibold shadow-xs">
+          <div className="bg-primary text-tertiary px-3 py-1.5 rounded-lg font-semibold shadow-xs">
             Davomat: {attendanceRate}%
           </div>
         </div>
@@ -178,10 +178,10 @@ export function AttendanceSheet({
       </div>
 
       {/* Attendance Sheet Table */}
-      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-xs">
+      <div className="overflow-x-auto rounded-xl border border-border bg-surface shadow-xs">
         <table className="w-full border-collapse text-left text-sm">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50/75 text-xs font-semibold uppercase tracking-wider text-slate-600">
+            <tr className="border-b border-border bg-muted-surface text-xs font-semibold uppercase tracking-wider text-neutral-500">
               <th scope="col" className="p-3.5 w-12 text-center">
                 #
               </th>
@@ -203,14 +203,16 @@ export function AttendanceSheet({
             {students.map((student, idx) => {
               const currentStatus = records[student.id]?.status ?? 'PRESENT';
               return (
-                <tr key={student.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="p-3.5 text-center text-xs font-medium text-slate-400">
+                <tr key={student.id} className="hover:bg-muted-surface transition-colors">
+                  <td className="p-3.5 text-center text-xs font-medium text-neutral-400">
                     {idx + 1}
                   </td>
-                  <td className="p-3.5 font-semibold text-slate-900">
+                  <td className="p-3.5 font-semibold text-tertiary">
                     {student.lastName} {student.firstName}
                   </td>
-                  <td className="p-3.5 text-xs font-mono text-slate-500">{student.studentCode}</td>
+                  <td className="p-3.5 text-xs font-mono text-neutral-500">
+                    {student.studentCode}
+                  </td>
                   <td className="p-3.5">
                     <div className="flex items-center justify-center gap-1.5">
                       {(['PRESENT', 'LATE', 'EXCUSED', 'ABSENT'] as AttendanceStatus[]).map(
@@ -222,7 +224,7 @@ export function AttendanceSheet({
                               key={status}
                               type="button"
                               onClick={() => handleStatusChange(student.id, status)}
-                              className={`min-h-[38px] px-3 py-1 rounded-lg text-xs border transition-all ${
+                              className={`min-h-[44px] px-3 py-1 rounded-lg text-xs border transition-all ${
                                 isSelected ? cfg.activeClass : cfg.inactiveClass
                               }`}
                             >
@@ -247,7 +249,7 @@ export function AttendanceSheet({
                           },
                         }))
                       }
-                      className="w-full text-xs rounded-lg border border-slate-200 px-2.5 py-1.5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full text-xs rounded-lg border border-border px-2.5 py-1.5 text-tertiary placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                   </td>
                 </tr>

@@ -14,6 +14,7 @@ export interface UpdateUserRequestDto {
   phone?: string;
   telegramUsername?: string;
   isActive?: boolean;
+  notificationPrefs?: Record<string, boolean>;
 }
 
 export interface UsersListQueryDto {

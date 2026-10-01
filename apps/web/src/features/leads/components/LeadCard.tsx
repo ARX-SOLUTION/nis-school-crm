@@ -21,11 +21,11 @@ const STAGE_LABELS: Record<LeadStage, string> = {
 const SOURCE_LABELS: Record<string, { label: string; badge: string }> = {
   TELEGRAM: { label: 'Telegram', badge: 'bg-sky-50 text-sky-700 border-sky-200' },
   INSTAGRAM: { label: 'Instagram', badge: 'bg-pink-50 text-pink-700 border-pink-200' },
-  FACEBOOK: { label: 'Facebook', badge: 'bg-blue-50 text-blue-700 border-blue-200' },
-  WEBSITE: { label: 'Veb-sayt', badge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  RECOMMENDATION: { label: 'Tavsiya', badge: 'bg-amber-50 text-amber-700 border-amber-200' },
+  FACEBOOK: { label: 'Facebook', badge: 'bg-[#DBEAFE] text-secondary border-secondary/20' },
+  WEBSITE: { label: 'Veb-sayt', badge: 'bg-[#E8F7D0] text-success border-success' },
+  RECOMMENDATION: { label: 'Tavsiya', badge: 'bg-muted-surface text-neutral-500 border-border' },
   WALK_IN: { label: 'Tashrif', badge: 'bg-purple-50 text-purple-700 border-purple-200' },
-  OTHER: { label: 'Boshqa', badge: 'bg-slate-100 text-slate-700 border-slate-200' },
+  OTHER: { label: 'Boshqa', badge: 'bg-muted-surface text-tertiary border-border' },
 };
 
 function getLeadInitials(name: string): string {
@@ -59,7 +59,7 @@ export function LeadCard({ lead, onStageChange, onConvert, onDelete }: Props): R
 
   const sourceInfo = SOURCE_LABELS[lead.source] ?? {
     label: lead.source,
-    badge: 'bg-slate-100 text-slate-700 border-slate-200',
+    badge: 'bg-muted-surface text-tertiary border-border',
   };
 
   const initials = getLeadInitials(lead.fullName);
@@ -73,28 +73,28 @@ export function LeadCard({ lead, onStageChange, onConvert, onDelete }: Props): R
         setIsDragging(true);
       }}
       onDragEnd={() => setIsDragging(false)}
-      className={`bg-white rounded-xl border p-4 transition-all select-none space-y-3 ${
+      className={`bg-surface rounded-xl border p-4 transition-all select-none space-y-3 ${
         isDragging
-          ? 'opacity-40 scale-[1.02] shadow-xl rotate-1 border-blue-400 ring-2 ring-blue-300 cursor-grabbing'
-          : 'border-slate-200 shadow-2xs hover:shadow-md hover:border-slate-300 cursor-grab'
+          ? 'opacity-40 scale-[1.02] shadow-xl rotate-1 border-secondary/20 ring-2 ring-secondary/20 cursor-grabbing'
+          : 'border-border shadow-2xs hover:shadow-md hover:border-border cursor-grab'
       }`}
     >
       {/* Top bar: Grip, Avatar, Name & Grade Badge */}
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 font-bold text-xs flex items-center justify-center shrink-0 border border-blue-100">
+          <div className="w-8 h-8 rounded-lg bg-[#DBEAFE] text-secondary font-bold text-xs flex items-center justify-center shrink-0 border border-secondary/20">
             {initials}
           </div>
           <div className="min-w-0">
             <h4
-              className="font-semibold text-sm text-slate-900 leading-snug truncate"
+              className="font-semibold text-sm text-tertiary leading-snug truncate"
               title={lead.fullName}
             >
               {lead.fullName}
             </h4>
             {lead.parentName ? (
               <p
-                className="text-xs text-slate-500 truncate"
+                className="text-xs text-neutral-500 truncate"
                 title={`Ota-onasi: ${lead.parentName}`}
               >
                 Ota-onasi: {lead.parentName}
@@ -105,12 +105,12 @@ export function LeadCard({ lead, onStageChange, onConvert, onDelete }: Props): R
 
         <div className="flex items-center gap-1 shrink-0">
           {lead.targetGradeLevel ? (
-            <span className="bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold px-2 py-0.5 rounded-md">
+            <span className="bg-[#DBEAFE] text-secondary border border-secondary/20 text-xs font-bold px-2 py-0.5 rounded-lg">
               {lead.targetGradeLevel}-sinf
             </span>
           ) : null}
           <div
-            className="text-slate-300 hover:text-slate-500 cursor-grab p-0.5"
+            className="text-border hover:text-neutral-500 cursor-grab p-0.5"
             title="Surib tashlash uchun ushlang"
           >
             <GripIcon />
@@ -122,11 +122,11 @@ export function LeadCard({ lead, onStageChange, onConvert, onDelete }: Props): R
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
         <a
           href={`tel:${lead.phone}`}
-          className="inline-flex items-center gap-1 font-mono font-medium text-slate-700 hover:text-blue-600 transition-colors"
+          className="inline-flex items-center gap-1 font-mono font-medium text-tertiary hover:text-secondary transition-colors"
           onClick={(e) => e.stopPropagation()}
         >
           <svg
-            className="w-3.5 h-3.5 text-slate-400"
+            className="w-3.5 h-3.5 text-neutral-400"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -149,20 +149,20 @@ export function LeadCard({ lead, onStageChange, onConvert, onDelete }: Props): R
 
       {/* Notes if available */}
       {lead.notes ? (
-        <div className="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-100 line-clamp-2 leading-relaxed">
+        <div className="text-xs text-neutral-500 bg-muted-surface p-2.5 rounded-lg border border-border line-clamp-2 leading-relaxed">
           {lead.notes}
         </div>
       ) : null}
 
       {/* Actions */}
-      <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
+      <div className="pt-2 border-t border-border flex flex-col gap-2">
         {/* Stage changer select (Accessible fallback for keyboard/mobile) */}
         <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-          <label className="text-2xs font-semibold text-slate-400 uppercase">Bosqich:</label>
+          <label className="text-2xs font-semibold text-neutral-400 uppercase">Bosqich:</label>
           <select
             value={lead.stage}
             onChange={(e) => onStageChange(lead.id, e.target.value as LeadStage)}
-            className="text-xs rounded-md border border-slate-200 bg-white py-1 px-2 text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-600 flex-1"
+            className="text-xs rounded-lg border border-border bg-surface py-1 px-2 text-tertiary focus:outline-none focus:ring-1 focus:ring-primary flex-1"
           >
             {LEAD_STAGES.map((st) => (
               <option key={st} value={st}>
@@ -177,13 +177,13 @@ export function LeadCard({ lead, onStageChange, onConvert, onDelete }: Props): R
           <Button
             size="sm"
             variant="outline"
-            className="w-full text-xs font-semibold text-emerald-700 border-emerald-300 hover:bg-emerald-50 min-h-[44px]"
+            className="w-full text-xs font-semibold text-success border-success hover:bg-[#E8F7D0] min-h-[44px]"
             onClick={() => onConvert(lead)}
           >
             ✓ O'quvchiga qabul qilish
           </Button>
         ) : (
-          <div className="text-center text-xs font-semibold text-emerald-700 bg-emerald-50 py-2 rounded-lg border border-emerald-200">
+          <div className="text-center text-xs font-semibold text-success bg-[#E8F7D0] py-2 rounded-lg border border-success">
             Qabul qilingan
           </div>
         )}
@@ -193,7 +193,7 @@ export function LeadCard({ lead, onStageChange, onConvert, onDelete }: Props): R
           <button
             type="button"
             onClick={() => onDelete(lead.id)}
-            className="text-2xs text-slate-400 hover:text-rose-600 transition-colors p-1"
+            className="text-2xs text-neutral-400 hover:text-error transition-colors p-1"
           >
             O'chirish
           </button>

@@ -53,7 +53,7 @@ export function StudentsPage({ isAdmin }: Props): React.ReactElement {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Students</h1>
-          <p className="text-sm text-slate-600">Enrolment, class assignment, and archive.</p>
+          <p className="text-sm text-neutral-500">Enrolment, class assignment, and archive.</p>
         </div>
         <div className="space-x-2">
           {isAdmin ? (
@@ -82,7 +82,7 @@ export function StudentsPage({ isAdmin }: Props): React.ReactElement {
             <Label htmlFor="students-grade">Grade</Label>
             <select
               id="students-grade"
-              className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm"
+              className="h-10 w-full rounded-lg border border-border bg-surface px-3 text-sm"
               value={query.gradeLevel ?? ''}
               onChange={(e) =>
                 setQuery((q) => ({
@@ -104,7 +104,7 @@ export function StudentsPage({ isAdmin }: Props): React.ReactElement {
             <Label htmlFor="students-status">Status</Label>
             <select
               id="students-status"
-              className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm"
+              className="h-10 w-full rounded-lg border border-border bg-surface px-3 text-sm"
               value={query.status ?? ''}
               onChange={(e) =>
                 setQuery((q) => ({

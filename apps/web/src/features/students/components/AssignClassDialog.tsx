@@ -60,7 +60,7 @@ export function AssignClassDialog({ open, onClose, student, classes }: Props): R
           <Label htmlFor="assign-class-select">Class</Label>
           <select
             id="assign-class-select"
-            className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm"
+            className="h-10 w-full rounded-lg border border-border bg-surface px-3 text-sm"
             value={classId}
             onChange={(e) => setClassId(e.target.value)}
           >
@@ -80,7 +80,7 @@ export function AssignClassDialog({ open, onClose, student, classes }: Props): R
           <Label htmlFor="assign-class-reason">Reason (optional)</Label>
           <input
             id="assign-class-reason"
-            className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm"
+            className="h-10 w-full rounded-lg border border-border bg-surface px-3 text-sm"
             placeholder="parent request, mid-year transfer, ..."
             value={reason}
             onChange={(e) => setReason(e.target.value)}

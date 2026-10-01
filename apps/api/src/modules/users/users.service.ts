@@ -184,6 +184,7 @@ export class UsersService {
         ? { telegramUsername: dto.telegramUsername || null }
         : {}),
       ...(dto.isActive !== undefined ? { isActive: dto.isActive } : {}),
+      ...(dto.notificationPrefs !== undefined ? { notificationPrefs: dto.notificationPrefs } : {}),
     });
     return this.users.save(user);
   }

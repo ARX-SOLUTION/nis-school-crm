@@ -51,6 +51,9 @@ export class User extends BaseEntity {
   @Column({ name: 'language', type: 'varchar', length: 5, default: 'uz' })
   language!: string;
 
+  @Column({ name: 'notification_prefs', type: 'jsonb', default: {} })
+  notificationPrefs!: Record<string, boolean>;
+
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive!: boolean;
 

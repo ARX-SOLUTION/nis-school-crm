@@ -73,20 +73,20 @@ export function RecordPaymentModal({
     <Dialog open={open} onClose={onClose} title="To'lov qabul qilish">
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="rounded-lg bg-rose-50 p-3 text-xs font-medium text-rose-800 border border-rose-200">
+          <div className="rounded-lg bg-[#FEE2E2] p-3 text-xs font-medium text-error border border-error">
             {error}
           </div>
         )}
 
         {/* Student select */}
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            O'quvchi <span className="text-rose-500">*</span>
+          <label className="block text-xs font-semibold text-tertiary mb-1">
+            O'quvchi <span className="text-error">*</span>
           </label>
           <select
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
-            className="w-full text-sm rounded-lg border border-slate-300 p-2.5 min-h-[44px] text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
+            className="w-full text-sm rounded-lg border border-border p-2.5 min-h-[44px] text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
             required
           >
             <option value="">O'quvchini tanlang...</option>
@@ -100,22 +100,22 @@ export function RecordPaymentModal({
 
         {/* Month picker */}
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            Qaysi oy uchun <span className="text-rose-500">*</span>
+          <label className="block text-xs font-semibold text-tertiary mb-1">
+            Qaysi oy uchun <span className="text-error">*</span>
           </label>
           <input
             type="month"
             value={month}
             onChange={(e) => setMonth(e.target.value)}
-            className="w-full text-sm rounded-lg border border-slate-300 p-2.5 min-h-[44px] text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
+            className="w-full text-sm rounded-lg border border-border p-2.5 min-h-[44px] text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
             required
           />
         </div>
 
         {/* Amount */}
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            Summa (so'm) <span className="text-rose-500">*</span>
+          <label className="block text-xs font-semibold text-tertiary mb-1">
+            Summa (so'm) <span className="text-error">*</span>
           </label>
           <input
             type="number"
@@ -124,24 +124,24 @@ export function RecordPaymentModal({
             min={1000}
             step={50000}
             placeholder="0"
-            className="w-full text-base rounded-lg border border-slate-300 p-2.5 min-h-[44px] text-slate-900 bg-white font-mono tabular-nums font-semibold focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
+            className="w-full text-base rounded-lg border border-border p-2.5 min-h-[44px] text-tertiary bg-surface font-mono tabular-nums font-semibold focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
             required
           />
 
           {/* Live zero-miscount prevention preview */}
           {amount > 0 && (
-            <div className="mt-2 p-2.5 rounded-lg bg-blue-50/80 border border-blue-100 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
-              <span className="font-mono tabular-nums font-bold text-blue-900 text-sm">
+            <div className="mt-2 p-2.5 rounded-lg bg-[#DBEAFE] border border-secondary/20 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
+              <span className="font-mono tabular-nums font-bold text-secondary text-sm">
                 {formatUzbekSum(amount)}
               </span>
               {describeSumUzbek(amount) && (
-                <span className="text-blue-700 font-medium">{describeSumUzbek(amount)}</span>
+                <span className="text-secondary font-medium">{describeSumUzbek(amount)}</span>
               )}
             </div>
           )}
 
           {amount > 50_000_000 && (
-            <div className="mt-1 text-xs text-amber-700 font-medium">
+            <div className="mt-1 text-xs text-neutral-500 font-medium">
               Diqqat: Kiritilgan summa juda katta ({formatUzbekSum(amount)}). Iltimos, nollarni
               tekshiring!
             </div>
@@ -154,10 +154,10 @@ export function RecordPaymentModal({
                 key={preset}
                 type="button"
                 onClick={() => setAmount(preset)}
-                className={`text-xs px-2.5 py-1.5 rounded-md font-mono tabular-nums font-medium transition-colors min-h-[36px] ${
+                className={`text-xs px-2.5 py-1.5 rounded-lg font-mono tabular-nums font-medium transition-colors min-h-[36px] ${
                   amount === preset
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                    ? 'bg-primary text-tertiary shadow-sm'
+                    : 'bg-muted-surface hover:bg-border text-tertiary'
                 }`}
               >
                 {formatUzbekSum(preset)}
@@ -168,13 +168,13 @@ export function RecordPaymentModal({
 
         {/* Method */}
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            To'lov turi <span className="text-rose-500">*</span>
+          <label className="block text-xs font-semibold text-tertiary mb-1">
+            To'lov turi <span className="text-error">*</span>
           </label>
           <select
             value={method}
             onChange={(e) => setMethod(e.target.value as PaymentMethod)}
-            className="w-full text-sm rounded-lg border border-slate-300 p-2.5 min-h-[44px] text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
+            className="w-full text-sm rounded-lg border border-border p-2.5 min-h-[44px] text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
           >
             {METHODS.map((m) => (
               <option key={m.value} value={m.value}>
@@ -186,18 +186,18 @@ export function RecordPaymentModal({
 
         {/* Comment */}
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">Izoh / Eslatma</label>
+          <label className="block text-xs font-semibold text-tertiary mb-1">Izoh / Eslatma</label>
           <input
             type="text"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Qo'shimcha ma'lumot..."
-            className="w-full text-sm rounded-lg border border-slate-300 p-2.5 min-h-[44px] text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
+            className="w-full text-sm rounded-lg border border-border p-2.5 min-h-[44px] text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
 
         {/* Modal actions */}
-        <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <div className="flex justify-end gap-2 pt-3 border-t border-border">
           <Button variant="outline" type="button" onClick={onClose} disabled={isSubmitting}>
             Bekor qilish
           </Button>

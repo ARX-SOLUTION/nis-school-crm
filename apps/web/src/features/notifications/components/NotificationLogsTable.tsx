@@ -7,17 +7,21 @@ interface Props {
 }
 
 const TYPE_CONFIG: Record<NotificationType, { label: string; bg: string; text: string }> = {
-  ANNOUNCEMENT: { label: "Ommaviy e'lon", bg: 'bg-blue-50', text: 'text-blue-700 border-blue-200' },
+  ANNOUNCEMENT: {
+    label: "Ommaviy e'lon",
+    bg: 'bg-[#DBEAFE]',
+    text: 'text-secondary border-secondary/20',
+  },
   ATTENDANCE: {
     label: 'Davomat ogohlantirishi',
-    bg: 'bg-amber-50',
-    text: 'text-amber-700 border-amber-200',
+    bg: 'bg-muted-surface',
+    text: 'text-neutral-500 border-border',
   },
   GRADE: { label: 'Yangi baho', bg: 'bg-purple-50', text: 'text-purple-700 border-purple-200' },
   PAYMENT: {
     label: "To'lov kvitansiyasi",
-    bg: 'bg-emerald-50',
-    text: 'text-emerald-700 border-emerald-200',
+    bg: 'bg-[#E8F7D0]',
+    text: 'text-success border-success',
   },
 };
 
@@ -31,7 +35,7 @@ const TARGET_LABELS: Record<NotificationTarget, string> = {
 export function NotificationLogsTable({ logs, isLoading }: Props): React.ReactElement {
   if (isLoading) {
     return (
-      <div className="p-8 text-center text-slate-500 text-sm">
+      <div className="p-8 text-center text-neutral-500 text-sm">
         Xabarnomalar tarixi yuklanmoqda...
       </div>
     );
@@ -39,9 +43,9 @@ export function NotificationLogsTable({ logs, isLoading }: Props): React.ReactEl
 
   if (logs.length === 0) {
     return (
-      <div className="p-12 text-center border border-dashed border-slate-300 rounded-lg bg-slate-50/50">
-        <p className="text-base font-medium text-slate-700">Hozircha xabarnomalar yuborilmagan</p>
-        <p className="mt-1 text-sm text-slate-500">
+      <div className="p-12 text-center border border-dashed border-border rounded-lg bg-muted-surface">
+        <p className="text-base font-medium text-tertiary">Hozircha xabarnomalar yuborilmagan</p>
+        <p className="mt-1 text-sm text-neutral-500">
           Ota-onalarga yoki o'qituvchilarga tezkor xabar yuborish uchun yuqoridagi tugmani bosing.
         </p>
       </div>
@@ -49,9 +53,9 @@ export function NotificationLogsTable({ logs, isLoading }: Props): React.ReactEl
   }
 
   return (
-    <div className="overflow-x-auto border border-slate-200 rounded-lg shadow-sm bg-white">
+    <div className="overflow-x-auto border border-border rounded-lg shadow-sm bg-surface">
       <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
-        <thead className="bg-slate-50 font-semibold text-slate-700">
+        <thead className="bg-muted-surface font-semibold text-tertiary">
           <tr>
             <th scope="col" className="px-4 py-3">
               Sana & Vaqt
@@ -76,12 +80,12 @@ export function NotificationLogsTable({ logs, isLoading }: Props): React.ReactEl
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100 text-slate-600">
+        <tbody className="divide-y divide-slate-100 text-neutral-500">
           {logs.map((log) => {
             const typeConf = TYPE_CONFIG[log.type] || {
               label: log.type,
-              bg: 'bg-slate-50',
-              text: 'text-slate-700 border-slate-200',
+              bg: 'bg-muted-surface',
+              text: 'text-tertiary border-border',
             };
             const targetLabel = TARGET_LABELS[log.target] || log.target;
             const dateStr = new Date(log.createdAt).toLocaleString('uz-UZ', {
@@ -93,15 +97,15 @@ export function NotificationLogsTable({ logs, isLoading }: Props): React.ReactEl
             });
 
             return (
-              <tr key={log.id} className="hover:bg-slate-50/80 transition-colors">
-                <td className="px-4 py-3 whitespace-nowrap text-xs text-slate-500 font-mono">
+              <tr key={log.id} className="hover:bg-muted-surface transition-colors">
+                <td className="px-4 py-3 whitespace-nowrap text-xs text-neutral-500 font-mono">
                   {dateStr}
                 </td>
                 <td className="px-4 py-3 max-w-xs">
-                  <div className="font-medium text-slate-900 truncate" title={log.title}>
+                  <div className="font-medium text-tertiary truncate" title={log.title}>
                     {log.title}
                   </div>
-                  <div className="text-xs text-slate-500 truncate" title={log.message}>
+                  <div className="text-xs text-neutral-500 truncate" title={log.message}>
                     {log.message}
                   </div>
                 </td>
@@ -112,7 +116,7 @@ export function NotificationLogsTable({ logs, isLoading }: Props): React.ReactEl
                     {typeConf.label}
                   </span>
                 </td>
-                <td className="px-4 py-3 whitespace-nowrap text-xs font-medium text-slate-700">
+                <td className="px-4 py-3 whitespace-nowrap text-xs font-medium text-tertiary">
                   {targetLabel}
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">
@@ -124,11 +128,11 @@ export function NotificationLogsTable({ logs, isLoading }: Props): React.ReactEl
                   </span>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap text-center">
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-800">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-muted-surface text-tertiary">
                     {log.recipientCount} ta
                   </span>
                 </td>
-                <td className="px-4 py-3 whitespace-nowrap text-xs text-slate-500">
+                <td className="px-4 py-3 whitespace-nowrap text-xs text-neutral-500">
                   {log.sentByName || 'Tizim'}
                 </td>
               </tr>

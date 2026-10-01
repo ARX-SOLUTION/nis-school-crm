@@ -35,7 +35,7 @@ export function UsersPage({ actorRole }: Props): React.ReactElement {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
-          <p className="text-sm text-slate-600">Manage admins, managers, and teachers.</p>
+          <p className="text-sm text-neutral-500">Manage admins, managers, and teachers.</p>
         </div>
         <Button onClick={() => setCreateOpen(true)}>Create user</Button>
       </div>

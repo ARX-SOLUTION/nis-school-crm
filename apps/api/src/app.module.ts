@@ -16,6 +16,7 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { BranchesModule } from './modules/branches/branches.module';
 import { ClassesModule } from './modules/classes/classes.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { EventsModule } from './modules/events/events.module';
 import { ClubsModule } from './modules/clubs/clubs.module';
 import { HealthModule } from './modules/health/health.module';
 import { RoomsModule } from './modules/rooms/rooms.module';
@@ -65,6 +66,7 @@ import { UsersModule } from './modules/users/users.module';
     TelegramModule.forRoot(),
     AuditModule,
     DashboardModule,
+    EventsModule,
     HealthModule,
   ],
   providers: [

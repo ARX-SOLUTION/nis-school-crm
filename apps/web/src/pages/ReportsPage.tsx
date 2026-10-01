@@ -14,16 +14,16 @@ function formatMoney(amount: number): string {
 
 function ProgressBar({ value, color = 'blue' }: { value: number; color?: string }) {
   const colorMap: Record<string, string> = {
-    blue: 'bg-blue-500',
-    green: 'bg-emerald-500',
-    amber: 'bg-amber-400',
+    blue: 'bg-primary',
+    green: 'bg-success',
+    amber: 'bg-neutral-400',
     red: 'bg-red-400',
     violet: 'bg-violet-500',
   };
   return (
-    <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+    <div className="h-2 w-full rounded-full bg-muted-surface overflow-hidden">
       <div
-        className={`h-2 rounded-full ${colorMap[color] ?? 'bg-blue-500'} transition-all`}
+        className={`h-2 rounded-full ${colorMap[color] ?? 'bg-primary'} transition-all`}
         style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
       />
     </div>
@@ -57,52 +57,52 @@ function AttendancePanel() {
       {/* Month picker + summary */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex items-center gap-2">
-          <label className="text-sm font-medium text-slate-600">Oy:</label>
+          <label className="text-sm font-medium text-neutral-500">Oy:</label>
           <input
             type="month"
             value={month}
             onChange={(e) => setMonth(e.target.value)}
-            className="rounded-md border border-slate-200 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px]"
+            className="rounded-lg border border-border px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
           />
         </div>
         <div className="flex items-center gap-6">
           <div className="text-center">
-            <p className="text-2xl font-bold text-emerald-600">{overallRate}%</p>
-            <p className="text-xs text-slate-500">Umumiy davomat</p>
+            <p className="text-2xl font-bold text-success">{overallRate}%</p>
+            <p className="text-xs text-neutral-500">Umumiy davomat</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-slate-800">{data.length}</p>
-            <p className="text-xs text-slate-500">Sinflar</p>
+            <p className="text-2xl font-bold text-tertiary">{data.length}</p>
+            <p className="text-xs text-neutral-500">Sinflar</p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold text-red-500">{totals.absent}</p>
-            <p className="text-xs text-slate-500">Kelmagan</p>
+            <p className="text-xs text-neutral-500">Kelmagan</p>
           </div>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-10 text-slate-400">Yuklanmoqda...</div>
+        <div className="flex justify-center py-10 text-neutral-400">Yuklanmoqda...</div>
       ) : data.length === 0 ? (
-        <div className="flex justify-center py-10 text-slate-400">Bu oyda ma'lumot yo'q</div>
+        <div className="flex justify-center py-10 text-neutral-400">Bu oyda ma'lumot yo'q</div>
       ) : (
-        <div className="overflow-auto rounded-xl border border-slate-200 shadow-sm">
+        <div className="overflow-auto rounded-xl border border-border shadow-sm">
           <table className="min-w-full text-sm">
-            <thead className="bg-slate-50 border-b border-slate-200">
+            <thead className="bg-muted-surface border-b border-border">
               <tr>
-                <th className="text-left px-4 py-3 font-semibold text-slate-700">Sinf</th>
-                <th className="text-center px-3 py-3 font-semibold text-slate-700">O'quvchilar</th>
-                <th className="text-center px-3 py-3 font-semibold text-slate-700 text-emerald-700">
+                <th className="text-left px-4 py-3 font-semibold text-tertiary">Sinf</th>
+                <th className="text-center px-3 py-3 font-semibold text-tertiary">O'quvchilar</th>
+                <th className="text-center px-3 py-3 font-semibold text-tertiary text-success">
                   Keldi
                 </th>
-                <th className="text-center px-3 py-3 font-semibold text-slate-700 text-red-600">
+                <th className="text-center px-3 py-3 font-semibold text-tertiary text-red-600">
                   Kelmadi
                 </th>
-                <th className="text-center px-3 py-3 font-semibold text-slate-700 text-amber-600">
+                <th className="text-center px-3 py-3 font-semibold text-tertiary text-neutral-500">
                   Kech
                 </th>
-                <th className="text-center px-3 py-3 font-semibold text-slate-700">Sababli</th>
-                <th className="px-4 py-3 font-semibold text-slate-700">Davomat %</th>
+                <th className="text-center px-3 py-3 font-semibold text-tertiary">Sababli</th>
+                <th className="px-4 py-3 font-semibold text-tertiary">Davomat %</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -111,24 +111,24 @@ function AttendancePanel() {
                   row.attendanceRate >= 90 ? 'green' : row.attendanceRate >= 75 ? 'amber' : 'red';
                 const rateText =
                   row.attendanceRate >= 90
-                    ? 'text-emerald-700'
+                    ? 'text-success'
                     : row.attendanceRate >= 75
-                      ? 'text-amber-700'
+                      ? 'text-neutral-500'
                       : 'text-red-700';
                 return (
-                  <tr key={row.classId} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 font-semibold text-slate-900">{row.className}</td>
-                    <td className="px-3 py-3 text-center text-slate-600">{row.totalStudents}</td>
-                    <td className="px-3 py-3 text-center font-medium text-emerald-700">
+                  <tr key={row.classId} className="hover:bg-muted-surface transition-colors">
+                    <td className="px-4 py-3 font-semibold text-tertiary">{row.className}</td>
+                    <td className="px-3 py-3 text-center text-neutral-500">{row.totalStudents}</td>
+                    <td className="px-3 py-3 text-center font-medium text-success">
                       {row.presentCount}
                     </td>
                     <td className="px-3 py-3 text-center font-medium text-red-600">
                       {row.absentCount}
                     </td>
-                    <td className="px-3 py-3 text-center font-medium text-amber-600">
+                    <td className="px-3 py-3 text-center font-medium text-neutral-500">
                       {row.lateCount}
                     </td>
-                    <td className="px-3 py-3 text-center text-slate-600">{row.excusedCount}</td>
+                    <td className="px-3 py-3 text-center text-neutral-500">{row.excusedCount}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <div className="flex-1">
@@ -158,30 +158,30 @@ function GradesPanel() {
 
   return (
     <div className="space-y-6">
-      {isLoading && <div className="flex justify-center py-10 text-slate-400">Yuklanmoqda...</div>}
+      {isLoading && (
+        <div className="flex justify-center py-10 text-neutral-400">Yuklanmoqda...</div>
+      )}
       {!isLoading && (
         <>
           {/* Subject averages */}
           <div>
-            <h3 className="text-base font-semibold text-slate-800 mb-3">
+            <h3 className="text-base font-semibold text-tertiary mb-3">
               Fanlar bo'yicha o'rtacha ball
             </h3>
             {subjects.length === 0 ? (
-              <p className="text-slate-400 text-sm">Ma'lumot yo'q</p>
+              <p className="text-neutral-400 text-sm">Ma'lumot yo'q</p>
             ) : (
-              <div className="overflow-auto rounded-xl border border-slate-200 shadow-sm">
+              <div className="overflow-auto rounded-xl border border-border shadow-sm">
                 <table className="min-w-full text-sm">
-                  <thead className="bg-slate-50 border-b border-slate-200">
+                  <thead className="bg-muted-surface border-b border-border">
                     <tr>
-                      <th className="text-left px-4 py-3 font-semibold text-slate-700">Fan</th>
-                      <th className="text-left px-4 py-3 font-semibold text-slate-700">Sinf</th>
-                      <th className="text-center px-3 py-3 font-semibold text-slate-700">
+                      <th className="text-left px-4 py-3 font-semibold text-tertiary">Fan</th>
+                      <th className="text-left px-4 py-3 font-semibold text-tertiary">Sinf</th>
+                      <th className="text-center px-3 py-3 font-semibold text-tertiary">
                         Jami yozuv
                       </th>
-                      <th className="text-center px-3 py-3 font-semibold text-slate-700">
-                        O'tdi %
-                      </th>
-                      <th className="px-4 py-3 font-semibold text-slate-700">O'rtacha %</th>
+                      <th className="text-center px-3 py-3 font-semibold text-tertiary">O'tdi %</th>
+                      <th className="px-4 py-3 font-semibold text-tertiary">O'rtacha %</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -191,20 +191,20 @@ function GradesPanel() {
                       return (
                         <tr
                           key={`${s.subjectId}-${s.classId}-${i}`}
-                          className="hover:bg-slate-50 transition-colors"
+                          className="hover:bg-muted-surface transition-colors"
                         >
-                          <td className="px-4 py-3 font-medium text-slate-900">{s.subjectName}</td>
-                          <td className="px-4 py-3 text-slate-600">{s.className}</td>
-                          <td className="px-3 py-3 text-center text-slate-600">
+                          <td className="px-4 py-3 font-medium text-tertiary">{s.subjectName}</td>
+                          <td className="px-4 py-3 text-neutral-500">{s.className}</td>
+                          <td className="px-3 py-3 text-center text-neutral-500">
                             {s.totalRecorded}
                           </td>
                           <td className="px-3 py-3 text-center">
                             <span
                               className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                                 s.passingRate >= 75
-                                  ? 'bg-emerald-50 text-emerald-700'
+                                  ? 'bg-[#E8F7D0] text-success'
                                   : s.passingRate >= 50
-                                    ? 'bg-amber-50 text-amber-700'
+                                    ? 'bg-muted-surface text-neutral-500'
                                     : 'bg-red-50 text-red-700'
                               }`}
                             >
@@ -216,7 +216,7 @@ function GradesPanel() {
                               <div className="flex-1">
                                 <ProgressBar value={s.averageScore} color={color} />
                               </div>
-                              <span className="text-xs font-bold w-10 text-right text-slate-700">
+                              <span className="text-xs font-bold w-10 text-right text-tertiary">
                                 {s.averageScore.toFixed(1)}%
                               </span>
                             </div>
@@ -232,37 +232,37 @@ function GradesPanel() {
 
           {/* Top 10 students */}
           <div>
-            <h3 className="text-base font-semibold text-slate-800 mb-3">Top 10 o'quvchi</h3>
+            <h3 className="text-base font-semibold text-tertiary mb-3">Top 10 o'quvchi</h3>
             {topStudents.length === 0 ? (
-              <p className="text-slate-400 text-sm">Ma'lumot yo'q</p>
+              <p className="text-neutral-400 text-sm">Ma'lumot yo'q</p>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {topStudents.map((s, idx) => (
                   <div
                     key={s.studentId}
-                    className="flex items-center gap-3 bg-white rounded-xl border border-slate-200 px-4 py-3 shadow-sm"
+                    className="flex items-center gap-3 bg-surface rounded-xl border border-border px-4 py-3 shadow-sm"
                   >
                     <span
                       className={`text-lg font-bold w-7 shrink-0 ${
                         idx === 0
-                          ? 'text-amber-500'
+                          ? 'text-neutral-500'
                           : idx === 1
-                            ? 'text-slate-500'
+                            ? 'text-neutral-500'
                             : idx === 2
-                              ? 'text-amber-700'
-                              : 'text-slate-400'
+                              ? 'text-neutral-500'
+                              : 'text-neutral-400'
                       }`}
                     >
                       {idx + 1}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-slate-900 truncate">{s.studentName}</p>
-                      <p className="text-xs text-slate-500">
+                      <p className="font-semibold text-tertiary truncate">{s.studentName}</p>
+                      <p className="text-xs text-neutral-500">
                         {s.className ?? '-'} - {s.totalGrades} baho
                       </p>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-base font-bold text-blue-700">
+                      <p className="text-base font-bold text-secondary">
                         {s.averageScore.toFixed(1)}%
                       </p>
                     </div>
@@ -288,11 +288,11 @@ function FinancePanel() {
       {/* Period selector + KPIs */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex items-center gap-2">
-          <label className="text-sm font-medium text-slate-600">Davr:</label>
+          <label className="text-sm font-medium text-neutral-500">Davr:</label>
           <select
             value={months}
             onChange={(e) => setMonths(Number(e.target.value))}
-            className="rounded-md border border-slate-200 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px]"
+            className="rounded-lg border border-border px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
           >
             <option value={3}>3 oy</option>
             <option value={6}>6 oy</option>
@@ -302,41 +302,43 @@ function FinancePanel() {
         {data && (
           <div className="flex items-center gap-6">
             <div className="text-center">
-              <p className="text-2xl font-bold text-emerald-600">
+              <p className="text-2xl font-bold text-success">
                 {formatMoney(data.totalCollectedPeriod)}
               </p>
-              <p className="text-xs text-slate-500">Umumiy tushum</p>
+              <p className="text-xs text-neutral-500">Umumiy tushum</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-2xl font-bold text-secondary">
                 {formatMoney(data.averageMonthlyRevenue)}
               </p>
-              <p className="text-xs text-slate-500">Oylik o'rtacha</p>
+              <p className="text-xs text-neutral-500">Oylik o'rtacha</p>
             </div>
           </div>
         )}
       </div>
 
-      {isLoading && <div className="flex justify-center py-10 text-slate-400">Yuklanmoqda...</div>}
+      {isLoading && (
+        <div className="flex justify-center py-10 text-neutral-400">Yuklanmoqda...</div>
+      )}
       {!isLoading && data && (
         <>
           {/* Bar chart (CSS-based) */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-            <h3 className="text-sm font-semibold text-slate-700 mb-4">Oylik tushum dinamikasi</h3>
+          <div className="bg-surface rounded-xl border border-border shadow-sm p-5">
+            <h3 className="text-sm font-semibold text-tertiary mb-4">Oylik tushum dinamikasi</h3>
             <div className="flex items-end gap-2 h-36">
               {data.months.map((m) => {
                 const heightPct = maxCollected > 0 ? (m.totalCollected / maxCollected) * 100 : 0;
                 return (
                   <div key={m.month} className="flex-1 flex flex-col items-center gap-1 min-w-0">
-                    <span className="text-xs font-semibold text-slate-600 truncate w-full text-center">
+                    <span className="text-xs font-semibold text-neutral-500 truncate w-full text-center">
                       {formatMoney(m.totalCollected)}
                     </span>
                     <div
-                      className="w-full rounded-t-md bg-blue-500 hover:bg-blue-600 transition-all"
+                      className="w-full rounded-t-md bg-primary hover:bg-primary transition-all"
                       style={{ height: `${Math.max(4, heightPct)}%`, minHeight: '4px' }}
                       title={`${m.month}: ${formatUzbekSum(m.totalCollected)}`}
                     />
-                    <span className="text-[10px] text-slate-400 truncate w-full text-center">
+                    <span className="text-[10px] text-neutral-400 truncate w-full text-center">
                       {m.month.slice(5)}
                     </span>
                   </div>
@@ -346,17 +348,17 @@ function FinancePanel() {
           </div>
 
           {/* Detail table */}
-          <div className="overflow-auto rounded-xl border border-slate-200 shadow-sm">
+          <div className="overflow-auto rounded-xl border border-border shadow-sm">
             <table className="min-w-full text-sm">
-              <thead className="bg-slate-50 border-b border-slate-200">
+              <thead className="bg-muted-surface border-b border-border">
                 <tr>
-                  <th className="text-left px-4 py-3 font-semibold text-slate-700">Oy</th>
-                  <th className="text-right px-4 py-3 font-semibold text-slate-700">To'langan</th>
-                  <th className="text-right px-4 py-3 font-semibold text-slate-700">Kutilgan</th>
-                  <th className="text-center px-4 py-3 font-semibold text-slate-700">
+                  <th className="text-left px-4 py-3 font-semibold text-tertiary">Oy</th>
+                  <th className="text-right px-4 py-3 font-semibold text-tertiary">To'langan</th>
+                  <th className="text-right px-4 py-3 font-semibold text-tertiary">Kutilgan</th>
+                  <th className="text-center px-4 py-3 font-semibold text-tertiary">
                     To'lovlar soni
                   </th>
-                  <th className="px-4 py-3 font-semibold text-slate-700">Yig'ish %</th>
+                  <th className="px-4 py-3 font-semibold text-tertiary">Yig'ish %</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -365,20 +367,20 @@ function FinancePanel() {
                     m.collectionRate >= 90 ? 'green' : m.collectionRate >= 60 ? 'amber' : 'red';
                   const rateText =
                     m.collectionRate >= 90
-                      ? 'text-emerald-700'
+                      ? 'text-success'
                       : m.collectionRate >= 60
-                        ? 'text-amber-700'
+                        ? 'text-neutral-500'
                         : 'text-red-700';
                   return (
-                    <tr key={m.month} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-4 py-3 font-semibold text-slate-900">{m.month}</td>
-                      <td className="px-4 py-3 text-right font-mono tabular-nums whitespace-nowrap font-medium text-emerald-700">
+                    <tr key={m.month} className="hover:bg-muted-surface transition-colors">
+                      <td className="px-4 py-3 font-semibold text-tertiary">{m.month}</td>
+                      <td className="px-4 py-3 text-right font-mono tabular-nums whitespace-nowrap font-medium text-success">
                         {formatUzbekSum(m.totalCollected)}
                       </td>
-                      <td className="px-4 py-3 text-right font-mono tabular-nums whitespace-nowrap text-slate-500">
+                      <td className="px-4 py-3 text-right font-mono tabular-nums whitespace-nowrap text-neutral-500">
                         {formatUzbekSum(m.totalExpected)}
                       </td>
-                      <td className="px-4 py-3 text-center font-mono tabular-nums text-slate-600">
+                      <td className="px-4 py-3 text-center font-mono tabular-nums text-neutral-500">
                         {m.paymentCount}
                       </td>
                       <td className="px-4 py-3">
@@ -418,22 +420,22 @@ export function ReportsPage(): React.ReactElement {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Hisobotlar va Tahlil</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-2xl font-bold tracking-tight text-tertiary">Hisobotlar va Tahlil</h1>
+        <p className="mt-1 text-sm text-neutral-500">
           Davomat, baholar va moliyaviy ko'rsatkichlar bo'yicha to'liq hisobotlar
         </p>
       </div>
 
       {/* Tab bar */}
-      <div className="flex border-b border-slate-200">
+      <div className="flex border-b border-border">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-colors min-h-[44px] ${
               activeTab === tab.id
-                ? 'border-blue-600 text-blue-700'
-                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                ? 'border-primary text-secondary'
+                : 'border-transparent text-neutral-500 hover:text-tertiary hover:border-border'
             }`}
           >
             <span>{tab.icon}</span>

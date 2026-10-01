@@ -9,9 +9,9 @@ interface Props {
 }
 
 const METHOD_LABELS: Record<string, { label: string; badge: string }> = {
-  CASH: { label: 'Naqd', badge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  CARD: { label: 'Karta', badge: 'bg-blue-50 text-blue-700 border-blue-200' },
-  CLICK: { label: 'Click', badge: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+  CASH: { label: 'Naqd', badge: 'bg-[#E8F7D0] text-success border-success' },
+  CARD: { label: 'Karta', badge: 'bg-[#DBEAFE] text-secondary border-secondary/20' },
+  CLICK: { label: 'Click', badge: 'bg-muted-surface text-secondary border-border' },
   PAYME: { label: 'Payme', badge: 'bg-teal-50 text-teal-700 border-teal-200' },
   BANK_TRANSFER: {
     label: "O'tkazma",
@@ -30,10 +30,10 @@ export function PaymentsTable({ data, isLoading }: Props): React.ReactElement {
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-xs">
+    <div className="overflow-x-auto rounded-xl border border-border bg-surface shadow-xs">
       <table className="w-full border-collapse text-left text-sm">
         <thead>
-          <tr className="border-b border-slate-200 bg-slate-50/75 text-xs font-semibold uppercase tracking-wider text-slate-600">
+          <tr className="border-b border-border bg-muted-surface text-xs font-semibold uppercase tracking-wider text-neutral-500">
             <th scope="col" className="p-3.5">
               Chek №
             </th>
@@ -61,28 +61,28 @@ export function PaymentsTable({ data, isLoading }: Props): React.ReactElement {
           {data.map((payment) => {
             const methodInfo = METHOD_LABELS[payment.method] ?? {
               label: payment.method,
-              badge: 'bg-slate-100 text-slate-700 border-slate-200',
+              badge: 'bg-muted-surface text-tertiary border-border',
             };
             const paidDate = new Date(payment.paidAt).toLocaleDateString('uz-UZ');
 
             return (
-              <tr key={payment.id} className="hover:bg-slate-50/50 transition-colors">
-                <td className="p-3.5 font-mono text-xs font-bold text-slate-700">
+              <tr key={payment.id} className="hover:bg-muted-surface transition-colors">
+                <td className="p-3.5 font-mono text-xs font-bold text-tertiary">
                   {payment.receiptNumber}
                 </td>
                 <td className="p-3.5">
-                  <div className="font-semibold text-slate-900">
+                  <div className="font-semibold text-tertiary">
                     {payment.studentName || "Noma'lum"}
                   </div>
                   {payment.studentCode && (
-                    <div className="text-xs font-mono text-slate-400">{payment.studentCode}</div>
+                    <div className="text-xs font-mono text-neutral-400">{payment.studentCode}</div>
                   )}
                 </td>
-                <td className="p-3.5 text-xs font-medium text-slate-600">
+                <td className="p-3.5 text-xs font-medium text-neutral-500">
                   {payment.className || '-'}
                 </td>
-                <td className="p-3.5 text-xs font-medium text-slate-600">{payment.month}</td>
-                <td className="p-3.5 text-right font-mono tabular-nums whitespace-nowrap font-bold text-slate-900">
+                <td className="p-3.5 text-xs font-medium text-neutral-500">{payment.month}</td>
+                <td className="p-3.5 text-right font-mono tabular-nums whitespace-nowrap font-bold text-tertiary">
                   {formatUzbekSum(payment.amount)}
                 </td>
                 <td className="p-3.5 text-center">
@@ -92,7 +92,7 @@ export function PaymentsTable({ data, isLoading }: Props): React.ReactElement {
                     {methodInfo.label}
                   </span>
                 </td>
-                <td className="p-3.5 text-xs text-slate-500">{paidDate}</td>
+                <td className="p-3.5 text-xs text-neutral-500">{paidDate}</td>
               </tr>
             );
           })}

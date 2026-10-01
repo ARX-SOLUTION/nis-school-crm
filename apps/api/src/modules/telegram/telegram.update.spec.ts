@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import type { LinkCodeService } from './services/link-code.service';
 import { TelegramUpdate } from './telegram.update';
@@ -22,7 +22,8 @@ describe('TelegramUpdate', () => {
       update: jest.fn().mockResolvedValue({}),
     } as unknown as Repository<User>;
     const linkCodes = { consume: jest.fn() } as unknown as LinkCodeService;
-    const update = new TelegramUpdate(users, linkCodes);
+    const dataSource = { query: jest.fn() };
+    const update = new TelegramUpdate(users, linkCodes, dataSource as unknown as DataSource);
     return {
       update,
       users: users as unknown as { findOne: jest.Mock; update: jest.Mock },

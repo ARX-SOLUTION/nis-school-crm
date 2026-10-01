@@ -13,37 +13,37 @@ export function MyClassPage(): React.ReactElement {
     <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">My class</h1>
-        <p className="text-sm text-slate-600">Read-only view of the class you teach.</p>
+        <p className="text-sm text-neutral-500">Read-only view of the class you teach.</p>
       </div>
 
       <Card className="p-4">
         {klass.isLoading ? (
-          <p className="text-sm text-slate-500">Loading…</p>
+          <p className="text-sm text-neutral-500">Loading…</p>
         ) : klass.data ? (
           <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
             <div>
-              <span className="text-slate-500">Name: </span>
+              <span className="text-neutral-500">Name: </span>
               <span className="font-medium">{klass.data.name}</span>
             </div>
             <div>
-              <span className="text-slate-500">Grade: </span>
+              <span className="text-neutral-500">Grade: </span>
               {klass.data.gradeLevel}
             </div>
             <div>
-              <span className="text-slate-500">Academic year: </span>
+              <span className="text-neutral-500">Academic year: </span>
               {klass.data.academicYear}
             </div>
             <div>
-              <span className="text-slate-500">Room: </span>
+              <span className="text-neutral-500">Room: </span>
               {klass.data.roomNumber ?? '-'}
             </div>
             <div>
-              <span className="text-slate-500">Capacity: </span>
+              <span className="text-neutral-500">Capacity: </span>
               {klass.data.maxStudents}
             </div>
           </div>
         ) : (
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-neutral-500">
             You are not currently assigned as a class teacher. Ask an administrator if this is
             unexpected.
           </p>
@@ -51,9 +51,9 @@ export function MyClassPage(): React.ReactElement {
       </Card>
 
       <Card>
-        <div className="px-4 py-3 border-b border-slate-200">
+        <div className="px-4 py-3 border-b border-border">
           <h2 className="text-sm font-semibold">Students</h2>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-neutral-500">
             Read-only roster. Contact an administrator to make changes.
           </p>
         </div>

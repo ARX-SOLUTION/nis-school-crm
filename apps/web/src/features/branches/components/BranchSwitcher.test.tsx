@@ -56,12 +56,12 @@ describe('BranchSwitcher', () => {
 
   it('renders with default all branches or active branch', () => {
     renderComponent();
-    expect(screen.getByRole('button', { name: /filialni tanlash/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /select branch/i })).toBeInTheDocument();
   });
 
   it('opens dropdown and displays available branches when clicked', async () => {
     renderComponent();
-    const button = screen.getByRole('button', { name: /filialni tanlash/i });
+    const button = screen.getByRole('button', { name: /select branch/i });
     await userEvent.click(button);
 
     expect(screen.getByText(/barcha filiallar \(umumiy\)/i)).toBeInTheDocument();
@@ -71,7 +71,7 @@ describe('BranchSwitcher', () => {
 
   it('switches branch and persists selection in localStorage', async () => {
     renderComponent();
-    const button = screen.getByRole('button', { name: /filialni tanlash/i });
+    const button = screen.getByRole('button', { name: /select branch/i });
     await userEvent.click(button);
 
     const yunusobodOption = screen.getByText('Nordic International School - Yunusobod');
