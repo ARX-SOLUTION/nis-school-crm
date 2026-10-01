@@ -28,7 +28,7 @@ export function ClassesPage(): React.ReactElement {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Classes</h1>
-          <p className="text-sm text-slate-600">Manage class sections across academic years.</p>
+          <p className="text-sm text-neutral-500">Manage class sections across academic years.</p>
         </div>
         <Button onClick={() => setCreateOpen(true)}>Create class</Button>
       </div>

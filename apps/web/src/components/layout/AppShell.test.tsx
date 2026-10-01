@@ -15,6 +15,7 @@ vi.mock('@tanstack/react-router', () => ({
     </a>
   ),
   useRouterState: vi.fn(() => '/'),
+  useNavigate: vi.fn(() => vi.fn()),
 }));
 
 const mockLogoutMutate = vi.fn();
@@ -34,6 +35,7 @@ const mockUser: UserResponseDto = {
   role: 'SUPER_ADMIN',
   isActive: true,
   mustChangePassword: false,
+  notificationPrefs: {},
   lastLoginAt: new Date().toISOString(),
   createdAt: new Date().toISOString(),
 };

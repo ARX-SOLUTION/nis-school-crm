@@ -28,12 +28,12 @@ export function RoomsPage({ actorRole }: Props): React.ReactElement {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-semibold tracking-tight text-tertiary">
             Rooms & Facilities
           </h1>
-          <p className="text-sm text-slate-600 mt-1">
+          <p className="text-sm text-neutral-500 mt-1">
             Classrooms, science laboratories, auditoriums, and capacity allocations.
           </p>
         </div>
@@ -66,7 +66,7 @@ export function RoomsPage({ actorRole }: Props): React.ReactElement {
           onRetry={() => refetch()}
         />
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+        <div className="bg-surface rounded-xl border border-border overflow-hidden shadow-xs">
           <RoomsTable
             rooms={data?.data ?? []}
             canManage={canManage}

@@ -59,12 +59,12 @@ export function GradesPage(): React.ReactElement {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-semibold tracking-tight text-tertiary">
             Elektron Jurnal (Gradebook)
           </h1>
-          <p className="text-sm text-slate-600 mt-1">
+          <p className="text-sm text-neutral-500 mt-1">
             Dars baholari, sinf ishi, uy vazifasi va choraklik hisob-kitob jurnali.
           </p>
         </div>
@@ -73,7 +73,7 @@ export function GradesPage(): React.ReactElement {
       {/* Filters */}
       <Card className="p-4 flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
-          <label htmlFor="class-select" className="text-sm font-medium text-slate-700">
+          <label htmlFor="class-select" className="text-sm font-medium text-tertiary">
             Sinf:
           </label>
           <select
@@ -81,7 +81,7 @@ export function GradesPage(): React.ReactElement {
             value={activeClassId}
             onChange={(e) => setSelectedClassId(e.target.value)}
             disabled={classesLoading || classes.length === 0}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="rounded-lg border border-border bg-surface px-3 py-1.5 text-sm font-semibold text-tertiary focus:outline-none focus:ring-2 focus:ring-primary"
           >
             {classes.length === 0 ? (
               <option value="">Sinflar mavjud emas</option>
@@ -96,7 +96,7 @@ export function GradesPage(): React.ReactElement {
         </div>
 
         <div className="flex items-center gap-2">
-          <label htmlFor="subject-select" className="text-sm font-medium text-slate-700">
+          <label htmlFor="subject-select" className="text-sm font-medium text-tertiary">
             Fan:
           </label>
           <select
@@ -104,7 +104,7 @@ export function GradesPage(): React.ReactElement {
             value={activeSubjectId}
             onChange={(e) => setSelectedSubjectId(e.target.value)}
             disabled={subjectsLoading || subjects.length === 0}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="rounded-lg border border-border bg-surface px-3 py-1.5 text-sm font-semibold text-tertiary focus:outline-none focus:ring-2 focus:ring-primary"
           >
             {subjects.length === 0 ? (
               <option value="">Fanlar mavjud emas</option>

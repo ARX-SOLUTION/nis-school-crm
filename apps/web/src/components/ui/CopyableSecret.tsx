@@ -27,7 +27,7 @@ export function CopyableSecret({ value, label = 'Copy' }: Props): React.ReactEle
 
   return (
     <div className="flex items-stretch gap-2">
-      <pre className="flex-1 overflow-x-auto rounded-md bg-slate-900 px-3 py-2 text-sm text-white">
+      <pre className="flex-1 overflow-x-auto rounded-lg bg-tertiary px-3 py-2 text-sm text-white">
         {value}
       </pre>
       <Button type="button" variant="secondary" size="sm" onClick={copy}>

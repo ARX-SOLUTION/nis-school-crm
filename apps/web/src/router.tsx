@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react';
 import {
   createRootRoute,
   createRoute,
@@ -12,26 +13,70 @@ import {
   useCurrentUserQuery,
   useIsAuthenticated,
 } from '@/features/auth/api/use-current-user-query';
-import { TelegramLoginPage } from '@/features/telegram-auth/pages/TelegramLoginPage';
-import { ParentInviteAcceptPage } from '@/features/telegram-auth/pages/ParentInviteAcceptPage';
-import { AttendancePage } from '@/pages/AttendancePage';
-import { BillingPage } from '@/pages/BillingPage';
-import { BranchesPage } from '@/pages/BranchesPage';
-import { ClassesPage } from '@/pages/ClassesPage';
-import { ClubsPage } from '@/pages/ClubsPage';
-import { DashboardPage } from '@/pages/DashboardPage';
-import { GradesPage } from '@/pages/GradesPage';
-import { LeadsPage } from '@/pages/LeadsPage';
-import { LoginPage } from '@/pages/LoginPage';
-import { MyClassPage } from '@/pages/MyClassPage';
-import { NotificationsPage } from '@/pages/NotificationsPage';
-import { ProfilePage } from '@/pages/ProfilePage';
-import { ReportsPage } from '@/pages/ReportsPage';
-import { RoomsPage } from '@/pages/RoomsPage';
-import { SchedulePage } from '@/pages/SchedulePage';
-import { StudentsPage } from '@/pages/StudentsPage';
-import { SubjectsPage } from '@/pages/SubjectsPage';
-import { UsersPage } from '@/pages/UsersPage';
+const TelegramLoginPage = React.lazy(() =>
+  import('@/features/telegram-auth/pages/TelegramLoginPage').then((m) => ({
+    default: m.TelegramLoginPage,
+  })),
+);
+const ParentInviteAcceptPage = React.lazy(() =>
+  import('@/features/telegram-auth/pages/ParentInviteAcceptPage').then((m) => ({
+    default: m.ParentInviteAcceptPage,
+  })),
+);
+const AttendancePage = React.lazy(() =>
+  import('@/pages/AttendancePage').then((m) => ({ default: m.AttendancePage })),
+);
+const BillingPage = React.lazy(() =>
+  import('@/pages/BillingPage').then((m) => ({ default: m.BillingPage })),
+);
+const BranchesPage = React.lazy(() =>
+  import('@/pages/BranchesPage').then((m) => ({ default: m.BranchesPage })),
+);
+const ClassesPage = React.lazy(() =>
+  import('@/pages/ClassesPage').then((m) => ({ default: m.ClassesPage })),
+);
+const ClubsPage = React.lazy(() =>
+  import('@/pages/ClubsPage').then((m) => ({ default: m.ClubsPage })),
+);
+const DashboardPage = React.lazy(() =>
+  import('@/pages/DashboardPage').then((m) => ({ default: m.DashboardPage })),
+);
+const GradesPage = React.lazy(() =>
+  import('@/pages/GradesPage').then((m) => ({ default: m.GradesPage })),
+);
+const LeadsPage = React.lazy(() =>
+  import('@/pages/LeadsPage').then((m) => ({ default: m.LeadsPage })),
+);
+const LoginPage = React.lazy(() =>
+  import('@/pages/LoginPage').then((m) => ({ default: m.LoginPage })),
+);
+const MyClassPage = React.lazy(() =>
+  import('@/pages/MyClassPage').then((m) => ({ default: m.MyClassPage })),
+);
+const NotificationsPage = React.lazy(() =>
+  import('@/pages/NotificationsPage').then((m) => ({ default: m.NotificationsPage })),
+);
+const ProfilePage = React.lazy(() =>
+  import('@/pages/ProfilePage').then((m) => ({ default: m.ProfilePage })),
+);
+const ReportsPage = React.lazy(() =>
+  import('@/pages/ReportsPage').then((m) => ({ default: m.ReportsPage })),
+);
+const RoomsPage = React.lazy(() =>
+  import('@/pages/RoomsPage').then((m) => ({ default: m.RoomsPage })),
+);
+const SchedulePage = React.lazy(() =>
+  import('@/pages/SchedulePage').then((m) => ({ default: m.SchedulePage })),
+);
+const StudentsPage = React.lazy(() =>
+  import('@/pages/StudentsPage').then((m) => ({ default: m.StudentsPage })),
+);
+const SubjectsPage = React.lazy(() =>
+  import('@/pages/SubjectsPage').then((m) => ({ default: m.SubjectsPage })),
+);
+const UsersPage = React.lazy(() =>
+  import('@/pages/UsersPage').then((m) => ({ default: m.UsersPage })),
+);
 import { tokenStore } from '@/lib/token-store';
 import { refreshSession } from '@/lib/session';
 
@@ -40,19 +85,55 @@ const rootRoute = createRootRoute({ component: () => <Outlet /> });
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
-  component: LoginPage,
+  component: function SuspensedLoginPage(props: Record<string, unknown>) {
+    return (
+      <Suspense
+        fallback={
+          <div className="min-h-dvh flex items-center justify-center text-neutral-500">
+            Loading...
+          </div>
+        }
+      >
+        <LoginPage {...props} />
+      </Suspense>
+    );
+  },
 });
 
 const telegramLoginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login/telegram',
-  component: TelegramLoginPage,
+  component: function SuspensedTelegramLoginPage(props: Record<string, unknown>) {
+    return (
+      <Suspense
+        fallback={
+          <div className="min-h-dvh flex items-center justify-center text-neutral-500">
+            Loading...
+          </div>
+        }
+      >
+        <TelegramLoginPage {...props} />
+      </Suspense>
+    );
+  },
 });
 
 const inviteRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/invite/$token',
-  component: ParentInviteAcceptPage,
+  component: function SuspensedParentInviteAcceptPage(props: Record<string, unknown>) {
+    return (
+      <Suspense
+        fallback={
+          <div className="min-h-dvh flex items-center justify-center text-neutral-500">
+            Loading...
+          </div>
+        }
+      >
+        <ParentInviteAcceptPage {...props} />
+      </Suspense>
+    );
+  },
 });
 
 const authLayoutRoute = createRoute({
@@ -82,7 +163,7 @@ function AuthenticatedShell(): React.ReactElement {
   if (!authed) return <Navigate to="/login" />;
   if (me.isLoading || !me.data) {
     return (
-      <div aria-busy="true" className="min-h-dvh grid place-items-center text-slate-500">
+      <div aria-busy="true" className="min-h-dvh grid place-items-center text-neutral-500">
         Loading…
       </div>
     );
@@ -103,7 +184,11 @@ const dashboardRoute = createRoute({
 function DashboardRouteComponent(): React.ReactElement | null {
   const me = useCurrentUserQuery();
   if (!me.data) return null;
-  return <DashboardPage user={me.data} />;
+  return (
+    <Suspense fallback={<div className="p-8 text-neutral-500 text-center">Loading...</div>}>
+      <DashboardPage user={me.data} />
+    </Suspense>
+  );
 }
 
 const usersRoute = createRoute({
@@ -116,7 +201,11 @@ function UsersRouteComponent(): React.ReactElement | null {
   const me = useCurrentUserQuery();
   if (!me.data) return null;
   if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
-  return <UsersPage actorRole={me.data.role} />;
+  return (
+    <Suspense fallback={<div className="p-8 text-neutral-500 text-center">Loading...</div>}>
+      <UsersPage actorRole={me.data.role} />
+    </Suspense>
+  );
 }
 
 const classesRoute = createRoute({
@@ -129,7 +218,11 @@ function ClassesRouteComponent(): React.ReactElement | null {
   const me = useCurrentUserQuery();
   if (!me.data) return null;
   if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
-  return <ClassesPage />;
+  return (
+    <Suspense fallback={<div className="p-8 text-neutral-500 text-center">Loading...</div>}>
+      <ClassesPage />
+    </Suspense>
+  );
 }
 
 const studentsRoute = createRoute({
@@ -142,19 +235,47 @@ function StudentsRouteComponent(): React.ReactElement | null {
   const me = useCurrentUserQuery();
   if (!me.data) return null;
   if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
-  return <StudentsPage isAdmin={me.data.role === 'ADMIN' || me.data.role === 'SUPER_ADMIN'} />;
+  return (
+    <Suspense fallback={<div className="p-8 text-neutral-500 text-center">Loading...</div>}>
+      <StudentsPage isAdmin={me.data.role === 'ADMIN' || me.data.role === 'SUPER_ADMIN'} />
+    </Suspense>
+  );
 }
 
 const clubsRoute = createRoute({
   getParentRoute: () => authLayoutRoute,
   path: '/clubs',
-  component: ClubsPage,
+  component: function SuspensedClubsPage(props: Record<string, unknown>) {
+    return (
+      <Suspense
+        fallback={
+          <div className="min-h-dvh flex items-center justify-center text-neutral-500">
+            Loading...
+          </div>
+        }
+      >
+        <ClubsPage {...props} />
+      </Suspense>
+    );
+  },
 });
 
 const myClassRoute = createRoute({
   getParentRoute: () => authLayoutRoute,
   path: '/my-class',
-  component: MyClassPage,
+  component: function SuspensedMyClassPage(props: Record<string, unknown>) {
+    return (
+      <Suspense
+        fallback={
+          <div className="min-h-dvh flex items-center justify-center text-neutral-500">
+            Loading...
+          </div>
+        }
+      >
+        <MyClassPage {...props} />
+      </Suspense>
+    );
+  },
 });
 
 const subjectsRoute = createRoute({
@@ -167,7 +288,11 @@ function SubjectsRouteComponent(): React.ReactElement | null {
   const me = useCurrentUserQuery();
   if (!me.data) return null;
   if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
-  return <SubjectsPage actorRole={me.data.role} />;
+  return (
+    <Suspense fallback={<div className="p-8 text-neutral-500 text-center">Loading...</div>}>
+      <SubjectsPage actorRole={me.data.role} />
+    </Suspense>
+  );
 }
 
 const roomsRoute = createRoute({
@@ -180,7 +305,11 @@ function RoomsRouteComponent(): React.ReactElement | null {
   const me = useCurrentUserQuery();
   if (!me.data) return null;
   if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
-  return <RoomsPage actorRole={me.data.role} />;
+  return (
+    <Suspense fallback={<div className="p-8 text-neutral-500 text-center">Loading...</div>}>
+      <RoomsPage actorRole={me.data.role} />
+    </Suspense>
+  );
 }
 
 const scheduleRoute = createRoute({
@@ -192,19 +321,47 @@ const scheduleRoute = createRoute({
 function ScheduleRouteComponent(): React.ReactElement | null {
   const me = useCurrentUserQuery();
   if (!me.data) return null;
-  return <SchedulePage actorRole={me.data.role} />;
+  return (
+    <Suspense fallback={<div className="p-8 text-neutral-500 text-center">Loading...</div>}>
+      <SchedulePage actorRole={me.data.role} />
+    </Suspense>
+  );
 }
 
 const attendanceRoute = createRoute({
   getParentRoute: () => authLayoutRoute,
   path: '/attendance',
-  component: AttendancePage,
+  component: function SuspensedAttendancePage(props: Record<string, unknown>) {
+    return (
+      <Suspense
+        fallback={
+          <div className="min-h-dvh flex items-center justify-center text-neutral-500">
+            Loading...
+          </div>
+        }
+      >
+        <AttendancePage {...props} />
+      </Suspense>
+    );
+  },
 });
 
 const gradesRoute = createRoute({
   getParentRoute: () => authLayoutRoute,
   path: '/grades',
-  component: GradesPage,
+  component: function SuspensedGradesPage(props: Record<string, unknown>) {
+    return (
+      <Suspense
+        fallback={
+          <div className="min-h-dvh flex items-center justify-center text-neutral-500">
+            Loading...
+          </div>
+        }
+      >
+        <GradesPage {...props} />
+      </Suspense>
+    );
+  },
 });
 
 const billingRoute = createRoute({
@@ -217,7 +374,11 @@ function BillingRouteComponent(): React.ReactElement | null {
   const me = useCurrentUserQuery();
   if (!me.data) return null;
   if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
-  return <BillingPage />;
+  return (
+    <Suspense fallback={<div className="p-8 text-neutral-500 text-center">Loading...</div>}>
+      <BillingPage />
+    </Suspense>
+  );
 }
 
 const leadsRoute = createRoute({
@@ -230,7 +391,11 @@ function LeadsRouteComponent(): React.ReactElement | null {
   const me = useCurrentUserQuery();
   if (!me.data) return null;
   if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
-  return <LeadsPage />;
+  return (
+    <Suspense fallback={<div className="p-8 text-neutral-500 text-center">Loading...</div>}>
+      <LeadsPage />
+    </Suspense>
+  );
 }
 
 const notificationsRoute = createRoute({
@@ -243,7 +408,11 @@ function NotificationsRouteComponent(): React.ReactElement | null {
   const me = useCurrentUserQuery();
   if (!me.data) return null;
   if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
-  return <NotificationsPage />;
+  return (
+    <Suspense fallback={<div className="p-8 text-neutral-500 text-center">Loading...</div>}>
+      <NotificationsPage />
+    </Suspense>
+  );
 }
 
 const reportsRoute = createRoute({
@@ -256,7 +425,11 @@ function ReportsRouteComponent(): React.ReactElement | null {
   const me = useCurrentUserQuery();
   if (!me.data) return null;
   if (me.data.role === 'TEACHER') return <Navigate to="/my-class" />;
-  return <ReportsPage />;
+  return (
+    <Suspense fallback={<div className="p-8 text-neutral-500 text-center">Loading...</div>}>
+      <ReportsPage />
+    </Suspense>
+  );
 }
 
 const profileRoute = createRoute({
@@ -268,7 +441,11 @@ const profileRoute = createRoute({
 function ProfileRouteComponent(): React.ReactElement | null {
   const me = useCurrentUserQuery();
   if (!me.data) return null;
-  return <ProfilePage user={me.data} />;
+  return (
+    <Suspense fallback={<div className="p-8 text-neutral-500 text-center">Loading...</div>}>
+      <ProfilePage user={me.data} />
+    </Suspense>
+  );
 }
 
 const branchesRoute = createRoute({
@@ -283,7 +460,11 @@ function BranchesRouteComponent(): React.ReactElement | null {
   if (me.data.role === 'TEACHER' || me.data.role === 'PARENT') {
     return <Navigate to="/" />;
   }
-  return <BranchesPage />;
+  return (
+    <Suspense fallback={<div className="p-8 text-neutral-500 text-center">Loading...</div>}>
+      <BranchesPage />
+    </Suspense>
+  );
 }
 
 const routeTree = rootRoute.addChildren([

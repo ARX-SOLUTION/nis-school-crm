@@ -70,14 +70,14 @@ export function CreateLeadModal({
     <Dialog open={open} onClose={onClose} title="Yangi lid (nomzod) qo'shish">
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="rounded-lg bg-rose-50 p-3 text-xs font-medium text-rose-800 border border-rose-200">
+          <div className="rounded-lg bg-[#FEE2E2] p-3 text-xs font-medium text-error border border-error">
             {error}
           </div>
         )}
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            O'quvchi ismi familiyasi <span className="text-rose-500">*</span>
+          <label className="block text-xs font-semibold text-tertiary mb-1">
+            O'quvchi ismi familiyasi <span className="text-error">*</span>
           </label>
           <input
             type="text"
@@ -85,13 +85,13 @@ export function CreateLeadModal({
             onChange={(e) => setFullName(e.target.value)}
             placeholder="Masalan: Aliyev Valijon"
             required
-            className="w-full text-sm rounded-lg border border-slate-300 p-2 text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="w-full text-sm rounded-lg border border-border p-2 text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            Telefon raqam <span className="text-rose-500">*</span>
+          <label className="block text-xs font-semibold text-tertiary mb-1">
+            Telefon raqam <span className="text-error">*</span>
           </label>
           <input
             type="tel"
@@ -99,30 +99,30 @@ export function CreateLeadModal({
             onChange={(e) => setPhone(e.target.value)}
             placeholder="+998901234567"
             required
-            className="w-full text-sm rounded-lg border border-slate-300 p-2 text-slate-900 bg-white font-mono focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="w-full text-sm rounded-lg border border-border p-2 text-tertiary bg-surface font-mono focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Ota-ona ismi</label>
+            <label className="block text-xs font-semibold text-tertiary mb-1">Ota-ona ismi</label>
             <input
               type="text"
               value={parentName}
               onChange={(e) => setParentName(e.target.value)}
               placeholder="Aliyev Olim"
-              className="w-full text-sm rounded-lg border border-slate-300 p-2 text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="w-full text-sm rounded-lg border border-border p-2 text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="block text-xs font-semibold text-tertiary mb-1">
               Mo'ljallangan sinf
             </label>
             <select
               value={targetGradeLevel}
               onChange={(e) => setTargetGradeLevel(Number(e.target.value))}
-              className="w-full text-sm rounded-lg border border-slate-300 p-2 text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="w-full text-sm rounded-lg border border-border p-2 text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((lvl) => (
                 <option key={lvl} value={lvl}>
@@ -134,13 +134,13 @@ export function CreateLeadModal({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
+          <label className="block text-xs font-semibold text-tertiary mb-1">
             Qayerdan keldi (Manba)
           </label>
           <select
             value={source}
             onChange={(e) => setSource(e.target.value as LeadSource)}
-            className="w-full text-sm rounded-lg border border-slate-300 p-2 text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="w-full text-sm rounded-lg border border-border p-2 text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
           >
             {SOURCE_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -151,7 +151,7 @@ export function CreateLeadModal({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
+          <label className="block text-xs font-semibold text-tertiary mb-1">
             Eslatma yoki izoh
           </label>
           <textarea
@@ -159,11 +159,11 @@ export function CreateLeadModal({
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
             placeholder="Qiziqishlari, dars jadvali xohishi..."
-            className="w-full text-sm rounded-lg border border-slate-300 p-2 text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="w-full text-sm rounded-lg border border-border p-2 text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
 
-        <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <div className="flex justify-end gap-2 pt-3 border-t border-border">
           <Button variant="outline" type="button" onClick={onClose} disabled={isSubmitting}>
             Bekor qilish
           </Button>

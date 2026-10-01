@@ -11,6 +11,7 @@ import { RoleName } from '../../common/enums/role.enum';
 import { User } from '../users/entities/user.entity';
 import { SendBroadcastDto } from './dto/send-broadcast.dto';
 import { NotificationLog } from './entities/notification-log.entity';
+import { EventsGateway } from '../events/events.gateway';
 
 @Injectable()
 export class NotificationsService {
@@ -20,6 +21,7 @@ export class NotificationsService {
     @InjectRepository(User)
     private readonly usersRepo: Repository<User>,
     @Optional() private readonly eventBus?: EventBusService,
+    private readonly eventsGateway?: EventsGateway,
   ) {}
 
   async sendBroadcast(
@@ -65,6 +67,19 @@ export class NotificationsService {
     });
 
     const saved = await this.logsRepo.save(log);
+
+    if (this.eventsGateway) {
+      if (dto.target === 'ALL_PARENTS') {
+        this.eventsGateway.broadcastToRole('PARENT', 'notification.new', saved);
+      } else if (dto.target === 'ALL_TEACHERS') {
+        this.eventsGateway.broadcastToRole('TEACHER', 'notification.new', saved);
+      } else {
+        this.eventsGateway.broadcastToRole('PARENT', 'notification.new', saved);
+        this.eventsGateway.broadcastToRole('TEACHER', 'notification.new', saved);
+        this.eventsGateway.broadcastToRole('MANAGER', 'notification.new', saved);
+        this.eventsGateway.broadcastToRole('ADMIN', 'notification.new', saved);
+      }
+    }
 
     return {
       id: saved.id,

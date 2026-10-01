@@ -34,11 +34,11 @@ export function DevPayloadInput({ onAuth }: DevPayloadInputProps): React.ReactEl
 
   return (
     <div className="space-y-2">
-      <p className="text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2">
+      <p className="text-xs font-medium text-neutral-500 bg-muted-surface border border-border rounded px-3 py-2">
         DEV FALLBACK: VITE_TELEGRAM_BOT_USERNAME is not set. Paste a pre-signed Telegram auth
         payload below to test the backend flow.
       </p>
-      <label htmlFor="dev-payload" className="block text-sm font-medium text-slate-700">
+      <label htmlFor="dev-payload" className="block text-sm font-medium text-tertiary">
         Telegram auth payload (JSON)
       </label>
       <textarea
@@ -49,8 +49,8 @@ export function DevPayloadInput({ onAuth }: DevPayloadInputProps): React.ReactEl
         placeholder='{"id":123456,"first_name":"Test","auth_date":1700000000,"hash":"abc..."}'
         aria-describedby={parseError ? 'dev-payload-error' : undefined}
         aria-invalid={parseError !== null || undefined}
-        className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-mono
-          placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600
+        className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm font-mono
+          placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary
           aria-[invalid=true]:border-red-400"
       />
       {parseError ? (

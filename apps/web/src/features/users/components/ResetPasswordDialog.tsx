@@ -45,7 +45,7 @@ export function ResetPasswordDialog({ open, user, onClose }: Props): React.React
     >
       {generatedPassword ? (
         <div className="space-y-4">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-neutral-500">
             {notified
               ? 'Password generated. A Telegram message has been queued for this user.'
               : 'Password generated. The user has no linked Telegram account: deliver this manually.'}
@@ -57,7 +57,7 @@ export function ResetPasswordDialog({ open, user, onClose }: Props): React.React
         </div>
       ) : (
         <div className="space-y-4">
-          <p className="text-sm text-slate-700">
+          <p className="text-sm text-tertiary">
             This will invalidate the user&apos;s current password and revoke all of their active
             sessions.
           </p>

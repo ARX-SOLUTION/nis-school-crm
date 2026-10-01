@@ -8,12 +8,15 @@ import { AttendanceQueryDto } from './dto/attendance-query.dto';
 import { BulkAttendanceRequestDto } from './dto/bulk-attendance.dto';
 import { AttendanceRecord } from './entities/attendance.entity';
 
+import { EventsGateway } from '../events/events.gateway';
+
 @Injectable()
 export class AttendanceService {
   constructor(
     @InjectRepository(AttendanceRecord)
     private readonly attendanceRepo: Repository<AttendanceRecord>,
     @Optional() private readonly eventBus?: EventBusService,
+    private readonly eventsGateway?: EventsGateway,
   ) {}
 
   async bulkRecord(
@@ -56,6 +59,25 @@ export class AttendanceService {
             remarks: item.remarks ?? null,
           })
           .catch(() => {});
+      }
+      if (this.eventsGateway) {
+        // Broadcast to relevant role or class (for now, globally to all parents or teachers listening)
+        // Ideally we would broadcast to specific parents, but for now we broadcast to roles.
+        this.eventsGateway.broadcastToRole('TEACHER', 'attendance.updated', {
+          classId: dto.classId,
+          studentId: item.studentId,
+          date: dto.date,
+        });
+        this.eventsGateway.broadcastToRole('ADMIN', 'attendance.updated', {
+          classId: dto.classId,
+          studentId: item.studentId,
+          date: dto.date,
+        });
+        this.eventsGateway.broadcastToRole('MANAGER', 'attendance.updated', {
+          classId: dto.classId,
+          studentId: item.studentId,
+          date: dto.date,
+        });
       }
     }
 

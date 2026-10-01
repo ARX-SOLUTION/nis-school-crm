@@ -61,7 +61,7 @@ export function CreateUserDialog({ open, onClose, actorRole }: Props): React.Rea
     <Dialog open={open} onClose={close} title="Create user" description="Provision a new account">
       {generatedPassword ? (
         <div className="space-y-4">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-neutral-500">
             Account created. Deliver this temporary password to the user. They will be required to
             change it on first login.
           </p>
@@ -81,7 +81,7 @@ export function CreateUserDialog({ open, onClose, actorRole }: Props): React.Rea
           <Field label="Role" error={errors.role?.message} htmlFor="create-user-role">
             <select
               id="create-user-role"
-              className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm"
+              className="h-10 w-full rounded-lg border border-border bg-surface px-3 text-sm"
               {...register('role')}
             >
               {allowedRoles.map((r) => (

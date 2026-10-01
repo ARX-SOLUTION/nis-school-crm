@@ -58,8 +58,8 @@ export function BillingPage(): React.ReactElement {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Moliya va To'lovlar</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl font-bold tracking-tight text-tertiary">Moliya va To'lovlar</h1>
+          <p className="text-sm text-neutral-500 mt-1">
             O'quvchilar shartnoma to'lovlari hisobi, tushumlar tahlili va qarzdorlar monitoringi.
           </p>
         </div>
@@ -72,7 +72,7 @@ export function BillingPage(): React.ReactElement {
               setSelectedMonth(e.target.value);
               setPaymentsPage(1);
             }}
-            className="text-sm rounded-lg border border-slate-300 px-3 py-2 text-slate-800 bg-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="text-sm rounded-lg border border-border px-3 py-2 text-tertiary bg-surface font-medium focus:outline-none focus:ring-2 focus:ring-primary"
           />
           <Button variant="primary" onClick={() => handleOpenModal()}>
             + To'lov qabul qilish
@@ -82,9 +82,9 @@ export function BillingPage(): React.ReactElement {
 
       {/* Success banner */}
       {successMessage && (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-medium text-emerald-800 flex items-center gap-2">
+        <div className="rounded-xl border border-success bg-[#E8F7D0] p-4 text-sm font-medium text-success flex items-center gap-2">
           <svg
-            className="w-5 h-5 text-emerald-600"
+            className="w-5 h-5 text-success"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -98,64 +98,66 @@ export function BillingPage(): React.ReactElement {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Collected */}
-        <div className="p-5 bg-white rounded-xl border border-slate-200 shadow-xs">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <div className="p-5 bg-surface rounded-xl border border-border shadow-xs">
+          <div className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
             Jami tushum ({selectedMonth})
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono tabular-nums text-emerald-600">
+          <div className="mt-2 text-2xl font-bold font-mono tabular-nums text-success">
             {statsLoading ? '...' : formatUzbekSum(stats?.totalCollectedThisMonth ?? 0)}
           </div>
-          <div className="mt-1 text-xs text-slate-400">O'quvchilar tomonidan to'langan</div>
+          <div className="mt-1 text-xs text-neutral-400">O'quvchilar tomonidan to'langan</div>
         </div>
 
         {/* Expected */}
-        <div className="p-5 bg-white rounded-xl border border-slate-200 shadow-xs">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <div className="p-5 bg-surface rounded-xl border border-border shadow-xs">
+          <div className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
             Kutilayotgan summa
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono tabular-nums text-slate-900">
+          <div className="mt-2 text-2xl font-bold font-mono tabular-nums text-tertiary">
             {statsLoading ? '...' : formatUzbekSum(stats?.expectedThisMonth ?? 0)}
           </div>
-          <div className="mt-1 text-xs text-slate-400">Faol o'quvchilar shartnomalari bo'yicha</div>
+          <div className="mt-1 text-xs text-neutral-400">
+            Faol o'quvchilar shartnomalari bo'yicha
+          </div>
         </div>
 
         {/* Collection Rate */}
-        <div className="p-5 bg-white rounded-xl border border-slate-200 shadow-xs">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <div className="p-5 bg-surface rounded-xl border border-border shadow-xs">
+          <div className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
             Yig'ish ko'rsatkichi
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-blue-600">
+          <div className="mt-2 text-2xl font-bold font-mono text-secondary">
             {statsLoading ? '...' : `${stats?.collectionRate ?? 0}%`}
           </div>
-          <div className="w-full bg-slate-100 rounded-full h-2 mt-2 overflow-hidden">
+          <div className="w-full bg-muted-surface rounded-full h-2 mt-2 overflow-hidden">
             <div
-              className="bg-blue-600 h-2 rounded-full transition-all duration-500"
+              className="bg-primary h-2 rounded-full transition-all duration-500"
               style={{ width: `${Math.min(100, stats?.collectionRate ?? 0)}%` }}
             />
           </div>
         </div>
 
         {/* Debtors count */}
-        <div className="p-5 bg-white rounded-xl border border-slate-200 shadow-xs">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <div className="p-5 bg-surface rounded-xl border border-border shadow-xs">
+          <div className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
             Qarzdor o'quvchilar
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-rose-600">
+          <div className="mt-2 text-2xl font-bold font-mono text-error">
             {statsLoading ? '...' : (stats?.debtorCount ?? 0)} nafar
           </div>
-          <div className="mt-1 text-xs text-slate-400">To'lov muddati kechikkan</div>
+          <div className="mt-1 text-xs text-neutral-400">To'lov muddati kechikkan</div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+      <div className="flex items-center gap-2 border-b border-border pb-3">
         <button
           type="button"
           onClick={() => setActiveTab('payments')}
           className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${
             activeTab === 'payments'
-              ? 'bg-blue-600 text-white shadow-xs'
-              : 'bg-white text-slate-600 hover:bg-slate-100'
+              ? 'bg-primary text-tertiary shadow-xs'
+              : 'bg-surface text-neutral-500 hover:bg-muted-surface'
           }`}
         >
           To'lovlar tarixi ({payments.length})
@@ -165,8 +167,8 @@ export function BillingPage(): React.ReactElement {
           onClick={() => setActiveTab('debtors')}
           className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${
             activeTab === 'debtors'
-              ? 'bg-blue-600 text-white shadow-xs'
-              : 'bg-white text-slate-600 hover:bg-slate-100'
+              ? 'bg-primary text-tertiary shadow-xs'
+              : 'bg-surface text-neutral-500 hover:bg-muted-surface'
           }`}
         >
           Qarzdorlar ro'yxati ({debtors.length})
@@ -175,7 +177,7 @@ export function BillingPage(): React.ReactElement {
 
       {/* Tab content */}
       {activeTab === 'payments' ? (
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+        <div className="bg-surface rounded-xl border border-border overflow-hidden shadow-xs">
           <PaymentsTable data={payments} isLoading={paymentsLoading} />
           {paymentsData && paymentsData.meta ? (
             <Pagination

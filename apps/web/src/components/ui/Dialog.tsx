@@ -57,7 +57,7 @@ export function Dialog({
       aria-labelledby={titleId}
       aria-describedby={description ? descriptionId : undefined}
       className={cn(
-        'rounded-lg p-0 border border-slate-200 shadow-lg backdrop:bg-slate-900/40',
+        'rounded-lg p-0 border border-border shadow-lg backdrop:bg-tertiary/40',
         'w-full max-w-lg',
         className,
       )}
@@ -70,7 +70,7 @@ export function Dialog({
           {title}
         </h2>
         {description ? (
-          <p id={descriptionId} className="mt-1 text-sm text-slate-600">
+          <p id={descriptionId} className="mt-1 text-sm text-neutral-500">
             {description}
           </p>
         ) : null}

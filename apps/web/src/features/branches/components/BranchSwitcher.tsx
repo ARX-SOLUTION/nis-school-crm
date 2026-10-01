@@ -46,15 +46,15 @@ export function BranchSwitcher(): React.ReactElement {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        aria-label="Filialni tanlash"
-        className="min-h-[44px] flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200/80 bg-slate-50/70 hover:bg-slate-100 text-slate-800 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+        aria-label="Select Branch"
+        className="min-h-[44px] flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-muted-surface hover:bg-muted-surface text-tertiary text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         aria-haspopup="true"
         aria-expanded={open}
-        title="Filialni tanlash"
+        title="Select Branch"
       >
         {/* Building Icon */}
         <svg
-          className="h-4 w-4 text-blue-600 shrink-0"
+          className="h-4 w-4 text-secondary shrink-0"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -72,8 +72,8 @@ export function BranchSwitcher(): React.ReactElement {
 
         {/* Chevron Icon */}
         <svg
-          className={`h-3.5 w-3.5 text-slate-400 transition-transform duration-150 ${
-            open ? 'rotate-180 text-blue-600' : ''
+          className={`h-3.5 w-3.5 text-neutral-400 transition-transform duration-150 ${
+            open ? 'rotate-180 text-secondary' : ''
           }`}
           fill="none"
           viewBox="0 0 24 24"
@@ -86,18 +86,18 @@ export function BranchSwitcher(): React.ReactElement {
 
       {open ? (
         <div
-          className="absolute left-0 mt-2 w-64 rounded-xl bg-white shadow-xl border border-slate-200 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100"
+          className="absolute left-0 mt-2 w-64 rounded-xl bg-surface shadow-xl border border-border py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100"
           role="menu"
         >
-          <div className="px-3 py-1.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+          <div className="px-3 py-1.5 text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
             Filiallar (Branches)
           </div>
 
           <button
             type="button"
             onClick={() => handleSelect('all')}
-            className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-slate-50 transition-colors ${
-              activeBranchId === 'all' ? 'font-bold text-blue-700 bg-blue-50/50' : 'text-slate-700'
+            className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-muted-surface transition-colors ${
+              activeBranchId === 'all' ? 'font-bold text-secondary bg-[#DBEAFE]' : 'text-tertiary'
             }`}
             role="menuitem"
           >
@@ -107,7 +107,7 @@ export function BranchSwitcher(): React.ReactElement {
             </div>
             {activeBranchId === 'all' ? (
               <svg
-                className="h-4 w-4 text-blue-600"
+                className="h-4 w-4 text-secondary"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -122,7 +122,7 @@ export function BranchSwitcher(): React.ReactElement {
             ) : null}
           </button>
 
-          <div className="my-1 border-t border-slate-100" />
+          <div className="my-1 border-t border-border" />
 
           {branches.map((b) => {
             const isSelected = b.id === activeBranchId;
@@ -131,21 +131,21 @@ export function BranchSwitcher(): React.ReactElement {
                 key={b.id}
                 type="button"
                 onClick={() => handleSelect(b.id)}
-                className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-slate-50 transition-colors ${
-                  isSelected ? 'font-bold text-blue-700 bg-blue-50/50' : 'text-slate-700'
+                className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-muted-surface transition-colors ${
+                  isSelected ? 'font-bold text-secondary bg-[#DBEAFE]' : 'text-tertiary'
                 }`}
                 role="menuitem"
               >
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
+                  <span className="h-2 w-2 rounded-full bg-success shrink-0" />
                   <div className="truncate">
                     <div>{b.name}</div>
-                    <div className="text-[10px] text-slate-400 font-mono">{b.code}</div>
+                    <div className="text-[10px] text-neutral-400 font-mono">{b.code}</div>
                   </div>
                 </div>
                 {isSelected ? (
                   <svg
-                    className="h-4 w-4 text-blue-600 shrink-0"
+                    className="h-4 w-4 text-secondary shrink-0"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -162,12 +162,12 @@ export function BranchSwitcher(): React.ReactElement {
             );
           })}
 
-          <div className="my-1 border-t border-slate-100" />
+          <div className="my-1 border-t border-border" />
 
           <Link
             to="/branches"
             onClick={() => setOpen(false)}
-            className="w-full text-left px-3 py-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50/50 flex items-center gap-1.5 font-medium transition-colors"
+            className="w-full text-left px-3 py-2 text-xs text-secondary hover:text-secondary hover:bg-[#DBEAFE] flex items-center gap-1.5 font-medium transition-colors"
           >
             <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path

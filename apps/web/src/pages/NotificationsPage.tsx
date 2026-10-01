@@ -37,16 +37,16 @@ export function NotificationsPage(): React.ReactElement {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-bold tracking-tight text-tertiary">
             Xabarnomalar va Bildirishnomalar markazi
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-neutral-500">
             Telegram boti orqali avtomatik ogohlantirishlar va ommaviy xabarlar boshqaruvi
           </p>
         </div>
         <Button
           onClick={() => setModalOpen(true)}
-          className="min-h-[44px] px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm flex items-center justify-center gap-2"
+          className="min-h-[44px] px-4 bg-primary hover:bg-primary text-tertiary font-medium shadow-sm flex items-center justify-center gap-2"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -57,46 +57,46 @@ export function NotificationsPage(): React.ReactElement {
 
       {/* KPI Stats Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
-          <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+        <div className="bg-surface p-4 rounded-lg border border-border shadow-sm">
+          <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">
             Jami yuborilgan
           </p>
-          <p className="mt-2 text-2xl font-bold text-slate-900">{stats.total}</p>
-          <p className="mt-1 text-xs text-slate-500">Barcha xabarnomalar</p>
+          <p className="mt-2 text-2xl font-bold text-tertiary">{stats.total}</p>
+          <p className="mt-1 text-xs text-neutral-500">Barcha xabarnomalar</p>
         </div>
-        <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
-          <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+        <div className="bg-surface p-4 rounded-lg border border-border shadow-sm">
+          <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">
             Ommaviy e'lonlar
           </p>
-          <p className="mt-2 text-2xl font-bold text-blue-600">{stats.announcements}</p>
-          <p className="mt-1 text-xs text-slate-500">Admin va menejerlar xabarlari</p>
+          <p className="mt-2 text-2xl font-bold text-secondary">{stats.announcements}</p>
+          <p className="mt-1 text-xs text-neutral-500">Admin va menejerlar xabarlari</p>
         </div>
-        <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
-          <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+        <div className="bg-surface p-4 rounded-lg border border-border shadow-sm">
+          <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">
             Avtomat bildirishnomalar
           </p>
-          <p className="mt-2 text-2xl font-bold text-amber-600">{stats.automated}</p>
-          <p className="mt-1 text-xs text-slate-500">Davomat, baholar va to'lovlar</p>
+          <p className="mt-2 text-2xl font-bold text-neutral-500">{stats.automated}</p>
+          <p className="mt-1 text-xs text-neutral-500">Davomat, baholar va to'lovlar</p>
         </div>
-        <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
-          <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+        <div className="bg-surface p-4 rounded-lg border border-border shadow-sm">
+          <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">
             Yetkazilgan qabul qiluvchilar
           </p>
-          <p className="mt-2 text-2xl font-bold text-emerald-600">{stats.totalDelivered}</p>
-          <p className="mt-1 text-xs text-slate-500">Telegram bot orqali</p>
+          <p className="mt-2 text-2xl font-bold text-success">{stats.totalDelivered}</p>
+          <p className="mt-1 text-xs text-neutral-500">Telegram bot orqali</p>
         </div>
       </div>
 
       {/* Filter Tabs & Content */}
-      <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 space-y-4">
-        <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-3">
+      <div className="bg-surface rounded-lg border border-border shadow-sm p-4 space-y-4">
+        <div className="flex flex-wrap items-center gap-2 border-b border-border pb-3">
           <button
             type="button"
             onClick={() => setActiveFilter('ALL')}
-            className={`min-h-[44px] px-4 text-xs font-semibold rounded-md transition-colors ${
+            className={`min-h-[44px] px-4 text-xs font-semibold rounded-lg transition-colors ${
               activeFilter === 'ALL'
-                ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-[#DBEAFE] text-secondary border border-secondary/20'
+                : 'text-neutral-500 hover:bg-muted-surface'
             }`}
           >
             Barchasi ({logs.length})
@@ -104,10 +104,10 @@ export function NotificationsPage(): React.ReactElement {
           <button
             type="button"
             onClick={() => setActiveFilter('ANNOUNCEMENT')}
-            className={`min-h-[44px] px-4 text-xs font-semibold rounded-md transition-colors ${
+            className={`min-h-[44px] px-4 text-xs font-semibold rounded-lg transition-colors ${
               activeFilter === 'ANNOUNCEMENT'
-                ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-[#DBEAFE] text-secondary border border-secondary/20'
+                : 'text-neutral-500 hover:bg-muted-surface'
             }`}
           >
             Ommaviy e'lonlar
@@ -115,10 +115,10 @@ export function NotificationsPage(): React.ReactElement {
           <button
             type="button"
             onClick={() => setActiveFilter('ATTENDANCE')}
-            className={`min-h-[44px] px-4 text-xs font-semibold rounded-md transition-colors ${
+            className={`min-h-[44px] px-4 text-xs font-semibold rounded-lg transition-colors ${
               activeFilter === 'ATTENDANCE'
-                ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-muted-surface text-neutral-500 border border-border'
+                : 'text-neutral-500 hover:bg-muted-surface'
             }`}
           >
             Davomat ogohlantirishlari
@@ -126,10 +126,10 @@ export function NotificationsPage(): React.ReactElement {
           <button
             type="button"
             onClick={() => setActiveFilter('GRADE')}
-            className={`min-h-[44px] px-4 text-xs font-semibold rounded-md transition-colors ${
+            className={`min-h-[44px] px-4 text-xs font-semibold rounded-lg transition-colors ${
               activeFilter === 'GRADE'
                 ? 'bg-purple-50 text-purple-700 border border-purple-200'
-                : 'text-slate-600 hover:bg-slate-100'
+                : 'text-neutral-500 hover:bg-muted-surface'
             }`}
           >
             Baholar
@@ -137,10 +137,10 @@ export function NotificationsPage(): React.ReactElement {
           <button
             type="button"
             onClick={() => setActiveFilter('PAYMENT')}
-            className={`min-h-[44px] px-4 text-xs font-semibold rounded-md transition-colors ${
+            className={`min-h-[44px] px-4 text-xs font-semibold rounded-lg transition-colors ${
               activeFilter === 'PAYMENT'
-                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-[#E8F7D0] text-success border border-success'
+                : 'text-neutral-500 hover:bg-muted-surface'
             }`}
           >
             To'lov kvitansiyalari

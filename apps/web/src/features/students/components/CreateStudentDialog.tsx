@@ -85,7 +85,7 @@ export function CreateStudentDialog({ open, onClose, classes }: Props): React.Re
         <Field label="Gender (optional)" htmlFor="stu-gender" error={errors.gender?.message}>
           <select
             id="stu-gender"
-            className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm"
+            className="h-10 w-full rounded-lg border border-border bg-surface px-3 text-sm"
             {...register('gender')}
           >
             <option value="">Select gender</option>
@@ -96,7 +96,7 @@ export function CreateStudentDialog({ open, onClose, classes }: Props): React.Re
         <Field label="Class (optional)" htmlFor="stu-class" error={errors.classId?.message}>
           <select
             id="stu-class"
-            className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm"
+            className="h-10 w-full rounded-lg border border-border bg-surface px-3 text-sm"
             {...register('classId')}
           >
             <option value="">Unassigned</option>

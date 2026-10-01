@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Ip,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -108,6 +109,20 @@ export class AuthController {
   async me(@CurrentUser() current: AuthenticatedUser): Promise<UserResponseDto> {
     const user = await this.users.getById(current.id);
     return UserResponseDto.fromEntity(user);
+  }
+
+  @Patch('me/prefs')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update my notification preferences' })
+  async updatePrefs(
+    @CurrentUser() current: AuthenticatedUser,
+    @Body() dto: Record<string, boolean>,
+  ): Promise<UserResponseDto> {
+    const updated = await this.users.update({ id: current.id, role: current.role }, current.id, {
+      notificationPrefs: dto,
+    });
+    return UserResponseDto.fromEntity(updated);
   }
 
   // ---------------------------------------------------------------------------

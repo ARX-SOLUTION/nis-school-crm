@@ -13,6 +13,7 @@ const user = (over: Partial<UserResponseDto> = {}): UserResponseDto => ({
   telegramUsername: null,
   isActive: true,
   mustChangePassword: false,
+  notificationPrefs: {},
   lastLoginAt: null,
   createdAt: new Date().toISOString(),
   ...over,

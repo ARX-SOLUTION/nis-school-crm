@@ -3,6 +3,8 @@ import { Link, useRouterState } from '@tanstack/react-router';
 import type { UserResponseDto } from '@nis/shared';
 import { useLogoutMutation } from '@/features/auth/api/use-logout-mutation';
 import { BranchSwitcher } from '@/features/branches/components/BranchSwitcher';
+import { useSocketSetup } from '@/hooks/useSocketSetup';
+import { Spotlight } from '@/components/ui/Spotlight';
 
 interface Props {
   user: UserResponseDto;
@@ -61,6 +63,7 @@ function SidebarExpandIcon({ className = 'h-5 w-5' }: { className?: string }): R
 }
 
 export function AppShell({ user, children }: Props): React.ReactElement {
+  useSocketSetup();
   const logout = useLogoutMutation();
   const currentPath = useRouterState({ select: (s) => s.location.pathname });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -483,7 +486,7 @@ export function AppShell({ user, children }: Props): React.ReactElement {
           },
           {
             to: '/notifications',
-            label: 'Xabarnomalar',
+            label: 'Notifications',
             icon: (_active) => (
               <svg
                 className="h-5 w-5"
@@ -606,19 +609,20 @@ export function AppShell({ user, children }: Props): React.ReactElement {
   const initials = getInitials(user.fullName);
 
   return (
-    <div className="min-h-dvh flex bg-slate-50 text-slate-900">
+    <div className="min-h-dvh flex bg-muted-surface text-tertiary">
+      <Spotlight />
       {/* ------------------------------------------------------------- */}
       {/* 1. DESKTOP LEFT SIDEBAR                                       */}
       {/* ------------------------------------------------------------- */}
       <aside
         aria-label="Desktop Sidebar"
-        className={`hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 z-30 bg-white border-r border-slate-200 transition-all duration-200 ease-in-out ${
+        className={`hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 z-30 bg-surface border-r border-border/50 transition-all duration-200 ease-in-out ${
           sidebarCollapsed ? 'lg:w-[68px]' : 'lg:w-64'
         }`}
       >
         {/* Brand / Logo + Toggle */}
         <div
-          className={`flex h-16 items-center border-b border-slate-100 transition-all duration-200 ${
+          className={`flex h-16 items-center border-b border-border transition-all duration-200 ${
             sidebarCollapsed ? 'justify-center px-2' : 'justify-between px-4'
           }`}
         >
@@ -626,11 +630,11 @@ export function AppShell({ user, children }: Props): React.ReactElement {
             <button
               type="button"
               onClick={toggleSidebar}
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-muted-surface text-tertiary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               aria-label="Expand sidebar"
               title="Expand sidebar (Ctrl+B)"
             >
-              <div className="h-9 w-9 rounded-lg bg-blue-700 text-white font-bold flex items-center justify-center text-sm shadow-sm tracking-wide">
+              <div className="h-9 w-9 rounded-lg bg-primary text-tertiary font-bold flex items-center justify-center text-sm shadow-sm tracking-wide">
                 NIS
               </div>
             </button>
@@ -638,16 +642,16 @@ export function AppShell({ user, children }: Props): React.ReactElement {
             <>
               <Link
                 to="/"
-                className="flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded"
+                className="flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
               >
-                <div className="h-9 w-9 rounded-lg bg-blue-700 text-white font-bold flex items-center justify-center text-sm shadow-sm tracking-wide shrink-0">
+                <div className="h-9 w-9 rounded-lg bg-primary text-tertiary font-bold flex items-center justify-center text-sm shadow-sm tracking-wide shrink-0">
                   NIS
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="font-semibold text-slate-900 text-base leading-tight tracking-tight truncate">
+                  <span className="font-semibold text-tertiary text-base leading-tight tracking-tight truncate">
                     Nordic CRM
                   </span>
-                  <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider truncate">
+                  <span className="text-[11px] font-medium text-neutral-500 uppercase tracking-wider truncate">
                     International School
                   </span>
                 </div>
@@ -655,7 +659,7 @@ export function AppShell({ user, children }: Props): React.ReactElement {
               <button
                 type="button"
                 onClick={toggleSidebar}
-                className="min-h-[44px] min-w-[44px] p-2 inline-flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+                className="min-h-[44px] min-w-[44px] p-2 inline-flex items-center justify-center rounded-lg text-neutral-500 hover:bg-muted-surface hover:text-tertiary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 aria-label="Collapse sidebar"
                 title="Collapse sidebar (Ctrl+B)"
               >
@@ -685,11 +689,11 @@ export function AppShell({ user, children }: Props): React.ReactElement {
                     sidebarCollapsed ? 'justify-center px-2' : 'gap-3 px-3'
                   } ${
                     active
-                      ? 'bg-blue-50 text-blue-700 font-semibold'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                      ? 'bg-[#DBEAFE] text-secondary font-semibold'
+                      : 'text-neutral-500 hover:text-tertiary hover:bg-muted-surface'
                   }`}
                 >
-                  <span className={`shrink-0 ${active ? 'text-blue-700' : 'text-slate-400'}`}>
+                  <span className={`shrink-0 ${active ? 'text-secondary' : 'text-neutral-400'}`}>
                     {item.icon(active)}
                   </span>
                   {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
@@ -700,16 +704,16 @@ export function AppShell({ user, children }: Props): React.ReactElement {
 
           {/* Sidebar Footer Info */}
           {!sidebarCollapsed ? (
-            <div className="pt-4 border-t border-slate-100 text-xs text-slate-400 px-2 space-y-1">
-              <div className="font-medium text-slate-600">NIS Tashkent</div>
+            <div className="pt-4 border-t border-border text-xs text-neutral-500 px-2 space-y-1">
+              <div className="font-medium text-neutral-500">NIS Tashkent</div>
               <div>Academic Year 2026-2027</div>
             </div>
           ) : (
-            <div className="pt-4 border-t border-slate-100 flex justify-center">
+            <div className="pt-4 border-t border-border flex justify-center">
               <button
                 type="button"
                 onClick={toggleSidebar}
-                className="min-h-[44px] min-w-[44px] p-2 inline-flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                className="min-h-[44px] min-w-[44px] p-2 inline-flex items-center justify-center rounded-lg text-neutral-400 hover:bg-muted-surface hover:text-tertiary transition-colors"
                 aria-label="Expand sidebar"
                 title="Expand sidebar (Ctrl+B)"
               >
@@ -727,29 +731,29 @@ export function AppShell({ user, children }: Props): React.ReactElement {
         <div className="lg:hidden fixed inset-0 z-50 flex" role="dialog" aria-modal="true">
           {/* Overlay backdrop */}
           <div
-            className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-tertiary/40 backdrop-blur-xs transition-opacity"
             onClick={() => setMobileMenuOpen(false)}
             aria-hidden="true"
           />
 
           {/* Drawer content */}
-          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white shadow-2xl border-r border-slate-200">
+          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-surface shadow-2xl border-r border-border/50">
             {/* Drawer Header */}
-            <div className="h-16 px-6 border-b border-slate-100 flex items-center justify-between">
+            <div className="h-16 px-6 border-b border-border flex items-center justify-between">
               <Link
                 to="/"
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-2.5"
               >
-                <div className="h-8 w-8 rounded-lg bg-blue-700 text-white font-bold flex items-center justify-center text-sm shadow-sm">
+                <div className="h-8 w-8 rounded-lg bg-primary text-tertiary font-bold flex items-center justify-center text-sm shadow-sm">
                   NIS
                 </div>
-                <span className="font-semibold text-slate-900 text-base">Nordic CRM</span>
+                <span className="font-semibold text-tertiary text-base">Nordic CRM</span>
               </Link>
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(false)}
-                className="min-h-[44px] min-w-[44px] p-2 inline-flex items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className="min-h-[44px] min-w-[44px] p-2 inline-flex items-center justify-center rounded-lg text-neutral-500 hover:bg-muted-surface focus:outline-none focus:ring-2 focus:ring-primary"
                 aria-label="Close sidebar"
               >
                 <svg
@@ -779,11 +783,11 @@ export function AppShell({ user, children }: Props): React.ReactElement {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`min-h-[44px] px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-3 transition-colors ${
                       active
-                        ? 'bg-blue-50 text-blue-700 font-semibold'
-                        : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                        ? 'bg-[#DBEAFE] text-secondary font-semibold'
+                        : 'text-tertiary hover:bg-muted-surface hover:text-tertiary'
                     }`}
                   >
-                    <span className={active ? 'text-blue-700' : 'text-slate-400'}>
+                    <span className={active ? 'text-secondary' : 'text-neutral-400'}>
                       {item.icon(active)}
                     </span>
                     <span>{item.label}</span>
@@ -804,14 +808,14 @@ export function AppShell({ user, children }: Props): React.ReactElement {
         }`}
       >
         {/* TOP HEADER BAR */}
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white/95 backdrop-blur-sm px-4 sm:px-6 lg:px-8">
+        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border/50 bg-surface/95 backdrop-blur-sm px-4 sm:px-6 lg:px-8">
           {/* Mobile hamburger & Desktop toggle button */}
           <div className="flex items-center gap-2">
             {/* Mobile hamburger */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden min-h-[44px] min-w-[44px] p-2 inline-flex items-center justify-center rounded-md text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="lg:hidden min-h-[44px] min-w-[44px] p-2 inline-flex items-center justify-center rounded-lg text-tertiary hover:bg-muted-surface focus:outline-none focus:ring-2 focus:ring-primary"
               aria-label="Open sidebar"
             >
               <svg
@@ -830,7 +834,7 @@ export function AppShell({ user, children }: Props): React.ReactElement {
             <button
               type="button"
               onClick={toggleSidebar}
-              className="hidden lg:inline-flex min-h-[44px] min-w-[44px] p-2 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+              className="hidden lg:inline-flex min-h-[44px] min-w-[44px] p-2 items-center justify-center rounded-lg text-neutral-500 hover:bg-muted-surface hover:text-tertiary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
               title={sidebarCollapsed ? 'Expand sidebar (Ctrl+B)' : 'Collapse sidebar (Ctrl+B)'}
             >
@@ -838,12 +842,40 @@ export function AppShell({ user, children }: Props): React.ReactElement {
             </button>
 
             <div className="hidden sm:flex items-center gap-2.5">
-              <span className="text-sm font-semibold text-slate-800 tracking-tight">
+              <span className="text-sm font-semibold text-tertiary tracking-tight">
                 Nordic International School
               </span>
-              <span className="text-slate-300">/</span>
+              <span className="text-border">/</span>
               <BranchSwitcher />
             </div>
+          </div>
+
+          <div className="flex-1 max-w-md mx-4 hidden md:block">
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event('open-spotlight'))}
+              className="w-full flex items-center text-left px-3 py-1.5 text-sm text-neutral-500 bg-muted-surface hover:bg-border rounded-lg border border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <svg
+                className="h-4 w-4 mr-2 text-neutral-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                />
+              </svg>
+              Search or type a command...
+              <span className="ml-auto flex gap-1 items-center">
+                <kbd className="font-sans text-[10px] px-1.5 py-0.5 rounded-lg bg-surface border border-border/50 shadow-sm text-neutral-500 font-medium">
+                  Cmd+K
+                </kbd>
+              </span>
+            </button>
           </div>
 
           {/* TOP-RIGHT PROFILE ZONE */}
@@ -853,30 +885,30 @@ export function AppShell({ user, children }: Props): React.ReactElement {
               type="button"
               id="profile-menu-button"
               onClick={() => setProfileCardOpen(!profileCardOpen)}
-              className="min-h-[44px] flex items-center gap-3 pl-2 pr-3 py-1.5 rounded-full hover:bg-slate-100 border border-slate-200 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
+              className="min-h-[44px] flex items-center gap-3 pl-2 pr-3 py-1.5 rounded-full hover:bg-muted-surface border border-border/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               aria-haspopup="true"
               aria-expanded={profileCardOpen}
               aria-label="User profile menu"
             >
               {/* Avatar circle */}
-              <div className="h-8 w-8 rounded-full bg-blue-700 text-white font-semibold flex items-center justify-center text-xs shadow-sm ring-2 ring-white">
+              <div className="h-8 w-8 rounded-full bg-primary text-tertiary font-semibold flex items-center justify-center text-xs shadow-sm ring-2 ring-white">
                 {initials}
               </div>
 
               {/* Name & Role (hidden on tiny screens) */}
               <div className="text-left hidden sm:block leading-tight">
-                <div className="text-sm font-semibold text-slate-900 truncate max-w-[130px]">
+                <div className="text-sm font-semibold text-tertiary truncate max-w-[130px]">
                   {user.fullName}
                 </div>
-                <div className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">
+                <div className="text-[11px] font-medium text-neutral-500 uppercase tracking-wide">
                   {user.role}
                 </div>
               </div>
 
               {/* Down chevron icon */}
               <svg
-                className={`h-4 w-4 text-slate-400 transition-transform duration-200 ${
-                  profileCardOpen ? 'rotate-180 text-blue-600' : ''
+                className={`h-4 w-4 text-neutral-400 transition-transform duration-200 ${
+                  profileCardOpen ? 'rotate-180 text-secondary' : ''
                 }`}
                 fill="none"
                 viewBox="0 0 24 24"
@@ -891,24 +923,24 @@ export function AppShell({ user, children }: Props): React.ReactElement {
             {/* PROFILE CARD POPOVER */}
             {profileCardOpen ? (
               <div
-                className="absolute right-0 top-full mt-2 w-72 rounded-xl bg-white shadow-xl border border-slate-200 divide-y divide-slate-100 z-50 animate-in fade-in zoom-in-95 duration-100"
+                className="absolute right-0 top-full mt-2 w-72 rounded-xl bg-surface shadow-xl border-none ring-1 ring-border divide-y divide-slate-100 z-50 animate-in fade-in zoom-in-95 duration-100"
                 role="menu"
                 aria-orientation="vertical"
                 aria-labelledby="profile-menu-button"
               >
                 {/* User Identity Card Header */}
-                <div className="p-4 flex items-center gap-3 bg-slate-50/70 rounded-t-xl">
-                  <div className="h-11 w-11 rounded-full bg-blue-700 text-white font-bold flex items-center justify-center text-sm shadow-sm ring-2 ring-blue-100 shrink-0">
+                <div className="p-4 flex items-center gap-3 bg-muted-surface/70 rounded-t-xl">
+                  <div className="h-11 w-11 rounded-full bg-primary text-tertiary font-bold flex items-center justify-center text-sm shadow-sm ring-2 ring-secondary/20 shrink-0">
                     {initials}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="text-sm font-semibold text-slate-900 truncate">
+                    <div className="text-sm font-semibold text-tertiary truncate">
                       {user.fullName}
                     </div>
-                    <div className="text-xs text-slate-500 truncate" title={user.email}>
+                    <div className="text-xs text-neutral-500 truncate" title={user.email}>
                       {user.email}
                     </div>
-                    <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-800 uppercase tracking-wider">
+                    <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#DBEAFE] text-secondary uppercase tracking-wider">
                       {user.role}
                     </span>
                   </div>
@@ -919,11 +951,11 @@ export function AppShell({ user, children }: Props): React.ReactElement {
                   <Link
                     to="/profile"
                     onClick={() => setProfileCardOpen(false)}
-                    className="min-h-[44px] flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+                    className="min-h-[44px] flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-tertiary hover:bg-muted-surface hover:text-tertiary transition-colors"
                     role="menuitem"
                   >
                     <svg
-                      className="h-4 w-4 text-slate-400"
+                      className="h-4 w-4 text-neutral-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -949,11 +981,11 @@ export function AppShell({ user, children }: Props): React.ReactElement {
                       logout.mutate();
                     }}
                     disabled={logout.isPending}
-                    className="min-h-[44px] w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-colors focus:outline-none focus:ring-2 focus:ring-rose-500"
+                    className="min-h-[44px] w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-error hover:bg-[#FEE2E2] hover:text-error transition-colors focus:outline-none focus:ring-2 focus:ring-error"
                     role="menuitem"
                   >
                     <svg
-                      className="h-4 w-4 text-rose-500"
+                      className="h-4 w-4 text-error"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"

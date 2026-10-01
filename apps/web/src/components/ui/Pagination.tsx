@@ -47,14 +47,14 @@ export function Pagination({
 
   return (
     <div
-      className={`flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 border-t border-slate-200 bg-white text-sm ${className}`}
+      className={`flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 border-t border-border bg-surface text-sm ${className}`}
       aria-label="Pagination Navigation"
     >
       {/* Range and limit selector */}
-      <div className="flex items-center gap-3 text-slate-600 text-xs sm:text-sm">
+      <div className="flex items-center gap-3 text-neutral-500 text-xs sm:text-sm">
         <span>
-          Jami <strong className="font-semibold text-slate-900">{total}</strong> tadan{' '}
-          <span className="font-mono tabular-nums font-medium text-slate-800">
+          Jami <strong className="font-semibold text-tertiary">{total}</strong> tadan{' '}
+          <span className="font-mono tabular-nums font-medium text-tertiary">
             {startItem}-{endItem}
           </span>{' '}
           ko'rsatilmoqda
@@ -69,7 +69,7 @@ export function Pagination({
               id="pagination-limit-select"
               value={limit}
               onChange={(e) => onLimitChange(Number(e.target.value))}
-              className="h-8 rounded-md border border-slate-300 bg-white px-2 text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600 cursor-pointer"
+              className="min-h-[44px] rounded-xl border border-border bg-surface px-2 text-xs font-medium text-tertiary focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer"
             >
               {limitOptions.map((opt) => (
                 <option key={opt} value={opt}>
@@ -89,7 +89,7 @@ export function Pagination({
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
           aria-label="Oldingi sahifa"
-          className="inline-flex items-center justify-center min-h-[36px] min-w-[36px] px-2.5 rounded-lg border border-slate-200 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+          className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] px-2.5 rounded-xl border border-border text-xs font-medium text-tertiary bg-surface hover:bg-muted-surface disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -109,7 +109,7 @@ export function Pagination({
               return (
                 <span
                   key={`ellipsis-${idx}`}
-                  className="px-2 py-1 text-slate-400 text-xs select-none"
+                  className="px-2 py-1 text-neutral-400 text-xs select-none"
                 >
                   ...
                 </span>
@@ -126,10 +126,10 @@ export function Pagination({
                 onClick={() => onPageChange(pageNum)}
                 aria-current={isCurrent ? 'page' : undefined}
                 aria-label={`${pageNum}-sahifa`}
-                className={`min-h-[36px] min-w-[36px] rounded-lg text-xs font-semibold font-mono tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
+                className={`min-h-[44px] min-w-[44px] rounded-xl text-xs font-semibold font-mono tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                   isCurrent
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                    ? 'bg-primary text-tertiary shadow-xs'
+                    : 'bg-surface text-tertiary border border-border hover:bg-muted-surface'
                 }`}
               >
                 {pageNum}
@@ -139,7 +139,7 @@ export function Pagination({
         </div>
 
         {/* Mobile current page indicator */}
-        <span className="sm:hidden px-2 text-xs font-mono tabular-nums text-slate-700">
+        <span className="sm:hidden px-2 text-xs font-mono tabular-nums text-tertiary">
           {page} / {totalPages}
         </span>
 
@@ -149,7 +149,7 @@ export function Pagination({
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages}
           aria-label="Keyingi sahifa"
-          className="inline-flex items-center justify-center min-h-[36px] min-w-[36px] px-2.5 rounded-lg border border-slate-200 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+          className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] px-2.5 rounded-xl border border-border text-xs font-medium text-tertiary bg-surface hover:bg-muted-surface disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           <span className="hidden xs:inline">Keyingi</span>
           <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

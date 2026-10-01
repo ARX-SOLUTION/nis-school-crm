@@ -3,6 +3,20 @@
 CRM system for Nordic International School (Tashkent). This file is the orchestration
 guide for Claude Code and its specialist subagents. Keep it short, keep it current.
 
+## Agent skills
+
+### Issue tracker
+
+Issues are tracked in GitHub Issues for `ARX-SOLUTION/nis-school-crm`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Use the five default canonical triage labels. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+This repository uses a single-context domain-doc layout. See `docs/agents/domain.md`.
+
 ## Repository layout (npm workspaces)
 
 ```

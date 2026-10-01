@@ -1,3 +1,4 @@
+import { ObjectLiteral } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
@@ -47,7 +48,9 @@ describe('ClubsService', () => {
     findOne: jest.fn(),
   };
 
-  const createMockQueryBuilder = <T>(result: unknown): SelectQueryBuilder<T> =>
+  const createMockQueryBuilder = <T extends ObjectLiteral>(
+    result: unknown,
+  ): SelectQueryBuilder<T> =>
     ({
       leftJoinAndSelect: jest.fn().mockReturnThis(),
       where: jest.fn().mockReturnThis(),

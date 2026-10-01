@@ -60,18 +60,18 @@ export function GradesSheet({
   return (
     <div className="space-y-4">
       {/* Grade entry quick bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200">
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-surface p-4 rounded-xl border border-border">
         <div className="flex flex-wrap items-center gap-3">
-          <label className="text-xs font-semibold text-slate-700">Dars turi:</label>
+          <label className="text-xs font-semibold text-tertiary">Dars turi:</label>
           {(['CLASSWORK', 'HOMEWORK', 'EXAM', 'QUARTER'] as GradeType[]).map((gt) => (
             <button
               key={gt}
               type="button"
               onClick={() => setGradeType(gt)}
-              className={`min-h-[36px] px-3 py-1 rounded-lg text-xs font-semibold transition-colors ${
+              className={`min-h-[44px] px-3 py-1 rounded-lg text-xs font-semibold transition-colors ${
                 gradeType === gt
-                  ? 'bg-blue-600 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-primary text-tertiary shadow-xs'
+                  : 'bg-muted-surface text-neutral-500 hover:bg-border'
               }`}
             >
               {gt === 'CLASSWORK'
@@ -85,16 +85,16 @@ export function GradesSheet({
           ))}
         </div>
 
-        <div className="text-xs text-slate-500 font-medium">
-          Sana: <span className="font-semibold text-slate-800">{todayDate}</span>
+        <div className="text-xs text-neutral-500 font-medium">
+          Sana: <span className="font-semibold text-tertiary">{todayDate}</span>
         </div>
       </div>
 
       {/* Gradebook Matrix Table */}
-      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-xs">
+      <div className="overflow-x-auto rounded-xl border border-border bg-surface shadow-xs">
         <table className="w-full border-collapse text-left text-sm">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50/75 text-xs font-semibold uppercase tracking-wider text-slate-600">
+            <tr className="border-b border-border bg-muted-surface text-xs font-semibold uppercase tracking-wider text-neutral-500">
               <th scope="col" className="p-3.5 w-12 text-center">
                 #
               </th>
@@ -119,21 +119,21 @@ export function GradesSheet({
               const avg = summary?.averageScore ?? 0;
 
               return (
-                <tr key={student.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="p-3.5 text-center text-xs font-medium text-slate-400">
+                <tr key={student.id} className="hover:bg-muted-surface transition-colors">
+                  <td className="p-3.5 text-center text-xs font-medium text-neutral-400">
                     {idx + 1}
                   </td>
-                  <td className="p-3.5 font-semibold text-slate-900">
+                  <td className="p-3.5 font-semibold text-tertiary">
                     <div>
                       {student.lastName} {student.firstName}
                     </div>
-                    <div className="text-xs font-mono text-slate-400 font-normal">
+                    <div className="text-xs font-mono text-neutral-400 font-normal">
                       {student.studentCode}
                     </div>
                   </td>
                   <td className="p-3.5">
                     {grades.length === 0 ? (
-                      <span className="text-xs text-slate-400 italic">Baholar mavjud emas</span>
+                      <span className="text-xs text-neutral-400 italic">Baholar mavjud emas</span>
                     ) : (
                       <div className="flex flex-wrap gap-1 max-w-sm">
                         {grades.slice(-8).map((g) => (
@@ -142,12 +142,12 @@ export function GradesSheet({
                             title={`${g.date}: ${g.gradeType} ${g.comment ? `(${g.comment})` : ''}`}
                             className={`inline-flex items-center justify-center w-7 h-7 rounded-lg text-xs font-bold border ${
                               g.score >= 4.5
-                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                ? 'bg-[#E8F7D0] text-success border-success'
                                 : g.score >= 3.5
-                                  ? 'bg-blue-50 text-blue-700 border-blue-200'
+                                  ? 'bg-[#DBEAFE] text-secondary border-secondary/20'
                                   : g.score >= 2.5
-                                    ? 'bg-amber-50 text-amber-700 border-amber-200'
-                                    : 'bg-rose-50 text-rose-700 border-rose-200'
+                                    ? 'bg-muted-surface text-neutral-500 border-border'
+                                    : 'bg-[#FEE2E2] text-error border-error'
                             }`}
                           >
                             {g.score}
@@ -160,12 +160,12 @@ export function GradesSheet({
                     <span
                       className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold ${
                         avg >= 4.5
-                          ? 'bg-emerald-100 text-emerald-800'
+                          ? 'bg-[#D9F2B3] text-success'
                           : avg >= 3.5
-                            ? 'bg-blue-100 text-blue-800'
+                            ? 'bg-[#DBEAFE] text-secondary'
                             : avg > 0
-                              ? 'bg-amber-100 text-amber-800'
-                              : 'bg-slate-100 text-slate-500'
+                              ? 'bg-amber-100 text-neutral-500'
+                              : 'bg-muted-surface text-neutral-500'
                       }`}
                     >
                       {avg > 0 ? avg : '-'}
@@ -179,7 +179,7 @@ export function GradesSheet({
                           type="button"
                           disabled={isSubmitting}
                           onClick={() => handleQuickAdd(student.id, val)}
-                          className="min-h-[36px] w-9 h-9 rounded-lg font-bold text-sm bg-slate-100 text-slate-700 hover:bg-blue-600 hover:text-white transition-all active:scale-95 disabled:opacity-50"
+                          className="min-h-[44px] w-9 h-9 rounded-lg font-bold text-sm bg-muted-surface text-tertiary hover:bg-primary hover:text-tertiary transition-all active:scale-95 disabled:opacity-50"
                         >
                           {val}
                         </button>
