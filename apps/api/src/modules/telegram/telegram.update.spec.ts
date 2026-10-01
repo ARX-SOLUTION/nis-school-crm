@@ -28,6 +28,7 @@ describe('TelegramUpdate', () => {
       update,
       users: users as unknown as { findOne: jest.Mock; update: jest.Mock },
       linkCodes: linkCodes as unknown as { consume: jest.Mock },
+      dataSource,
     };
   };
 
@@ -104,5 +105,62 @@ describe('TelegramUpdate', () => {
     const ctx = makeCtx(42);
     await update.onUnlink(ctx as never);
     expect(users.update).toHaveBeenCalledWith({ id: 'user-1' }, { telegramChatId: null });
+  });
+
+  it('should_respond_to_today_for_non_parent', async () => {
+    const { update, users } = build();
+    users.findOne.mockResolvedValue({ id: 'user-1', role: 'TEACHER' });
+    const ctx = makeCtx(42);
+    await update.onToday(ctx as never);
+    expect(ctx.reply).toHaveBeenCalledWith(expect.stringContaining('ota-ona'));
+  });
+
+  it('should_render_today_lessons_for_parent', async () => {
+    const { update, users, dataSource } = build();
+    users.findOne.mockResolvedValue({ id: 'user-1', role: 'PARENT' });
+    dataSource.query
+      .mockResolvedValueOnce([
+        { id: 'st-1', first_name: 'Anvar', class_id: 'cl-1', class_name: '5-A' },
+      ])
+      .mockResolvedValueOnce([
+        { start_time: '08:30:00', end_time: '09:15:00', subject_name: 'Matematika' },
+      ]);
+
+    const ctx = makeCtx(42);
+    await update.onToday(ctx as never);
+    const reply = ctx.reply.mock.calls[0]?.[0] as string;
+    expect(reply).toContain('Anvar');
+    expect(reply).toContain('Matematika');
+  });
+
+  it('should_render_today_empty_students_for_parent', async () => {
+    const { update, users, dataSource } = build();
+    users.findOne.mockResolvedValue({ id: 'user-1', role: 'PARENT' });
+    dataSource.query.mockResolvedValueOnce([]);
+
+    const ctx = makeCtx(42);
+    await update.onToday(ctx as never);
+    expect(ctx.reply).toHaveBeenCalledWith('Farzandlaringiz topilmadi.');
+  });
+
+  it('should_render_grades_for_parent', async () => {
+    const { update, users, dataSource } = build();
+    users.findOne.mockResolvedValue({ id: 'user-1', role: 'PARENT' });
+    dataSource.query
+      .mockResolvedValueOnce([{ id: 'st-1', first_name: 'Anvar' }])
+      .mockResolvedValueOnce([{ value: 5, date: '2026-10-01', subject: 'Fizika' }]);
+
+    const ctx = makeCtx(42);
+    await update.onGrades(ctx as never);
+    const reply = ctx.reply.mock.calls[0]?.[0] as string;
+    expect(reply).toContain('Anvar');
+    expect(reply).toContain('Fizika');
+  });
+
+  it('should_reply_on_report', async () => {
+    const { update } = build();
+    const ctx = makeCtx(42);
+    await update.onReport(ctx as never);
+    expect(ctx.reply).toHaveBeenCalledWith(expect.stringContaining('/report'));
   });
 });
