@@ -17,6 +17,7 @@ import { GradeRecord } from '../grades/entities/grade.entity';
 import { PaymentRecord } from '../billing/entities/payment.entity';
 import { Student, StudentStatus } from '../students/entities/student.entity';
 import { Subject } from '../subjects/entities/subject.entity';
+import { getCurrentTashkentMonth } from '../../common/utils/timezone.util';
 
 const DEFAULT_MONTHLY_FEE = 2_500_000;
 
@@ -38,7 +39,7 @@ export class ReportsService {
   ) {}
 
   async getAttendanceReport(query?: AttendanceReportQueryDto): Promise<ClassAttendanceReportDto[]> {
-    const targetMonth = query?.month || new Date().toISOString().slice(0, 7);
+    const targetMonth = query?.month || getCurrentTashkentMonth();
     const [year, month] = targetMonth.split('-').map(Number);
     const startDate = `${targetMonth}-01`;
     const lastDay = new Date(year, month, 0).getDate();
@@ -82,10 +83,10 @@ export class ReportsService {
         else if (r.status === 'EXCUSED') excusedCount += c;
       }
 
+      // Canonical attendance rate formula: ((presentCount + lateCount) / totalRecords) * 100
+      // Harmonized with AttendanceService.getStats()
       const attendanceRate =
-        totalRecords > 0
-          ? Math.round(((presentCount + lateCount + excusedCount) / totalRecords) * 100)
-          : 100;
+        totalRecords > 0 ? Math.round(((presentCount + lateCount) / totalRecords) * 100) : 100;
 
       results.push({
         classId: cls.id,
@@ -221,7 +222,7 @@ export class ReportsService {
 
   async getFinanceReport(query?: FinanceReportQueryDto): Promise<FinanceReportDto> {
     const months = Math.min(query?.months ?? 6, 12);
-    const now = new Date();
+    const [tashkentYear, tashkentMonth] = getCurrentTashkentMonth().split('-').map(Number);
     const activeStudents = await this.studentRepo.count({
       where: { status: StudentStatus.ACTIVE },
     });
@@ -230,7 +231,7 @@ export class ReportsService {
     const monthlyData: MonthlyRevenueDto[] = [];
 
     for (let i = months - 1; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const d = new Date(tashkentYear, tashkentMonth - 1 - i, 1);
       const monthStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
 
       const { totalCollected, paymentCount } = await this.paymentRepo

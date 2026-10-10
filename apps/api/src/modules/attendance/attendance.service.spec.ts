@@ -1,4 +1,8 @@
+import { ForbiddenException, InternalServerErrorException } from '@nestjs/common';
 import { Repository } from 'typeorm';
+import { RoleName } from '../../common/enums/role.enum';
+import { AuthenticatedUser } from '../auth/types/authenticated-user';
+import { ParentStudent } from '../parents/entities/parent-student.entity';
 import { AttendanceService } from './attendance.service';
 import { AttendanceRecord } from './entities/attendance.entity';
 
@@ -6,6 +10,7 @@ import { EventsGateway } from '../events/events.gateway';
 
 describe('AttendanceService', () => {
   let repo: jest.Mocked<Repository<AttendanceRecord>>;
+  let parentRepo: jest.Mocked<Repository<ParentStudent>>;
   let service: AttendanceService;
 
   beforeEach(() => {
@@ -17,10 +22,19 @@ describe('AttendanceService', () => {
       createQueryBuilder: jest.fn(),
     } as unknown as jest.Mocked<Repository<AttendanceRecord>>;
 
-    service = new AttendanceService(repo, undefined, {
-      broadcastToRole: jest.fn(),
-      broadcastToUser: jest.fn(),
-    } as unknown as EventsGateway);
+    parentRepo = {
+      findOne: jest.fn(),
+    } as unknown as jest.Mocked<Repository<ParentStudent>>;
+
+    service = new AttendanceService(
+      repo,
+      undefined,
+      {
+        broadcastToRole: jest.fn(),
+        broadcastToUser: jest.fn(),
+      } as unknown as EventsGateway,
+      parentRepo,
+    );
   });
 
   describe('bulkRecord', () => {
@@ -83,6 +97,36 @@ describe('AttendanceService', () => {
       expect(stats.lateCount).toBe(1);
       expect(stats.absentCount).toBe(1);
       expect(stats.ratePercentage).toBe(75);
+    });
+
+    it('throws ForbiddenException when a PARENT accesses stats for an unlinked student (SEC-01)', async () => {
+      parentRepo.findOne.mockResolvedValue(null);
+      const parentUser = { id: 'parent-1', role: RoleName.PARENT } as AuthenticatedUser;
+
+      await expect(service.getStats('student-1', parentUser)).rejects.toThrow(ForbiddenException);
+    });
+
+    it('allows a PARENT to access stats for their linked child (SEC-01)', async () => {
+      parentRepo.findOne.mockResolvedValue({
+        id: 'link-1',
+        parentUserId: 'parent-1',
+        studentId: 'student-1',
+      } as ParentStudent);
+      repo.find.mockResolvedValue([{ status: 'PRESENT' } as AttendanceRecord]);
+      const parentUser = { id: 'parent-1', role: RoleName.PARENT } as AuthenticatedUser;
+
+      const stats = await service.getStats('student-1', parentUser);
+      expect(stats.totalDays).toBe(1);
+      expect(stats.presentCount).toBe(1);
+    });
+
+    it('throws InternalServerErrorException when parentStudents repo is unavailable for PARENT caller (DEF-10)', async () => {
+      const serviceWithoutParentRepo = new AttendanceService(repo, undefined, undefined, undefined);
+      const parentUser = { id: 'parent-1', role: RoleName.PARENT } as AuthenticatedUser;
+
+      await expect(serviceWithoutParentRepo.getStats('student-1', parentUser)).rejects.toThrow(
+        InternalServerErrorException,
+      );
     });
   });
 });

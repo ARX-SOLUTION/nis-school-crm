@@ -10,15 +10,26 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RoleName } from '../../../common/enums/role.enum';
 import { Public } from '../../auth/decorators/public.decorator';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { Student } from '../../students/entities/student.entity';
+import * as crypto from 'crypto';
 import { PaymentTransaction } from '../entities/payment-transaction.entity';
 import { ClickRequest, ClickService } from '../services/click.service';
 import { PaymeRpcRequest, PaymeService } from '../services/payme.service';
+
+function safeCompare(a: string, b: string): boolean {
+  const bufA = Buffer.from(a, 'utf-8');
+  const bufB = Buffer.from(b, 'utf-8');
+  if (bufA.length !== bufB.length) {
+    return false;
+  }
+  return crypto.timingSafeEqual(bufA, bufB);
+}
 
 @ApiTags('Payment Gateways (Payme & Click)')
 @Controller({ path: 'billing', version: ['1'] })
@@ -34,40 +45,51 @@ export class PaymentGatewaysController {
   ) {}
 
   @Public()
+  @SkipThrottle()
   @Post('payme')
   @HttpCode(200)
   @ApiOperation({ summary: 'Payme Merchant Webhook (JSON-RPC 2.0)' })
-  async handlePayme(@Body() body: PaymeRpcRequest, @Headers('authorization') authHeader?: string) {
+  async payme(@Body() body: PaymeRpcRequest, @Headers('authorization') authHeader?: string) {
     const paymeKey = this.configService.get<string>('PAYME_KEY');
-    if (paymeKey && authHeader) {
-      const base64Part = authHeader.replace(/^Basic\s+/i, '');
-      const decoded = Buffer.from(base64Part, 'base64').toString('utf-8');
-      const expected = `Paycom:${paymeKey}`;
-      if (decoded !== expected) {
-        return {
-          error: {
-            code: -32504,
-            message: {
-              uz: 'Ruxsat berilmagan',
-              ru: 'Недостаточно привилегий',
-              en: 'Insufficient privilege',
-            },
+    const base64Part = authHeader ? authHeader.replace(/^Basic\s+/i, '') : '';
+    const decoded = authHeader ? Buffer.from(base64Part, 'base64').toString('utf-8') : '';
+    const expected = paymeKey ? `Paycom:${paymeKey}` : '';
+
+    if (!authHeader || !paymeKey || !safeCompare(decoded, expected)) {
+      return {
+        error: {
+          code: -32504,
+          message: {
+            uz: 'Ruxsat berilmagan',
+            ru: 'Не авторизован',
+            en: 'Unauthorized',
           },
-          id: body?.id ?? null,
-        };
-      }
+        },
+        id: body?.id ?? null,
+      };
     }
 
     return this.paymeService.handleRpc(body);
   }
 
+  // Alias for backward compatibility
+  async handlePayme(body: PaymeRpcRequest, authHeader?: string) {
+    return this.payme(body, authHeader);
+  }
+
   @Public()
+  @SkipThrottle()
   @Post('click')
   @HttpCode(200)
   @ApiOperation({ summary: 'Click Shop Webhook (Prepare / Complete)' })
-  async handleClick(@Body() body: ClickRequest) {
+  async click(@Body() body: ClickRequest) {
     const clickSecret = this.configService.get<string>('CLICK_SECRET_KEY');
     return this.clickService.handleRequest(body, clickSecret);
+  }
+
+  // Alias for backward compatibility
+  async handleClick(body: ClickRequest) {
+    return this.click(body);
   }
 
   @Public()

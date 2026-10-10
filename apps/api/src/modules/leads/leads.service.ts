@@ -1,7 +1,9 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import type { LeadDto, LeadPipelineStatsDto, LeadStage } from '@nis/shared';
+import { ClassEntity } from '../classes/entities/class.entity';
+import { StudentClassHistory } from '../students/entities/student-class-history.entity';
 import { Student, StudentGender, StudentStatus } from '../students/entities/student.entity';
 import { StudentCodeService } from '../students/services/student-code.service';
 import { ConvertToStudentDto } from './dto/convert-to-student.dto';
@@ -18,6 +20,7 @@ export class LeadsService {
     @InjectRepository(Student)
     private readonly studentRepo: Repository<Student>,
     private readonly studentCodeService: StudentCodeService,
+    private readonly dataSource: DataSource,
   ) {}
 
   private toDto(lead: Lead): LeadDto {
@@ -101,54 +104,102 @@ export class LeadsService {
     id: string,
     dto: ConvertToStudentDto,
   ): Promise<{ lead: LeadDto; studentId: string }> {
-    const lead = await this.leadRepo.findOne({ where: { id } });
-    if (!lead) {
-      throw new NotFoundException(`Lead with id ${id} not found`);
-    }
-    if (lead.convertedStudentId) {
-      throw new BadRequestException("Bu nomzod allaqachon o'quvchiga aylantirilgan");
-    }
+    return this.dataSource.transaction(async (manager) => {
+      const lead = await manager.findOne(Lead, {
+        where: { id },
+        lock: { mode: 'pessimistic_write' },
+      });
+      if (!lead) {
+        throw new NotFoundException(`Lead with id ${id} not found`);
+      }
+      if (lead.convertedStudentId) {
+        throw new BadRequestException("Bu nomzod allaqachon o'quvchiga aylantirilgan");
+      }
 
-    // Split name: "Karimov Shaxzod Olimovich"
-    const parts = lead.fullName.trim().split(/\s+/);
-    let lastName = parts[0] || 'Familiya';
-    let firstName = parts[1] || parts[0];
-    let middleName: string | null = parts.length > 2 ? parts.slice(2).join(' ') : null;
+      let targetClass: ClassEntity | null = null;
+      if (dto.classId) {
+        targetClass = await manager.findOne(ClassEntity, {
+          where: { id: dto.classId, isActive: true },
+          lock: { mode: 'pessimistic_write' },
+        });
+        if (!targetClass) {
+          throw new NotFoundException(`Class with id ${dto.classId} not found or inactive`);
+        }
 
-    if (parts.length === 1) {
-      firstName = parts[0];
-      lastName = '-';
-      middleName = null;
-    }
+        if (lead.targetGradeLevel && targetClass.gradeLevel !== lead.targetGradeLevel) {
+          throw new BadRequestException(
+            `Class grade level ${targetClass.gradeLevel} does not match lead target grade level ${lead.targetGradeLevel}`,
+          );
+        }
 
-    const currentYear = new Date().getFullYear();
-    const studentCode = await this.studentCodeService.next(currentYear);
+        const activeCount = await manager
+          .getRepository(Student)
+          .createQueryBuilder('s')
+          .where('s.class_id = :classId', { classId: dto.classId })
+          .andWhere('s.status = :status', { status: StudentStatus.ACTIVE })
+          .getCount();
 
-    const student = this.studentRepo.create({
-      studentCode,
-      firstName,
-      lastName,
-      middleName,
-      birthDate: dto.birthDate || '2015-01-01',
-      gender: dto.gender ? (dto.gender as StudentGender) : StudentGender.MALE,
-      gradeLevel: lead.targetGradeLevel ?? 1,
-      classId: dto.classId ?? null,
-      status: StudentStatus.ACTIVE,
-      parentFullName: lead.parentName ?? null,
-      parentPhone: lead.phone,
-      enrolledAt: new Date().toISOString(),
+        if (activeCount >= targetClass.maxStudents) {
+          throw new BadRequestException(
+            `Class is full (${activeCount}/${targetClass.maxStudents})`,
+          );
+        }
+      }
+
+      // Split name: "Karimov Shaxzod Olimovich"
+      const parts = lead.fullName.trim().split(/\s+/);
+      let lastName = parts[0] || 'Familiya';
+      let firstName = parts[1] || parts[0];
+      let middleName: string | null = parts.length > 2 ? parts.slice(2).join(' ') : null;
+
+      if (parts.length === 1) {
+        firstName = parts[0];
+        lastName = '-';
+        middleName = null;
+      }
+
+      const academicYear = targetClass
+        ? StudentCodeService.academicYearStart(targetClass.academicYear)
+        : new Date().getFullYear();
+      const studentCode = await this.studentCodeService.next(academicYear, manager);
+
+      const student = manager.create(Student, {
+        studentCode,
+        firstName,
+        lastName,
+        middleName,
+        birthDate: dto.birthDate || '2015-01-01',
+        gender: dto.gender ? (dto.gender as StudentGender) : StudentGender.MALE,
+        gradeLevel: targetClass ? targetClass.gradeLevel : (lead.targetGradeLevel ?? 1),
+        classId: dto.classId ?? null,
+        status: StudentStatus.ACTIVE,
+        parentFullName: lead.parentName ?? null,
+        parentPhone: lead.phone,
+        enrolledAt: new Date().toISOString(),
+      });
+
+      const savedStudent = await manager.save(Student, student);
+
+      if (dto.classId && targetClass) {
+        const historyRecord = manager.create(StudentClassHistory, {
+          studentId: savedStudent.id,
+          classId: targetClass.id,
+          assignedAt: new Date(),
+          removedAt: null,
+          reason: 'Initial assignment upon lead conversion',
+        });
+        await manager.save(StudentClassHistory, historyRecord);
+      }
+
+      lead.stage = 'ENROLLED';
+      lead.convertedStudentId = savedStudent.id;
+      const savedLead = await manager.save(Lead, lead);
+
+      return {
+        lead: this.toDto(savedLead),
+        studentId: savedStudent.id,
+      };
     });
-
-    const savedStudent = await this.studentRepo.save(student);
-
-    lead.stage = 'ENROLLED';
-    lead.convertedStudentId = savedStudent.id;
-    const savedLead = await this.leadRepo.save(lead);
-
-    return {
-      lead: this.toDto(savedLead),
-      studentId: savedStudent.id,
-    };
   }
 
   async getStats(): Promise<LeadPipelineStatsDto> {

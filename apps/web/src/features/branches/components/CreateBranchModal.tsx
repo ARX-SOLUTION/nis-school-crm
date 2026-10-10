@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import type { BranchDto } from '@nis/shared';
+import { Dialog } from '@/components/ui/Dialog';
+import { Button } from '@/components/ui/Button';
 import { useCreateBranchMutation, useUpdateBranchMutation } from '../api/use-branches-query';
 
 interface Props {
@@ -58,105 +60,92 @@ export function CreateBranchModal({ branch, onClose }: Props): React.ReactElemen
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 overflow-y-auto"
-      role="dialog"
-      aria-modal="true"
+    <Dialog
+      open
+      onClose={onClose}
+      title={branch ? 'Filialni tahrirlash' : 'Yangi filial qo‘shish'}
+      description="Filial ma'lumotlarini kiriting"
     >
-      <div className="relative w-full max-w-md rounded-xl bg-surface p-6 shadow-2xl border border-border animate-in fade-in zoom-in-95 duration-150">
-        <div className="flex items-center justify-between border-b border-border pb-3">
-          <h2 className="text-base font-semibold text-tertiary">
-            {branch ? 'Filialni tahrirlash' : 'Yangi filial qo‘shish'}
-          </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-neutral-400 hover:text-neutral-500 rounded-lg hover:bg-muted-surface"
-          >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
+      {error ? (
+        <div
+          role="alert"
+          className="mb-4 rounded-lg bg-red-950/40 border border-red-500/30 p-2.5 text-xs text-red-300 font-medium"
+        >
+          {error}
+        </div>
+      ) : null}
+
+      <form onSubmit={handleSubmit} className="space-y-3.5">
+        <div>
+          <label htmlFor="branch-name" className="block text-xs font-semibold text-slate-200 mb-1">
+            Filial nomi *
+          </label>
+          <input
+            id="branch-name"
+            type="text"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Nordic International School - Chilonzor"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 text-slate-100 placeholder:text-slate-500 bg-slate-900"
+          />
         </div>
 
-        {error ? (
-          <div className="mt-3 rounded-lg bg-red-50 p-2.5 text-xs text-red-700 font-medium">
-            {error}
-          </div>
-        ) : null}
+        <div>
+          <label htmlFor="branch-code" className="block text-xs font-semibold text-slate-200 mb-1">
+            Filial kodi (Unikal) *
+          </label>
+          <input
+            id="branch-code"
+            type="text"
+            required
+            value={code}
+            onChange={(e) => setCode(e.target.value.toUpperCase())}
+            placeholder="CHILONZOR"
+            className="w-full px-3 py-2 text-sm font-mono uppercase rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 text-slate-100 placeholder:text-slate-500 bg-slate-900"
+          />
+        </div>
 
-        <form onSubmit={handleSubmit} className="mt-4 space-y-3.5">
-          <div>
-            <label className="block text-xs font-semibold text-tertiary mb-1">Filial nomi *</label>
-            <input
-              type="text"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Nordic International School - Chilonzor"
-              className="w-full px-3 py-2 text-sm rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-            />
-          </div>
+        <div>
+          <label
+            htmlFor="branch-address"
+            className="block text-xs font-semibold text-slate-200 mb-1"
+          >
+            Manzil
+          </label>
+          <input
+            id="branch-address"
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Bunyodkor shoh ko‘chasi, 42"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 text-slate-100 placeholder:text-slate-500 bg-slate-900"
+          />
+        </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-tertiary mb-1">
-              Filial kodi (Unikal) *
-            </label>
-            <input
-              type="text"
-              required
-              value={code}
-              onChange={(e) => setCode(e.target.value.toUpperCase())}
-              placeholder="CHILONZOR"
-              className="w-full px-3 py-2 text-sm font-mono uppercase rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-            />
-          </div>
+        <div>
+          <label htmlFor="branch-phone" className="block text-xs font-semibold text-slate-200 mb-1">
+            Telefon raqam
+          </label>
+          <input
+            id="branch-phone"
+            type="text"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="+998 71 200 00 00"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 text-slate-100 placeholder:text-slate-500 bg-slate-900"
+          />
+        </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-tertiary mb-1">Manzil</label>
-            <input
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="Bunyodkor shoh ko‘chasi, 42"
-              className="w-full px-3 py-2 text-sm rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-tertiary mb-1">Telefon raqam</label>
-            <input
-              type="text"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+998 71 200 00 00"
-              className="w-full px-3 py-2 text-sm rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-            />
-          </div>
-
-          <div className="mt-5 pt-3 border-t border-border flex items-center justify-end gap-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="min-h-[44px] px-4 py-2 text-xs font-medium text-neutral-500 hover:bg-muted-surface rounded-lg transition-colors"
-            >
-              Bekor qilish
-            </button>
-            <button
-              type="submit"
-              disabled={isPending}
-              className="min-h-[44px] px-5 py-2 text-xs font-semibold text-tertiary bg-primary hover:bg-primary rounded-lg transition-colors disabled:opacity-50 shadow-sm"
-            >
-              {isPending ? 'Saqlanmoqda...' : branch ? 'Yangilash' : 'Yaratish'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="mt-5 pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+          <Button type="button" variant="outline" onClick={onClose}>
+            Bekor qilish
+          </Button>
+          <Button type="submit" variant="primary" isLoading={isPending}>
+            {branch ? 'Yangilash' : 'Yaratish'}
+          </Button>
+        </div>
+      </form>
+    </Dialog>
   );
 }

@@ -78,7 +78,7 @@ export function SendBroadcastModal({
         {error && (
           <div
             role="alert"
-            className="p-3 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg"
+            className="p-3 text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg"
           >
             {error}
           </div>
@@ -95,7 +95,7 @@ export function SendBroadcastModal({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Masalan: Ota-onalar majlisi haqida"
-            className="w-full min-h-[44px] px-3 py-2 text-sm text-tertiary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full min-h-[44px] px-3 py-2 text-sm text-tertiary border border-border rounded-lg bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
 
@@ -162,11 +162,11 @@ export function SendBroadcastModal({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Xabar tafsilotlarini kiriting..."
-            className="w-full px-3 py-2 text-sm text-tertiary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full px-3 py-2 text-sm text-tertiary border border-border rounded-lg bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
 
-        <div className="flex items-center gap-2 p-2.5 bg-[#DBEAFE] border border-secondary/20 rounded-lg text-xs text-secondary">
+        <div className="flex items-center gap-2 p-2.5 bg-primary/10 border border-primary/20 rounded-lg text-xs text-primary">
           <span className="font-semibold">Yetkazish kanali:</span>
           <span>Telegram Bot (Botga ulangan foydalanuvchilar oladi)</span>
         </div>
@@ -184,7 +184,7 @@ export function SendBroadcastModal({
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="min-h-[44px] px-5 bg-primary hover:bg-primary text-tertiary font-medium shadow-sm"
+            className="min-h-[44px] px-5 bg-primary hover:bg-primary-hover text-tertiary font-medium shadow-sm"
           >
             {isSubmitting ? 'Yuborilmoqda...' : 'Xabarni yuborish'}
           </Button>

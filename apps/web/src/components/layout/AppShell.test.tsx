@@ -61,6 +61,7 @@ describe('AppShell Layout', () => {
     expect(screen.getAllByText('Users')[0]).toBeInTheDocument();
     expect(screen.getAllByText('Classes')[0]).toBeInTheDocument();
     expect(screen.getAllByText('Schedule')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('Audit loglar')[0]).toBeInTheDocument();
     expect(screen.getByText('Test Page Content')).toBeInTheDocument();
   });
 

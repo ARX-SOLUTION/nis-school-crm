@@ -17,7 +17,7 @@ export class GradesController {
   constructor(private readonly grades: GradesService) {}
 
   @Post()
-  @Roles(RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
   @ApiOperation({ summary: 'Record a grade for a student' })
   @ApiResponse({ status: 201, type: GradeResponseDto })
   async recordGrade(
@@ -29,6 +29,7 @@ export class GradesController {
   }
 
   @Get()
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
   @ApiOperation({ summary: 'List grades filtered by class, student, or subject' })
   @ApiResponse({ status: 200, type: [GradeResponseDto] })
   async list(@Query() query: GradesQueryDto): Promise<GradeResponseDto[]> {
@@ -37,6 +38,7 @@ export class GradesController {
   }
 
   @Get('summary')
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
   @ApiOperation({ summary: 'Get grade summary and average score for a class and subject' })
   @ApiResponse({ status: 200 })
   async getSummary(

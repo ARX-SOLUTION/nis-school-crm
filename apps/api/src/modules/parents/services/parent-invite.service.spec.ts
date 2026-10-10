@@ -431,4 +431,20 @@ describe('ParentInviteService.acceptInvite', () => {
     expect(dataSource.transaction).not.toHaveBeenCalled();
     expect(txManager.query).not.toHaveBeenCalled();
   });
+
+  it('should_cleanup_expired_invites_via_soft_delete', async () => {
+    const { service, inviteRepo } = buildService();
+    inviteRepo.softDelete.mockResolvedValueOnce({ affected: 5, raw: [], generatedMaps: [] });
+
+    const affected = await service.cleanupExpiredInvites();
+
+    expect(affected).toBe(5);
+    expect(inviteRepo.softDelete).toHaveBeenCalledTimes(1);
+    expect(inviteRepo.softDelete).toHaveBeenCalledWith(
+      expect.objectContaining({
+        expiresAt: expect.anything(),
+        usedAt: expect.anything(),
+      }),
+    );
+  });
 });

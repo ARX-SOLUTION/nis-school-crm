@@ -73,20 +73,24 @@ export function RecordPaymentModal({
     <Dialog open={open} onClose={onClose} title="To'lov qabul qilish">
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="rounded-lg bg-[#FEE2E2] p-3 text-xs font-medium text-error border border-error">
+          <div className="rounded-lg bg-rose-500/10 p-3 text-xs font-medium text-rose-400 border border-rose-500/30">
             {error}
           </div>
         )}
 
         {/* Student select */}
         <div>
-          <label className="block text-xs font-semibold text-tertiary mb-1">
+          <label
+            htmlFor="payment-student"
+            className="block text-xs font-semibold text-tertiary mb-1"
+          >
             O'quvchi <span className="text-error">*</span>
           </label>
           <select
+            id="payment-student"
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
-            className="w-full text-sm rounded-lg border border-border p-2.5 min-h-[44px] text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full text-sm rounded-lg border border-border p-2.5 min-h-[44px] text-tertiary bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus:border-primary"
             required
           >
             <option value="">O'quvchini tanlang...</option>
@@ -100,42 +104,47 @@ export function RecordPaymentModal({
 
         {/* Month picker */}
         <div>
-          <label className="block text-xs font-semibold text-tertiary mb-1">
+          <label htmlFor="payment-month" className="block text-xs font-semibold text-tertiary mb-1">
             Qaysi oy uchun <span className="text-error">*</span>
           </label>
           <input
+            id="payment-month"
             type="month"
             value={month}
             onChange={(e) => setMonth(e.target.value)}
-            className="w-full text-sm rounded-lg border border-border p-2.5 min-h-[44px] text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full text-sm rounded-lg border border-border p-2.5 min-h-[44px] text-tertiary bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus:border-primary"
             required
           />
         </div>
 
         {/* Amount */}
         <div>
-          <label className="block text-xs font-semibold text-tertiary mb-1">
+          <label
+            htmlFor="payment-amount"
+            className="block text-xs font-semibold text-tertiary mb-1"
+          >
             Summa (so'm) <span className="text-error">*</span>
           </label>
           <input
+            id="payment-amount"
             type="number"
             value={amount || ''}
             onChange={(e) => setAmount(Number(e.target.value))}
             min={1000}
             step={50000}
             placeholder="0"
-            className="w-full text-base rounded-lg border border-border p-2.5 min-h-[44px] text-tertiary bg-surface font-mono tabular-nums font-semibold focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full text-base rounded-lg border border-border p-2.5 min-h-[44px] text-tertiary bg-surface font-mono tabular-nums font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus:border-primary"
             required
           />
 
           {/* Live zero-miscount prevention preview */}
           {amount > 0 && (
-            <div className="mt-2 p-2.5 rounded-lg bg-[#DBEAFE] border border-secondary/20 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
-              <span className="font-mono tabular-nums font-bold text-secondary text-sm">
+            <div className="mt-2 p-2.5 rounded-lg bg-primary/10 border border-primary/20 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
+              <span className="font-mono tabular-nums font-bold text-primary text-sm">
                 {formatUzbekSum(amount)}
               </span>
               {describeSumUzbek(amount) && (
-                <span className="text-secondary font-medium">{describeSumUzbek(amount)}</span>
+                <span className="text-primary font-medium">{describeSumUzbek(amount)}</span>
               )}
             </div>
           )}
@@ -168,13 +177,17 @@ export function RecordPaymentModal({
 
         {/* Method */}
         <div>
-          <label className="block text-xs font-semibold text-tertiary mb-1">
+          <label
+            htmlFor="payment-method"
+            className="block text-xs font-semibold text-tertiary mb-1"
+          >
             To'lov turi <span className="text-error">*</span>
           </label>
           <select
+            id="payment-method"
             value={method}
             onChange={(e) => setMethod(e.target.value as PaymentMethod)}
-            className="w-full text-sm rounded-lg border border-border p-2.5 min-h-[44px] text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full text-sm rounded-lg border border-border p-2.5 min-h-[44px] text-tertiary bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus:border-primary"
           >
             {METHODS.map((m) => (
               <option key={m.value} value={m.value}>
@@ -186,13 +199,19 @@ export function RecordPaymentModal({
 
         {/* Comment */}
         <div>
-          <label className="block text-xs font-semibold text-tertiary mb-1">Izoh / Eslatma</label>
+          <label
+            htmlFor="payment-comment"
+            className="block text-xs font-semibold text-tertiary mb-1"
+          >
+            Izoh / Eslatma
+          </label>
           <input
+            id="payment-comment"
             type="text"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Qo'shimcha ma'lumot..."
-            className="w-full text-sm rounded-lg border border-border p-2.5 min-h-[44px] text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full text-sm rounded-lg border border-border p-2.5 min-h-[44px] text-tertiary bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus:border-primary"
           />
         </div>
 

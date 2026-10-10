@@ -121,7 +121,7 @@ export function StudentProfileModal({
         {/* Tab 1: Overview */}
         {tab === 'overview' && (
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4 text-sm bg-muted-surface p-4 rounded-lg border border-border">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm bg-muted-surface p-3.5 sm:p-4 rounded-lg border border-border">
               <div>
                 <span className="text-neutral-500 block text-xs">Holati</span>
                 <span className="font-medium text-tertiary">
@@ -160,11 +160,11 @@ export function StudentProfileModal({
               </div>
             </div>
 
-            <div className="p-4 rounded-lg border border-border">
+            <div className="p-3.5 sm:p-4 rounded-lg border border-border">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-2">
                 Ota-ona ma'lumotlari
               </h4>
-              <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                 <div>
                   <span className="text-neutral-500 block text-xs">F.I.O</span>
                   <span className="font-medium text-tertiary">{student.parentFullName || '-'}</span>
@@ -192,15 +192,15 @@ export function StudentProfileModal({
             {attendanceQ.isLoading ? (
               <div className="p-8 text-center text-sm text-neutral-500">Davomat yuklanmoqda...</div>
             ) : attendanceQ.error ? (
-              <div className="p-4 text-sm text-red-600 bg-red-50 rounded-lg">
+              <div className="p-4 text-sm text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-lg">
                 Davomat ko'rsatkichlarini yuklashda xatolik yuz berdi.
               </div>
             ) : attendanceQ.data ? (
               <div className="space-y-4">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                  <div className="p-3 bg-[#E8F7D0] rounded-lg border border-success/20">
-                    <span className="text-xs text-success block">Qatnashish</span>
-                    <span className="text-xl font-bold text-success">
+                  <div className="p-3 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
+                    <span className="text-xs text-emerald-400 block">Qatnashish</span>
+                    <span className="text-xl font-bold text-emerald-400">
                       {attendanceQ.data.ratePercentage}%
                     </span>
                   </div>
@@ -210,15 +210,15 @@ export function StudentProfileModal({
                       {attendanceQ.data.totalDays}
                     </span>
                   </div>
-                  <div className="p-3 bg-red-50 rounded-lg border border-red-100">
-                    <span className="text-xs text-red-700 block">Qoldirilgan</span>
-                    <span className="text-xl font-bold text-red-800">
+                  <div className="p-3 bg-red-500/10 rounded-lg border border-red-500/20">
+                    <span className="text-xs text-red-400 block">Qoldirilgan</span>
+                    <span className="text-xl font-bold text-red-400 tabular-nums">
                       {attendanceQ.data.absentCount}
                     </span>
                   </div>
-                  <div className="p-3 bg-muted-surface rounded-lg border border-amber-100">
-                    <span className="text-xs text-neutral-500 block">Kechikkan</span>
-                    <span className="text-xl font-bold text-neutral-500">
+                  <div className="p-3 bg-muted-surface rounded-lg border border-slate-700">
+                    <span className="text-xs text-neutral-400 block">Kechikkan</span>
+                    <span className="text-xl font-bold text-neutral-300 tabular-nums">
                       {attendanceQ.data.lateCount}
                     </span>
                   </div>
@@ -238,7 +238,7 @@ export function StudentProfileModal({
             {gradesQ.isLoading ? (
               <div className="p-8 text-center text-sm text-neutral-500">Baholar yuklanmoqda...</div>
             ) : gradesQ.error ? (
-              <div className="p-4 text-sm text-red-600 bg-red-50 rounded-lg">
+              <div className="p-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg">
                 Baholarni yuklashda xatolik yuz berdi.
               </div>
             ) : !gradesQ.data || gradesQ.data.length === 0 ? (
@@ -256,7 +256,7 @@ export function StudentProfileModal({
                       <th className="px-3 py-2">Izoh</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-slate-800">
                     {gradesQ.data.map((g) => (
                       <tr key={g.id} className="hover:bg-muted-surface">
                         <td className="px-3 py-2 text-neutral-500 whitespace-nowrap">{g.date}</td>
@@ -284,7 +284,7 @@ export function StudentProfileModal({
                 To'lovlar tarixi yuklanmoqda...
               </div>
             ) : paymentsQ.error ? (
-              <div className="p-4 text-sm text-red-600 bg-red-50 rounded-lg">
+              <div className="p-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg">
                 To'lovlarni yuklashda xatolik yuz berdi.
               </div>
             ) : !paymentsQ.data || paymentsQ.data.data.length === 0 ? (
@@ -302,7 +302,7 @@ export function StudentProfileModal({
                       <th className="px-3 py-2">Holati</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-slate-800">
                     {paymentsQ.data.data.map((p) => (
                       <tr key={p.id} className="hover:bg-muted-surface">
                         <td className="px-3 py-2 text-neutral-500 whitespace-nowrap">
@@ -314,10 +314,10 @@ export function StudentProfileModal({
                         <td className="px-3 py-2 text-xs font-mono text-tertiary">{p.method}</td>
                         <td className="px-3 py-2">
                           <span
-                            className={`px-2 py-0.5 rounded text-xs font-medium ${
+                            className={`px-2 py-0.5 rounded text-xs font-medium border ${
                               p.status === 'CONFIRMED'
-                                ? 'bg-[#D9F2B3] text-success'
-                                : 'bg-amber-100 text-neutral-500'
+                                ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                                : 'bg-amber-500/15 text-amber-400 border-amber-500/30'
                             }`}
                           >
                             {p.status}

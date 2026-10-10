@@ -7,6 +7,7 @@ import type {
   LeadStage,
 } from '@nis/shared';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { useClassesQuery } from '@/features/classes/api/use-classes-query';
 import { ConvertLeadModal } from '@/features/leads/components/ConvertLeadModal';
 import { CreateLeadModal } from '@/features/leads/components/CreateLeadModal';
@@ -96,9 +97,9 @@ export function LeadsPage(): React.ReactElement {
 
       {/* Success Notification */}
       {successBanner && (
-        <div className="rounded-xl border border-success bg-[#E8F7D0] p-4 text-sm font-medium text-success flex items-center gap-2">
+        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm font-medium text-emerald-400 flex items-center gap-2">
           <svg
-            className="w-5 h-5 text-success"
+            className="w-5 h-5 text-emerald-400"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -110,55 +111,60 @@ export function LeadsPage(): React.ReactElement {
       )}
 
       {/* Pipeline Stats Summary Bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div className="p-3.5 bg-surface rounded-xl border border-border shadow-2xs">
-          <div className="text-2xs font-semibold uppercase text-neutral-500">Jami nomzodlar</div>
-          <div className="text-xl font-bold font-mono text-tertiary mt-1">{stats?.total ?? 0}</div>
-        </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3">
+        <Card variant="metric" className="p-3 sm:p-3.5">
+          <div className="text-[10px] font-semibold uppercase text-slate-400">Jami nomzodlar</div>
+          <div className="text-xl font-bold font-mono text-slate-100 mt-1">{stats?.total ?? 0}</div>
+        </Card>
 
-        <div className="p-3.5 bg-surface rounded-xl border border-border shadow-2xs">
-          <div className="text-2xs font-semibold uppercase text-secondary">Yangi kelgan</div>
-          <div className="text-xl font-bold font-mono text-secondary mt-1">
+        <Card variant="metric" className="p-3 sm:p-3.5 border-blue-500/20 bg-blue-950/10">
+          <div className="text-[10px] font-semibold uppercase text-blue-400">Yangi kelgan</div>
+          <div className="text-xl font-bold font-mono text-blue-400 mt-1">
             {stats?.byStage.NEW ?? 0}
           </div>
-        </div>
+        </Card>
 
-        <div className="p-3.5 bg-surface rounded-xl border border-border shadow-2xs">
-          <div className="text-2xs font-semibold uppercase text-neutral-500">Sinov darsida</div>
-          <div className="text-xl font-bold font-mono text-neutral-500 mt-1">
+        <Card variant="metric" className="p-3 sm:p-3.5">
+          <div className="text-[10px] font-semibold uppercase text-slate-400">Sinov darsida</div>
+          <div className="text-xl font-bold font-mono text-slate-300 mt-1">
             {stats?.byStage.TRIAL_SCHEDULED ?? 0}
           </div>
-        </div>
+        </Card>
 
-        <div className="p-3.5 bg-surface rounded-xl border border-border shadow-2xs">
-          <div className="text-2xs font-semibold uppercase text-success">Qabul qilindi</div>
-          <div className="text-xl font-bold font-mono text-success mt-1">
+        <Card variant="metric" className="p-3 sm:p-3.5 border-emerald-500/20 bg-emerald-950/10">
+          <div className="text-[10px] font-semibold uppercase text-emerald-400">Qabul qilindi</div>
+          <div className="text-xl font-bold font-mono text-emerald-400 mt-1">
             {stats?.byStage.ENROLLED ?? 0}
           </div>
-        </div>
+        </Card>
 
-        <div className="p-3.5 bg-surface rounded-xl border border-border shadow-2xs">
-          <div className="text-2xs font-semibold uppercase text-purple-600">Konversiya foizi</div>
-          <div className="text-xl font-bold font-mono text-purple-700 mt-1">
+        <Card
+          variant="metric"
+          className="p-3 sm:p-3.5 border-purple-500/20 bg-purple-950/10 col-span-2 sm:col-span-1"
+        >
+          <div className="text-[10px] font-semibold uppercase text-purple-400">
+            Konversiya foizi
+          </div>
+          <div className="text-xl font-bold font-mono text-purple-400 mt-1">
             {stats?.conversionRate ?? 0}%
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-wrap items-center gap-3 bg-surface p-3 rounded-xl border border-border">
+      <Card className="flex flex-wrap items-center gap-3 p-3">
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Ism yoki telefon bo'yicha qidiruv..."
-          className="text-xs rounded-lg border border-border px-3 py-2 text-tertiary focus:outline-none focus:ring-2 focus:ring-primary min-w-[240px]"
+          className="text-xs rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full sm:w-auto sm:min-w-[240px]"
         />
 
         <select
           value={source ?? ''}
           onChange={(e) => setSource(e.target.value ? (e.target.value as LeadSource) : undefined)}
-          className="text-xs rounded-lg border border-border px-3 py-2 text-tertiary bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
+          className="text-xs rounded-lg border border-slate-700 px-3 py-2 text-slate-200 bg-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full sm:w-auto"
         >
           <option value="">Barcha manbalar</option>
           <option value="TELEGRAM">Telegram</option>
@@ -169,7 +175,7 @@ export function LeadsPage(): React.ReactElement {
           <option value="WALK_IN">Tashrif</option>
           <option value="OTHER">Boshqa</option>
         </select>
-      </div>
+      </Card>
 
       {/* Kanban Board */}
       {leadsLoading ? (

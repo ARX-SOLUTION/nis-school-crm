@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { IsBoolean, IsIn, IsInt, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
 import { ROOM_TYPES, RoomType } from '@nis/shared';
 
@@ -35,7 +35,12 @@ export class RoomsQueryDto {
 
   @ApiPropertyOptional({ description: 'Filter by active/inactive status' })
   @IsOptional()
-  @Type(() => Boolean)
+  @Transform(({ obj, key }: { obj: Record<string, unknown>; key: string }) => {
+    const raw = obj ? obj[key] : undefined;
+    if (raw === 'false' || raw === false) return false;
+    if (raw === 'true' || raw === true) return true;
+    return undefined;
+  })
   @IsBoolean()
   active?: boolean;
 }

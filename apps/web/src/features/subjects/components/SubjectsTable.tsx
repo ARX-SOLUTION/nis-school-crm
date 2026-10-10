@@ -42,57 +42,61 @@ export function SubjectsTable({ subjects, canManage, onOpenCreate }: Props): Rea
         <table className="w-full text-left text-sm text-tertiary">
           <thead className="border-b border-border bg-muted-surface text-xs font-semibold uppercase tracking-wider text-neutral-500">
             <tr>
-              <th scope="col" className="px-4 py-3">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
                 Code
               </th>
-              <th scope="col" className="px-4 py-3">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
                 Subject Name
               </th>
-              <th scope="col" className="px-4 py-3">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
                 Grades
               </th>
-              <th scope="col" className="px-4 py-3">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
                 Hours / Week
               </th>
-              <th scope="col" className="px-4 py-3">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
                 Status
               </th>
               {canManage ? (
-                <th scope="col" className="px-4 py-3 text-right">
+                <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3 text-right">
                   Actions
                 </th>
               ) : null}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-800">
             {subjects.map((s) => (
               <tr key={s.id} className="hover:bg-muted-surface transition-colors">
-                <td className="px-4 py-3 font-mono font-semibold text-tertiary">{s.code}</td>
-                <td className="px-4 py-3 font-medium text-tertiary">{s.name}</td>
-                <td className="px-4 py-3 text-neutral-500">
+                <td className="px-3 sm:px-4 py-2.5 sm:py-3 font-mono font-semibold text-tertiary">
+                  {s.code}
+                </td>
+                <td className="px-3 sm:px-4 py-2.5 sm:py-3 font-medium text-tertiary">{s.name}</td>
+                <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-neutral-500">
                   {s.gradeLevels && s.gradeLevels.length > 0
                     ? s.gradeLevels.sort((a, b) => a - b).join(', ')
                     : 'All'}
                 </td>
-                <td className="px-4 py-3 text-neutral-500">{s.defaultHoursPerWeek} hrs</td>
-                <td className="px-4 py-3">
+                <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-neutral-500">
+                  {s.defaultHoursPerWeek} hrs
+                </td>
+                <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                   <span
-                    className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                    className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${
                       s.isActive
-                        ? 'bg-[#E8F7D0] text-success border border-success'
-                        : 'bg-muted-surface text-neutral-500 border border-border'
+                        ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                        : 'bg-muted-surface text-neutral-400 border-border'
                     }`}
                   >
                     {s.isActive ? 'Active' : 'Inactive'}
                   </span>
                 </td>
                 {canManage ? (
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-right">
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => setDeleteTarget(s)}
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      className="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10"
                     >
                       Delete
                     </Button>

@@ -59,7 +59,7 @@ export function CreateStudentDialog({ open, onClose, classes }: Props): React.Re
   return (
     <Dialog open={open} onClose={close} title="Create student" description="Register a new student">
       <form className="space-y-3" onSubmit={onSubmit} noValidate>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Field label="Last name" htmlFor="stu-last" error={errors.lastName?.message}>
             <Input id="stu-last" {...register('lastName')} />
           </Field>
@@ -74,7 +74,7 @@ export function CreateStudentDialog({ open, onClose, classes }: Props): React.Re
         >
           <Input id="stu-middle" {...register('middleName')} />
         </Field>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Field label="Birth date" htmlFor="stu-birth" error={errors.birthDate?.message}>
             <Input id="stu-birth" type="date" {...register('birthDate')} />
           </Field>
@@ -114,7 +114,7 @@ export function CreateStudentDialog({ open, onClose, classes }: Props): React.Re
         >
           <Input id="stu-parent-name" {...register('parentFullName')} />
         </Field>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Field
             label="Parent phone"
             htmlFor="stu-parent-phone"

@@ -26,20 +26,24 @@ export class TelegramModule {
   static forRoot(): DynamicModule {
     const logger = new Logger(TelegramModule.name);
     const token = process.env['TELEGRAM_BOT_TOKEN']?.trim();
-    const botImports: DynamicModule['imports'] = token
-      ? [
-          TelegrafModule.forRootAsync({
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: (config: ConfigService) => ({
-              token: config.getOrThrow<string>('TELEGRAM_BOT_TOKEN'),
+    const isTest = process.env['NODE_ENV'] === 'test';
+    const botImports: DynamicModule['imports'] =
+      token && !isTest
+        ? [
+            TelegrafModule.forRootAsync({
+              imports: [ConfigModule],
+              inject: [ConfigService],
+              useFactory: (config: ConfigService) => ({
+                token: config.getOrThrow<string>('TELEGRAM_BOT_TOKEN'),
+              }),
             }),
-          }),
-        ]
-      : [];
+          ]
+        : [];
 
-    if (!token) {
-      logger.warn('TELEGRAM_BOT_TOKEN empty — Telegraf module disabled in this environment.');
+    if (!token || isTest) {
+      logger.warn(
+        `Telegraf module disabled in this environment (token=${Boolean(token)}, isTest=${isTest}).`,
+      );
     }
 
     return {

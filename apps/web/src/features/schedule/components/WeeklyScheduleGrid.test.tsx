@@ -37,4 +37,49 @@ describe('WeeklyScheduleGrid', () => {
     expect(screen.getByText('Mathematics')).toBeInTheDocument();
     expect(screen.getByText('Room 101')).toBeInTheDocument();
   });
+
+  it('resolves human-readable names from lookups instead of raw UUIDs', () => {
+    const entryWithUuids: ScheduleEntryResponseDto = {
+      ...mockEntry,
+      subjectId: 'sub-uuid-101',
+      roomId: 'room-uuid-202',
+      teacherId: 'teacher-uuid-303',
+    };
+
+    render(
+      <WeeklyScheduleGrid
+        entries={[entryWithUuids]}
+        classNameLabel="Grade 7-B"
+        subjects={[{ id: 'sub-uuid-101', name: 'Fizika va Astronomiya' }]}
+        rooms={[{ id: 'room-uuid-202', number: '304-Xona' }]}
+        teachers={[{ id: 'teacher-uuid-303', fullName: 'Anvar Rahimov' }]}
+      />,
+    );
+
+    expect(screen.getByText('Fizika va Astronomiya')).toBeInTheDocument();
+    expect(screen.getByText('Room 304-Xona')).toBeInTheDocument();
+    expect(screen.getByText('Anvar Rahimov')).toBeInTheDocument();
+  });
+
+  it('displays fallback strings when subject or room lookup is missing', () => {
+    const entryWithMissingLookups: ScheduleEntryResponseDto = {
+      ...mockEntry,
+      subjectId: 'sub-unknown-999',
+      roomId: 'room-unknown-999',
+      teacherId: 'teacher-unknown-999',
+    };
+
+    render(
+      <WeeklyScheduleGrid
+        entries={[entryWithMissingLookups]}
+        classNameLabel="Grade 8-A"
+        subjects={[]}
+        rooms={[]}
+        teachers={[]}
+      />,
+    );
+
+    expect(screen.getByText("Noma'lum fan")).toBeInTheDocument();
+    expect(screen.getByText('—')).toBeInTheDocument();
+  });
 });

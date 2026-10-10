@@ -39,6 +39,7 @@ export async function seedUser(
 }
 
 interface SeedStudentOptions {
+  studentCode?: string;
   firstName?: string;
   lastName?: string;
   gradeLevel?: number;
@@ -52,12 +53,19 @@ interface SeedStudentOptions {
 export async function seedStudent(
   dataSource: DataSource,
   opts: SeedStudentOptions = {},
-): Promise<{ id: string }> {
+): Promise<{ id: string; studentCode: string }> {
+  let code = opts.studentCode;
+  if (!code) {
+    const seqRows = await dataSource.query(`SELECT nextval('students_code_seq') AS nextval`);
+    const n = parseInt(seqRows[0]?.nextval ?? '1', 10);
+    code = `NIS-2025-${n.toString().padStart(5, '0')}`;
+  }
   const rows = await dataSource.query(
-    `INSERT INTO "students" ("first_name", "last_name", "birth_date", "grade_level", "status")
-     VALUES ($1, $2, $3, $4, 'ACTIVE')
+    `INSERT INTO "students" ("student_code", "first_name", "last_name", "birth_date", "grade_level", "status")
+     VALUES ($1, $2, $3, $4, $5, 'ACTIVE')
      RETURNING id`,
     [
+      code,
       opts.firstName ?? 'Test',
       opts.lastName ?? 'Student',
       opts.birthDate ?? '2015-01-01',
@@ -65,7 +73,7 @@ export async function seedStudent(
     ],
   );
   const id = (rows[0] as { id: string }).id;
-  return { id };
+  return { id, studentCode: code };
 }
 
 interface SeedParentInviteOptions {

@@ -68,7 +68,7 @@ describe('PaymentGatewaysController', () => {
     controller = module.get<PaymentGatewaysController>(PaymentGatewaysController);
   });
 
-  it('delegates payme requests to paymeService', async () => {
+  it('delegates payme requests to paymeService when auth header is valid', async () => {
     const authHeader = `Basic ${Buffer.from('Paycom:secret123').toString('base64')}`;
     const res = await controller.handlePayme(
       { method: 'CheckPerformTransaction', params: {}, id: 1 },
@@ -77,6 +77,47 @@ describe('PaymentGatewaysController', () => {
 
     expect(res).toEqual({ result: { allow: true } });
     expect(mockPaymeService.handleRpc).toHaveBeenCalled();
+  });
+
+  it('rejects payme requests when Authorization header is missing', async () => {
+    const res = await controller.handlePayme(
+      { method: 'CheckPerformTransaction', params: {}, id: 1 },
+      undefined,
+    );
+
+    expect(res).toEqual({
+      error: {
+        code: -32504,
+        message: {
+          uz: 'Ruxsat berilmagan',
+          ru: 'Не авторизован',
+          en: 'Unauthorized',
+        },
+      },
+      id: 1,
+    });
+    expect(mockPaymeService.handleRpc).not.toHaveBeenCalled();
+  });
+
+  it('rejects payme requests when Authorization header is invalid', async () => {
+    const invalidHeader = `Basic ${Buffer.from('Paycom:wrong_secret').toString('base64')}`;
+    const res = await controller.handlePayme(
+      { method: 'CheckPerformTransaction', params: {}, id: 2 },
+      invalidHeader,
+    );
+
+    expect(res).toEqual({
+      error: {
+        code: -32504,
+        message: {
+          uz: 'Ruxsat berilmagan',
+          ru: 'Не авторизован',
+          en: 'Unauthorized',
+        },
+      },
+      id: 2,
+    });
+    expect(mockPaymeService.handleRpc).not.toHaveBeenCalled();
   });
 
   it('delegates click requests to clickService', async () => {

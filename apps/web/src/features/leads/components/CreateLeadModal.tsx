@@ -70,7 +70,7 @@ export function CreateLeadModal({
     <Dialog open={open} onClose={onClose} title="Yangi lid (nomzod) qo'shish">
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="rounded-lg bg-[#FEE2E2] p-3 text-xs font-medium text-error border border-error">
+          <div className="rounded-lg bg-rose-500/10 p-3 text-xs font-medium text-rose-400 border border-rose-500/30">
             {error}
           </div>
         )}

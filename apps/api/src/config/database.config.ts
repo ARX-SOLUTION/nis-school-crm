@@ -18,5 +18,10 @@ export const buildTypeOrmOptions = (config: ConfigService): TypeOrmModuleOptions
     migrationsRun: false,
     synchronize: false,
     logging: config.get<string>('NODE_ENV') === 'development' ? ['error', 'warn'] : ['error'],
+    extra: {
+      max: config.get<number>('DB_POOL_MAX') ?? 20,
+      idleTimeoutMillis: config.get<number>('DB_POOL_IDLE_TIMEOUT') ?? 30000,
+      connectionTimeoutMillis: config.get<number>('DB_POOL_CONN_TIMEOUT') ?? 5000,
+    },
   };
 };

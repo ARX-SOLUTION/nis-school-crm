@@ -19,11 +19,11 @@ export function ErrorState({
   return (
     <div
       role="alert"
-      className={`rounded-lg border border-red-200 bg-red-50/70 p-6 text-center ${className}`}
+      className={`rounded-xl border border-red-500/30 bg-red-950/25 p-6 text-center shadow-dark-sm ${className}`}
     >
       <div className="mx-auto max-w-md space-y-2">
-        <h3 className="text-sm font-semibold text-red-900">{title}</h3>
-        <p className="text-sm text-red-700">{formattedMessage}</p>
+        <h3 className="text-sm font-semibold text-red-400">{title}</h3>
+        <p className="text-sm text-slate-300">{formattedMessage}</p>
         {onRetry ? (
           <div className="pt-2">
             <Button variant="outline" size="sm" onClick={onRetry}>

@@ -50,9 +50,9 @@ export function AttendancePage(): React.ReactElement {
   const students = studentsData?.data ?? [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 border-b border-border pb-3 sm:pb-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-tertiary">
             Davomat Jurnali (Attendance)
@@ -62,9 +62,9 @@ export function AttendancePage(): React.ReactElement {
           </p>
         </div>
         {saveSuccess ? (
-          <div className="inline-flex items-center gap-2 bg-[#E8F7D0] border border-success text-success text-sm font-semibold px-4 py-2 rounded-lg animate-in fade-in">
+          <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-semibold px-4 py-2 rounded-lg animate-in fade-in">
             <svg
-              className="w-5 h-5 text-success"
+              className="w-5 h-5 text-emerald-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -82,10 +82,10 @@ export function AttendancePage(): React.ReactElement {
       </div>
 
       {/* Class & Date Filter Bar */}
-      <Card className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-4">
+      <Card className="p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <div className="flex items-center gap-2">
-            <label htmlFor="class-select" className="text-sm font-medium text-tertiary">
+            <label htmlFor="class-select" className="text-sm font-medium text-slate-300">
               Sinf:
             </label>
             <select
@@ -93,7 +93,7 @@ export function AttendancePage(): React.ReactElement {
               value={activeClassId}
               onChange={(e) => setSelectedClassId(e.target.value)}
               disabled={classesLoading || classes.length === 0}
-              className="rounded-lg border border-border bg-surface px-3 py-1.5 text-sm font-semibold text-tertiary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="min-h-[44px] rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm font-medium text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               {classes.length === 0 ? (
                 <option value="">Sinflar mavjud emas</option>
@@ -108,7 +108,7 @@ export function AttendancePage(): React.ReactElement {
           </div>
 
           <div className="flex items-center gap-2">
-            <label htmlFor="date-select" className="text-sm font-medium text-tertiary">
+            <label htmlFor="date-select" className="text-sm font-medium text-slate-300">
               Sana:
             </label>
             <input
@@ -116,7 +116,7 @@ export function AttendancePage(): React.ReactElement {
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="rounded-lg border border-border bg-surface px-3 py-1.5 text-sm font-semibold text-tertiary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="min-h-[44px] rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm font-medium text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
         </div>

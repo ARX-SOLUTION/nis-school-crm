@@ -39,6 +39,7 @@ export class EventBusService implements OnModuleInit, OnApplicationShutdown {
   private connection?: AmqpConnectionManager;
   private publishChannel?: ChannelWrapper;
   private readonly consumerChannels: ChannelWrapper[] = [];
+  private readonly retryTimers = new Set<NodeJS.Timeout>();
 
   constructor(private readonly config: ConfigService) {}
 
@@ -59,7 +60,26 @@ export class EventBusService implements OnModuleInit, OnApplicationShutdown {
         await ch.bindQueue(NIS_DLQ, NIS_DLX, '');
       },
     });
-    await this.publishChannel.waitForConnect();
+    try {
+      const timeoutMs = 5000;
+      let timer: NodeJS.Timeout;
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timer = setTimeout(() => {
+          reject(new Error(`RabbitMQ connection timed out after ${timeoutMs}ms`));
+        }, timeoutMs);
+        if (typeof timer.unref === 'function') timer.unref();
+      });
+
+      try {
+        await Promise.race([this.publishChannel.waitForConnect(), timeoutPromise]);
+      } finally {
+        clearTimeout(timer!);
+      }
+    } catch (err) {
+      this.logger.warn(
+        `RabbitMQ publish channel connection not ready during startup: ${(err as Error).message}. Will retry in background.`,
+      );
+    }
   }
 
   async publish<T>(routingKey: string, payload: T): Promise<void> {
@@ -95,6 +115,7 @@ export class EventBusService implements OnModuleInit, OnApplicationShutdown {
     if (!this.connection) throw new Error('EventBus connection not ready');
     const maxRetries = spec.maxRetries ?? 3;
     const logger = this.logger;
+    const retryTimers = this.retryTimers;
 
     const channel = this.connection.createChannel({
       json: false,
@@ -144,7 +165,8 @@ export class EventBusService implements OnModuleInit, OnApplicationShutdown {
         logger.warn(
           `consumer ${spec.queue} error on ${envelope.messageId}: ${reason}; retry ${attempt}/${maxRetries} in ${delayMs}ms`,
         );
-        setTimeout(() => {
+        const retryTimer = setTimeout(() => {
+          retryTimers.delete(retryTimer);
           try {
             ch.publish(NIS_EXCHANGE, envelope.routingKey, Buffer.from(raw), {
               ...msg.properties,
@@ -162,15 +184,40 @@ export class EventBusService implements OnModuleInit, OnApplicationShutdown {
             ch.nack(msg, false, false);
           }
         }, delayMs);
+        if (typeof retryTimer.unref === 'function') retryTimer.unref();
+        retryTimers.add(retryTimer);
       }
     }
 
-    await channel.waitForConnect();
+    try {
+      const timeoutMs = 5000;
+      let timer: NodeJS.Timeout;
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timer = setTimeout(() => {
+          reject(new Error(`RabbitMQ consumer connection timed out after ${timeoutMs}ms`));
+        }, timeoutMs);
+        if (typeof timer.unref === 'function') timer.unref();
+      });
+
+      try {
+        await Promise.race([channel.waitForConnect(), timeoutPromise]);
+      } finally {
+        clearTimeout(timer!);
+      }
+    } catch (err) {
+      this.logger.warn(
+        `Consumer channel ${spec.queue} connection not ready during registration: ${(err as Error).message}. Will connect in background.`,
+      );
+    }
     this.consumerChannels.push(channel);
     this.logger.log(`consumer registered: ${spec.queue} bound to ${spec.patterns.join(', ')}`);
   }
 
   async onApplicationShutdown(): Promise<void> {
+    for (const timer of this.retryTimers) {
+      clearTimeout(timer);
+    }
+    this.retryTimers.clear();
     for (const ch of this.consumerChannels) {
       await ch.close().catch(() => undefined);
     }

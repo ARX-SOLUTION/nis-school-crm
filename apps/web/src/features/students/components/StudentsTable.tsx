@@ -1,5 +1,6 @@
 import type { StudentResponseDto } from '@nis/shared';
 import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 
 interface Props {
   data: StudentResponseDto[];
@@ -118,29 +119,30 @@ export function StudentsTable({
 }
 
 function StatusBadge({ status }: { status: StudentResponseDto['status'] }): React.ReactElement {
-  const label = status === 'ACTIVE' ? 'Active' : status === 'INACTIVE' ? 'Archived' : 'Graduated';
-  const cls =
-    status === 'ACTIVE'
-      ? 'bg-green-50 text-green-700'
-      : status === 'INACTIVE'
-        ? 'bg-border text-neutral-500'
-        : 'bg-[#DBEAFE] text-secondary';
-  return (
-    <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${cls}`}>
-      {label}
-    </span>
-  );
+  if (status === 'ACTIVE') {
+    return (
+      <Badge variant="success" withDot>
+        Active
+      </Badge>
+    );
+  }
+  if (status === 'INACTIVE') {
+    return <Badge variant="neutral">Archived</Badge>;
+  }
+  return <Badge variant="info">Graduated</Badge>;
 }
 
 const Th = ({ children, className }: { children: React.ReactNode; className?: string }) => (
   <th
-    className={`px-6 py-4 text-xs font-semibold uppercase tracking-wider text-neutral-500 bg-muted-surface border-y border-border ${className ?? ''}`}
+    className={`px-3 sm:px-4 py-2.5 sm:py-3 text-xs font-semibold uppercase tracking-wider text-slate-400 bg-slate-900/90 border-b border-slate-800 ${className ?? ''}`}
   >
     {children}
   </th>
 );
 const Td = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <td className={`px-6 py-4 align-middle text-sm text-neutral-500 ${className ?? ''}`}>
+  <td
+    className={`px-3 sm:px-4 py-2.5 sm:py-3 align-middle text-sm text-slate-300 ${className ?? ''}`}
+  >
     {children}
   </td>
 );

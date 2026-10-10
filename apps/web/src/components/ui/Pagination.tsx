@@ -91,7 +91,7 @@ export function Pagination({
           aria-label="Oldingi sahifa"
           className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] px-2.5 rounded-xl border border-border text-xs font-medium text-tertiary bg-surface hover:bg-muted-surface disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
-          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 sm:mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -99,7 +99,7 @@ export function Pagination({
               d="M15 19l-7-7 7-7"
             />
           </svg>
-          <span className="hidden xs:inline">Oldingi</span>
+          <span className="hidden sm:inline">Oldingi</span>
         </button>
 
         {/* Page buttons */}
@@ -151,8 +151,8 @@ export function Pagination({
           aria-label="Keyingi sahifa"
           className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] px-2.5 rounded-xl border border-border text-xs font-medium text-tertiary bg-surface hover:bg-muted-surface disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
-          <span className="hidden xs:inline">Keyingi</span>
-          <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <span className="hidden sm:inline">Keyingi</span>
+          <svg className="w-4 h-4 sm:ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>

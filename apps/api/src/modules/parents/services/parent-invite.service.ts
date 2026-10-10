@@ -10,7 +10,7 @@ import {
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, IsNull, LessThan, Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { ParentInvite, ParentRelationship } from '../entities/parent-invite.entity';
 import { ParentStudent } from '../entities/parent-student.entity';
@@ -326,5 +326,17 @@ export class ParentInviteService {
 
     await this.invites.softDelete({ id });
     this.logger.log(`Invite revoked id=${id}`);
+  }
+
+  /**
+   * Housekeeping — soft-deletes unused invites that expired more than 7 days ago.
+   */
+  async cleanupExpiredInvites(): Promise<number> {
+    const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const result = await this.invites.softDelete({
+      expiresAt: LessThan(cutoff),
+      usedAt: IsNull(),
+    });
+    return result.affected ?? 0;
   }
 }

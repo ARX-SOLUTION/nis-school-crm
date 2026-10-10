@@ -22,38 +22,38 @@ const STAGE_CONFIG: Record<
   },
   CONTACTED: {
     label: "Bog'lanilgan",
-    bg: 'bg-[#DBEAFE]',
-    border: 'border-secondary/20/80',
+    bg: 'bg-blue-500/10',
+    border: 'border-blue-500/30',
     dot: 'bg-sky-500',
-    headerText: 'text-sky-900',
+    headerText: 'text-sky-400',
   },
   TRIAL_SCHEDULED: {
     label: 'Sinov darsi',
     bg: 'bg-muted-surface/40',
     border: 'border-border/80',
     dot: 'bg-neutral-500',
-    headerText: 'text-amber-900',
+    headerText: 'text-amber-400',
   },
   CONTRACT_SENT: {
     label: 'Shartnoma',
-    bg: 'bg-purple-50/40',
-    border: 'border-purple-200/80',
+    bg: 'bg-purple-500/10',
+    border: 'border-purple-500/30',
     dot: 'bg-purple-500',
-    headerText: 'text-purple-900',
+    headerText: 'text-purple-400',
   },
   ENROLLED: {
     label: 'Qabul qilindi',
-    bg: 'bg-[#E8F7D0]/40',
-    border: 'border-success/80',
-    dot: 'bg-success',
-    headerText: 'text-success',
+    bg: 'bg-emerald-500/10',
+    border: 'border-emerald-500/30',
+    dot: 'bg-emerald-400',
+    headerText: 'text-emerald-400',
   },
   LOST: {
     label: "Yo'qotildi",
-    bg: 'bg-[#FEE2E2]/30',
-    border: 'border-error/80',
+    bg: 'bg-rose-500/10',
+    border: 'border-rose-500/30',
     dot: 'bg-rose-400',
-    headerText: 'text-rose-900',
+    headerText: 'text-rose-400',
   },
 };
 
@@ -113,7 +113,7 @@ export function LeadKanbanBoard({
             data-stage={stage}
             className={`w-72 shrink-0 rounded-xl border p-3 flex flex-col gap-3 min-h-[520px] transition-all duration-150 ${
               isTarget
-                ? 'border-primary bg-[#DBEAFE] ring-2 ring-secondary/20 shadow-md'
+                ? 'border-primary bg-primary/10 ring-2 ring-primary/20 shadow-md'
                 : `${config.border} ${config.bg}`
             }`}
           >
@@ -125,14 +125,14 @@ export function LeadKanbanBoard({
                   {config.label}
                 </h3>
               </div>
-              <span className="text-xs font-bold font-mono px-2 py-0.5 rounded-full bg-surface text-tertiary border border-border shadow-2xs">
+              <span className="text-xs font-bold font-mono px-2 py-0.5 rounded-full bg-surface text-tertiary border border-border shadow-xs">
                 {stageLeads.length}
               </span>
             </div>
 
             {/* Drop Placeholder Indicator */}
             {isTarget ? (
-              <div className="border-2 border-dashed border-secondary/20 bg-[#DBEAFE] rounded-xl p-3 text-center text-xs font-semibold text-secondary transition-all">
+              <div className="border-2 border-dashed border-primary/30 bg-primary/10 rounded-xl p-3 text-center text-xs font-semibold text-primary transition-all">
                 Shu bosqichga tashlang
               </div>
             ) : null}
@@ -142,7 +142,7 @@ export function LeadKanbanBoard({
               {stageLeads.length === 0 && !isTarget ? (
                 <div className="flex flex-col items-center justify-center flex-1 py-10 text-center text-xs text-neutral-400 border border-dashed border-border rounded-xl px-3 leading-relaxed">
                   <span>Nomzodlar yo'q</span>
-                  <span className="text-2xs text-neutral-400 mt-1">
+                  <span className="text-[10px] text-neutral-400 mt-1">
                     Kartochkani bu yerga surib tashlang
                   </span>
                 </div>

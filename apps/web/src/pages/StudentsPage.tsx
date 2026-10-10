@@ -50,12 +50,12 @@ export function StudentsPage({ isAdmin }: Props): React.ReactElement {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Students</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-tertiary">Students</h1>
           <p className="text-sm text-neutral-500">Enrolment, class assignment, and archive.</p>
         </div>
-        <div className="space-x-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {isAdmin ? (
             <Button variant="outline" onClick={downloadCsv}>
               Export CSV
@@ -65,9 +65,9 @@ export function StudentsPage({ isAdmin }: Props): React.ReactElement {
         </div>
       </div>
 
-      <Card className="p-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
-          <div className="md:col-span-2">
+      <Card className="p-3 sm:p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 items-end">
+          <div className="sm:col-span-2">
             <Label htmlFor="students-search">Search</Label>
             <Input
               id="students-search"
@@ -82,7 +82,7 @@ export function StudentsPage({ isAdmin }: Props): React.ReactElement {
             <Label htmlFor="students-grade">Grade</Label>
             <select
               id="students-grade"
-              className="h-10 w-full rounded-lg border border-border bg-surface px-3 text-sm"
+              className="h-10 w-full rounded-md border border-slate-700 bg-slate-900 px-3 text-sm text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
               value={query.gradeLevel ?? ''}
               onChange={(e) =>
                 setQuery((q) => ({
@@ -104,7 +104,7 @@ export function StudentsPage({ isAdmin }: Props): React.ReactElement {
             <Label htmlFor="students-status">Status</Label>
             <select
               id="students-status"
-              className="h-10 w-full rounded-lg border border-border bg-surface px-3 text-sm"
+              className="h-10 w-full rounded-md border border-slate-700 bg-slate-900 px-3 text-sm text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
               value={query.status ?? ''}
               onChange={(e) =>
                 setQuery((q) => ({
@@ -125,7 +125,7 @@ export function StudentsPage({ isAdmin }: Props): React.ReactElement {
         </div>
       </Card>
 
-      <Card>
+      <Card className="overflow-hidden p-0">
         {error ? (
           <div role="alert" className="p-6 text-sm text-red-600">
             Failed to load students:{' '}

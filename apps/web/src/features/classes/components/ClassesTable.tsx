@@ -53,15 +53,19 @@ export function ClassesTable({
                 <span className="font-medium text-tertiary">{c.name}</span>
               </Td>
               <Td>
-                <span className="inline-block rounded-full bg-muted-surface px-2 py-0.5 text-xs font-medium">
-                  {c.gradeLevel}
+                <span className="inline-block rounded-full bg-slate-800 text-slate-300 border border-slate-700 px-2.5 py-0.5 text-xs font-medium">
+                  {c.gradeLevel}-sinf
                 </span>
               </Td>
               <Td>{c.academicYear}</Td>
               <Td>{c.maxStudents}</Td>
               <Td>{c.roomNumber ?? '-'}</Td>
               <Td>
-                {c.classTeacherId ? 'Assigned' : <span className="text-neutral-400">None</span>}
+                {c.classTeacherId ? (
+                  <span className="text-emerald-400 font-medium">Biriktirilgan</span>
+                ) : (
+                  <span className="text-slate-500">Yo'q</span>
+                )}
               </Td>
               <Td className="text-right whitespace-nowrap space-x-2">
                 {onAssignTeacher ? (
@@ -95,13 +99,15 @@ export function ClassesTable({
 
 const Th = ({ children, className }: { children: React.ReactNode; className?: string }) => (
   <th
-    className={`px-6 py-4 text-xs font-semibold uppercase tracking-wider text-neutral-500 bg-muted-surface border-y border-border ${className ?? ''}`}
+    className={`px-3 sm:px-4 py-2.5 sm:py-3 text-xs font-semibold uppercase tracking-wider text-slate-400 bg-slate-900/90 border-b border-slate-800 ${className ?? ''}`}
   >
     {children}
   </th>
 );
 const Td = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <td className={`px-6 py-4 align-middle text-sm text-neutral-500 ${className ?? ''}`}>
+  <td
+    className={`px-3 sm:px-4 py-2.5 sm:py-3 align-middle text-sm text-slate-300 ${className ?? ''}`}
+  >
     {children}
   </td>
 );

@@ -1,5 +1,7 @@
 import React from 'react';
 import { ClubCategory, ClubDto, ClubFeeType } from '@nis/shared';
+import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 
 interface ClubCardProps {
   club: ClubDto;
@@ -13,39 +15,39 @@ const CATEGORY_CONFIG: Record<
 > = {
   [ClubCategory.STEM_ROBOTICS]: {
     label: 'STEM & Robototexnika',
-    bg: 'bg-muted-surface',
-    text: 'text-secondary',
-    border: 'border-border',
+    bg: 'bg-blue-950/40',
+    text: 'text-blue-400',
+    border: 'border-blue-500/30',
   },
   [ClubCategory.SPORTS]: {
     label: 'Sport & Salomatlik',
-    bg: 'bg-[#E8F7D0]',
-    text: 'text-success',
-    border: 'border-success',
+    bg: 'bg-emerald-950/40',
+    text: 'text-emerald-400',
+    border: 'border-emerald-500/30',
   },
   [ClubCategory.ARTS_CRAFT]: {
     label: "San'at & Hunarmandchilik",
-    bg: 'bg-muted-surface',
-    text: 'text-neutral-500',
-    border: 'border-border',
+    bg: 'bg-amber-950/40',
+    text: 'text-amber-400',
+    border: 'border-amber-500/30',
   },
   [ClubCategory.MUSIC_PERFORMING]: {
     label: 'Musiqa & Doira',
-    bg: 'bg-[#FEE2E2]',
-    text: 'text-error',
-    border: 'border-error',
+    bg: 'bg-rose-950/40',
+    text: 'text-rose-400',
+    border: 'border-rose-500/30',
   },
   [ClubCategory.LANGUAGES]: {
     label: 'Xorijiy Tillar',
-    bg: 'bg-sky-50',
-    text: 'text-sky-700',
-    border: 'border-sky-200',
+    bg: 'bg-sky-950/40',
+    text: 'text-sky-400',
+    border: 'border-sky-500/30',
   },
   [ClubCategory.ACADEMIC_OLYMPIAD]: {
     label: 'Olimpiada & Mantiq',
-    bg: 'bg-purple-50',
-    text: 'text-purple-700',
-    border: 'border-purple-200',
+    bg: 'bg-purple-950/40',
+    text: 'text-purple-400',
+    border: 'border-purple-500/30',
   },
 };
 
@@ -81,7 +83,7 @@ export const ClubCard: React.FC<ClubCardProps> = ({ club, onSelect, onEnrollClic
   };
 
   return (
-    <div className="flex flex-col bg-surface border border-border rounded-xl p-5 shadow-xs hover:border-border hover:shadow-md transition-all duration-150">
+    <Card className="flex flex-col p-5 hover:border-slate-700 hover:shadow-lg transition-all duration-150">
       {/* Top badges */}
       <div className="flex items-center justify-between gap-2 mb-3">
         <span
@@ -91,28 +93,28 @@ export const ClubCard: React.FC<ClubCardProps> = ({ club, onSelect, onEnrollClic
         </span>
 
         {club.feeType === ClubFeeType.PAID ? (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-semibold bg-[#E8F7D0] text-success border border-success tabular-nums">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-semibold bg-emerald-950/40 text-emerald-400 border border-emerald-500/30 tabular-nums">
             {formatPrice(club.monthlyFee)}/oy
           </span>
         ) : (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-semibold bg-muted-surface text-tertiary border border-border">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">
             Bepul
           </span>
         )}
       </div>
 
       {/* Title & Description */}
-      <h3 className="text-base font-semibold text-tertiary line-clamp-1 mb-1">{club.name}</h3>
-      <p className="text-xs text-neutral-500 line-clamp-2 min-h-[32px] mb-4">
+      <h3 className="text-base font-semibold text-slate-100 line-clamp-1 mb-1">{club.name}</h3>
+      <p className="text-xs text-slate-400 line-clamp-2 min-h-[32px] mb-4">
         {club.description || "Ushbu to'garak uchun batafsil ma'lumot kiritilmagan."}
       </p>
 
       {/* Info Pills */}
-      <div className="space-y-2 text-xs text-neutral-500 mb-4 pb-4 border-b border-border">
+      <div className="space-y-2 text-xs text-slate-400 mb-4 pb-4 border-b border-slate-800">
         {/* Instructor */}
         <div className="flex items-center gap-2">
           <svg
-            className="w-4 h-4 text-neutral-400 shrink-0"
+            className="w-4 h-4 text-slate-400 shrink-0"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -124,7 +126,7 @@ export const ClubCard: React.FC<ClubCardProps> = ({ club, onSelect, onEnrollClic
               d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
             />
           </svg>
-          <span className="font-medium text-tertiary truncate">
+          <span className="font-medium text-slate-200 truncate">
             {club.instructorName || 'Murabbiy biriktirilmagan'}
           </span>
         </div>
@@ -132,7 +134,7 @@ export const ClubCard: React.FC<ClubCardProps> = ({ club, onSelect, onEnrollClic
         {/* Room & Branch */}
         <div className="flex items-center gap-2">
           <svg
-            className="w-4 h-4 text-neutral-400 shrink-0"
+            className="w-4 h-4 text-slate-400 shrink-0"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -153,7 +155,7 @@ export const ClubCard: React.FC<ClubCardProps> = ({ club, onSelect, onEnrollClic
         {/* Schedule */}
         <div className="flex items-center gap-2">
           <svg
-            className="w-4 h-4 text-neutral-400 shrink-0"
+            className="w-4 h-4 text-slate-400 shrink-0"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -165,13 +167,13 @@ export const ClubCard: React.FC<ClubCardProps> = ({ club, onSelect, onEnrollClic
               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span className="text-tertiary font-medium truncate">{daysText}</span>
+          <span className="text-slate-200 font-medium truncate">{daysText}</span>
         </div>
 
         {/* Grade span */}
         <div className="flex items-center gap-2">
           <svg
-            className="w-4 h-4 text-neutral-400 shrink-0"
+            className="w-4 h-4 text-slate-400 shrink-0"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -192,48 +194,44 @@ export const ClubCard: React.FC<ClubCardProps> = ({ club, onSelect, onEnrollClic
       {/* Capacity & Progress */}
       <div className="mt-auto mb-4">
         <div className="flex items-center justify-between text-xs mb-1.5">
-          <span className="text-neutral-500 font-medium">To'garak sig'imi:</span>
-          <span className="tabular-nums font-semibold text-tertiary">
+          <span className="text-slate-400 font-medium">To'garak sig'imi:</span>
+          <span className="tabular-nums font-semibold text-slate-100">
             {club.enrolledCount} / {club.capacity} nafar
           </span>
         </div>
-        <div className="w-full bg-muted-surface rounded-full h-2 overflow-hidden">
+        <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
           <div
             className={`h-full transition-all duration-300 ${
               percentFull >= 100
-                ? 'bg-[#FEE2E2]0'
+                ? 'bg-rose-500'
                 : percentFull >= 80
-                  ? 'bg-neutral-500'
-                  : 'bg-success'
+                  ? 'bg-amber-500'
+                  : 'bg-emerald-500'
             }`}
             style={{ width: `${percentFull}%` }}
           />
         </div>
-        <div className="flex justify-between items-center mt-1 text-[11px] text-neutral-400">
+        <div className="flex justify-between items-center mt-1 text-[11px] text-slate-400">
           <span>{percentFull}% to'lgan</span>
           <span>{spotsLeft > 0 ? `${spotsLeft} ta bo'sh o'rin` : "To'liq band"}</span>
         </div>
       </div>
 
       {/* Buttons */}
-      <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border">
-        <button
-          type="button"
+      <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-800">
+        <Button
+          variant="secondary"
+          size="sm"
           onClick={() => onEnrollClick(club)}
           disabled={spotsLeft <= 0}
-          className="inline-flex items-center justify-center px-3 py-2 text-xs font-medium rounded-lg text-secondary bg-muted-surface hover:bg-border border border-border transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           + O'quvchi yozish
-        </button>
+        </Button>
 
-        <button
-          type="button"
-          onClick={() => onSelect(club)}
-          className="inline-flex items-center justify-center px-3 py-2 text-xs font-semibold rounded-lg text-white bg-tertiary hover:bg-tertiary transition-colors"
-        >
+        <Button variant="primary" size="sm" onClick={() => onSelect(club)}>
           Boshqarish & Davomat
-        </button>
+        </Button>
       </div>
-    </div>
+    </Card>
   );
 };

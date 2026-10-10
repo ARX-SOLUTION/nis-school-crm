@@ -104,7 +104,7 @@ describe('Telegram Login + Parent Invites (e2e)', () => {
   // -------------------------------------------------------------------------
 
   it('should_return_200_linked_true_when_admin_binds_telegram', async () => {
-    const { tokens } = await seedAndLogin(dataSource, app, {
+    const { tokens } = await seedAndLogin(app, dataSource, {
       email: 'admin@example.com',
       password: 'admin-password-long-enough',
       role: RoleName.ADMIN,
@@ -142,7 +142,7 @@ describe('Telegram Login + Parent Invites (e2e)', () => {
   // -------------------------------------------------------------------------
 
   it('should_return_201_with_token_and_inviteUrl_when_manager_creates_invite', async () => {
-    const manager = await seedAndLogin(dataSource, app, {
+    const manager = await seedAndLogin(app, dataSource, {
       email: 'manager@example.com',
       password: 'manager-password-long',
       role: RoleName.MANAGER,
@@ -161,7 +161,7 @@ describe('Telegram Login + Parent Invites (e2e)', () => {
   });
 
   it('should_return_403_when_teacher_attempts_to_create_parent_invite', async () => {
-    const teacher = await seedAndLogin(dataSource, app, {
+    const teacher = await seedAndLogin(app, dataSource, {
       email: 'teacher@example.com',
       password: 'teacher-password-long',
       role: RoleName.TEACHER,
@@ -180,7 +180,7 @@ describe('Telegram Login + Parent Invites (e2e)', () => {
   // -------------------------------------------------------------------------
 
   it('should_return_200_with_access_token_and_create_parent_student_link', async () => {
-    const manager = await seedAndLogin(dataSource, app, {
+    const manager = await seedAndLogin(app, dataSource, {
       email: 'manager2@example.com',
       password: 'manager-password-long',
       role: RoleName.MANAGER,
@@ -227,7 +227,7 @@ describe('Telegram Login + Parent Invites (e2e)', () => {
   });
 
   it('should_return_400_when_invite_is_reused', async () => {
-    const manager = await seedAndLogin(dataSource, app, {
+    const manager = await seedAndLogin(app, dataSource, {
       email: 'manager3@example.com',
       password: 'manager-password-long',
       role: RoleName.MANAGER,
@@ -262,7 +262,7 @@ describe('Telegram Login + Parent Invites (e2e)', () => {
   });
 
   it('should_return_200_and_reuse_existing_parent_when_second_child_invite_is_accepted', async () => {
-    const manager = await seedAndLogin(dataSource, app, {
+    const manager = await seedAndLogin(app, dataSource, {
       email: 'manager4@example.com',
       password: 'manager-password-long',
       role: RoleName.MANAGER,

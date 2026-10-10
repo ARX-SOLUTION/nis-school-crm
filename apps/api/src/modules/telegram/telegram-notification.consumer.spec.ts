@@ -174,6 +174,31 @@ describe('TelegramNotificationConsumer', () => {
     expect(text).toContain('Sababsiz dars qoldirdi');
   });
 
+  it('should_skip_attendance_alert_when_parent_opted_out', async () => {
+    const { consumer, bot, parentStudents, invoke } = build();
+    parentStudents.find.mockResolvedValue([
+      {
+        parentUser: {
+          id: 'parent-1',
+          telegramChatId: '777',
+          language: 'uz',
+          notificationPrefs: { telegramAttendance: false },
+        },
+      },
+    ]);
+    const attendancePayload: AttendanceRecordedEvent = {
+      studentId: 'stud-1',
+      studentName: 'Temur Aliyev',
+      classId: 'cls-1',
+      date: '2026-09-27',
+      status: 'ABSENT',
+      remarks: 'Sababsiz dars qoldirdi',
+    };
+    await consumer.onApplicationBootstrap();
+    await invoke(envelope(EVENT_ATTENDANCE_RECORDED, attendancePayload));
+    expect(bot.sendMarkdown).not.toHaveBeenCalled();
+  });
+
   it('should_render_grade_alert_and_send_to_parent', async () => {
     const { consumer, bot, parentStudents, invoke } = build();
     parentStudents.find.mockResolvedValue([
@@ -201,6 +226,33 @@ describe('TelegramNotificationConsumer', () => {
     expect(text).toContain('Matematika');
   });
 
+  it('should_skip_grade_alert_when_parent_opted_out', async () => {
+    const { consumer, bot, parentStudents, invoke } = build();
+    parentStudents.find.mockResolvedValue([
+      {
+        parentUser: {
+          id: 'parent-1',
+          telegramChatId: '777',
+          language: 'uz',
+          notificationPrefs: { telegramGrades: false },
+        },
+      },
+    ]);
+    const gradePayload: GradeRecordedEvent = {
+      studentId: 'stud-1',
+      studentName: 'Temur Aliyev',
+      subjectName: 'Matematika',
+      score: 95,
+      maxScore: 100,
+      gradeType: 'EXAM',
+      date: '2026-09-27',
+      comment: "A'lo natija",
+    };
+    await consumer.onApplicationBootstrap();
+    await invoke(envelope(EVENT_GRADE_RECORDED, gradePayload));
+    expect(bot.sendMarkdown).not.toHaveBeenCalled();
+  });
+
   it('should_render_payment_receipt_and_send_to_parent', async () => {
     const { consumer, bot, parentStudents, invoke } = build();
     parentStudents.find.mockResolvedValue([
@@ -224,6 +276,57 @@ describe('TelegramNotificationConsumer', () => {
     expect(chatId).toBe('777');
     expect(text).toContain("To'lov qabul qilindi");
     expect(text).toContain('REC\\-9981');
+  });
+
+  it('should_skip_payment_alert_when_parent_opted_out', async () => {
+    const { consumer, bot, parentStudents, invoke } = build();
+    parentStudents.find.mockResolvedValue([
+      {
+        parentUser: {
+          id: 'parent-1',
+          telegramChatId: '777',
+          language: 'uz',
+          notificationPrefs: { telegramPayments: false },
+        },
+      },
+    ]);
+    const paymentPayload: PaymentRecordedEvent = {
+      studentId: 'stud-1',
+      studentName: 'Temur Aliyev',
+      amount: 1500000,
+      method: 'PAYME',
+      receiptNumber: 'REC-9981',
+      month: '2026-09',
+      paidAt: '2026-09-27T10:00:00Z',
+    };
+    await consumer.onApplicationBootstrap();
+    await invoke(envelope(EVENT_PAYMENT_RECORDED, paymentPayload));
+    expect(bot.sendMarkdown).not.toHaveBeenCalled();
+  });
+
+  it('should_skip_notification_when_parent_is_deactivated', async () => {
+    const { consumer, bot, parentStudents, invoke } = build();
+    parentStudents.find.mockResolvedValue([
+      {
+        parentUser: {
+          id: 'parent-inactive',
+          telegramChatId: '888',
+          language: 'uz',
+          isActive: false,
+        },
+      },
+    ]);
+    const attendancePayload: AttendanceRecordedEvent = {
+      studentId: 'stud-1',
+      studentName: 'Temur Aliyev',
+      classId: 'cls-1',
+      date: '2026-09-27',
+      status: 'ABSENT',
+      remarks: 'Sababsiz dars qoldirdi',
+    };
+    await consumer.onApplicationBootstrap();
+    await invoke(envelope(EVENT_ATTENDANCE_RECORDED, attendancePayload));
+    expect(bot.sendMarkdown).not.toHaveBeenCalled();
   });
 
   it('should_broadcast_announcement_to_parents', async () => {

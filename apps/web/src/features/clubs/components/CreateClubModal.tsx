@@ -121,23 +121,23 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
       role="dialog"
       aria-modal="true"
       aria-labelledby="create-club-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-tertiary/50 backdrop-blur-xs animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-xs animate-in fade-in duration-150"
     >
-      <div className="relative w-full max-w-2xl bg-surface rounded-xl shadow-2xl border border-border overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-2xl bg-slate-900 rounded-xl shadow-2xl border border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-muted-surface">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
           <div>
-            <h2 id="create-club-title" className="text-base font-semibold text-tertiary">
+            <h2 id="create-club-title" className="text-base font-semibold text-slate-100">
               Yangi to'garak / doira tashkil qilish
             </h2>
-            <p className="text-xs text-neutral-500 mt-0.5">
+            <p className="text-xs text-slate-400 mt-0.5">
               Maktabda darsdan tashqari faoliyat va ijodiy to'garak parametrlari
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-neutral-400 hover:text-neutral-500 rounded-lg hover:bg-muted-surface transition-colors"
+            className="p-1.5 text-slate-400 hover:text-slate-200 rounded-lg hover:bg-slate-800 transition-colors"
             aria-label="Modalni yopish"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -152,11 +152,14 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
         </div>
 
         {/* Content Form */}
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 text-xs">
+        <form
+          onSubmit={handleSubmit}
+          className="p-4 sm:p-6 overflow-y-auto space-y-3.5 sm:space-y-4 text-xs"
+        >
           {error && (
-            <div className="p-3 rounded-lg bg-[#FEE2E2] border border-error text-error flex items-center gap-2">
+            <div className="p-3 rounded-lg bg-red-950/40 border border-red-500/30 text-red-300 flex items-center gap-2">
               <svg
-                className="w-4 h-4 text-error shrink-0"
+                className="w-4 h-4 text-red-400 shrink-0"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -175,8 +178,8 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
           {/* Row 1: Name and Category */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="create-club-name" className="block font-semibold text-tertiary mb-1">
-                To'garak nomi <span className="text-error">*</span>
+              <label htmlFor="create-club-name" className="block font-semibold text-slate-200 mb-1">
+                To'garak nomi <span className="text-rose-400">*</span>
               </label>
               <input
                 id="create-club-name"
@@ -185,14 +188,14 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Masalan: Doira va milliy musiqa ansambli"
-                className="w-full px-3 py-2 text-sm bg-surface border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-border"
+                className="w-full px-3 py-2 text-sm bg-slate-900 border border-slate-700 text-slate-100 placeholder:text-slate-500 rounded-lg focus:outline-hidden focus:border-blue-500"
               />
             </div>
 
             <div>
               <label
                 htmlFor="create-club-category"
-                className="block font-semibold text-tertiary mb-1"
+                className="block font-semibold text-slate-200 mb-1"
               >
                 Toifa / Yo'nalish
               </label>
@@ -200,7 +203,7 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
                 id="create-club-category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value as ClubCategory)}
-                className="w-full px-3 py-2 text-sm bg-surface border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-border"
+                className="w-full px-3 py-2 text-sm bg-slate-900 border border-slate-700 text-slate-200 rounded-lg focus:outline-hidden focus:border-blue-500"
               >
                 {CATEGORIES.map((c) => (
                   <option key={c.value} value={c.value}>
@@ -213,7 +216,7 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
 
           {/* Description */}
           <div>
-            <label htmlFor="create-club-desc" className="block font-semibold text-tertiary mb-1">
+            <label htmlFor="create-club-desc" className="block font-semibold text-slate-200 mb-1">
               To'garak haqida qisqacha tavsif
             </label>
             <textarea
@@ -222,7 +225,7 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="O'quv kursi maqsadi, amaliy mashg'ulotlar rejasi..."
-              className="w-full px-3 py-2 text-xs bg-surface border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-border"
+              className="w-full px-3 py-2 text-xs bg-slate-900 border border-slate-700 text-slate-100 placeholder:text-slate-500 rounded-lg focus:outline-hidden focus:border-blue-500"
             />
           </div>
 
@@ -231,7 +234,7 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
             <div>
               <label
                 htmlFor="create-instructor-name"
-                className="block font-semibold text-tertiary mb-1"
+                className="block font-semibold text-slate-200 mb-1"
               >
                 Murabbiy / Ustoz F.I.Sh.
               </label>
@@ -241,14 +244,14 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
                 value={instructorName}
                 onChange={(e) => setInstructorName(e.target.value)}
                 placeholder="Masalan: Sardor Rahimov"
-                className="w-full px-3 py-2 text-sm bg-surface border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-border"
+                className="w-full px-3 py-2 text-sm bg-slate-900 border border-slate-700 text-slate-100 placeholder:text-slate-500 rounded-lg focus:outline-hidden focus:border-blue-500"
               />
             </div>
 
             <div>
               <label
                 htmlFor="create-instructor-phone"
-                className="block font-semibold text-tertiary mb-1"
+                className="block font-semibold text-slate-200 mb-1"
               >
                 Murabbiy telefoni
               </label>
@@ -258,17 +261,17 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
                 value={instructorPhone}
                 onChange={(e) => setInstructorPhone(e.target.value)}
                 placeholder="+998 90 123 45 67"
-                className="w-full px-3 py-2 text-sm bg-surface border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-border"
+                className="w-full px-3 py-2 text-sm bg-slate-900 border border-slate-700 text-slate-100 placeholder:text-slate-500 rounded-lg focus:outline-hidden focus:border-blue-500"
               />
             </div>
           </div>
 
           {/* Row 3: Capacity & Grades */}
-          <div className="grid grid-cols-3 gap-3 p-3 bg-muted-surface rounded-xl border border-border">
+          <div className="grid grid-cols-3 gap-3 p-3 bg-slate-950/40 rounded-xl border border-slate-800">
             <div>
               <label
                 htmlFor="create-club-capacity"
-                className="block font-semibold text-tertiary mb-1"
+                className="block font-semibold text-slate-300 mb-1"
               >
                 Maksimal sig'im:
               </label>
@@ -279,14 +282,14 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
                 max={200}
                 value={capacity}
                 onChange={(e) => setCapacity(Number(e.target.value))}
-                className="w-full px-3 py-1.5 text-xs bg-surface border border-border rounded-lg focus:outline-hidden focus:ring-1 focus:ring-border tabular-nums"
+                className="w-full px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 text-slate-100 rounded-lg focus:outline-hidden focus:border-blue-500 tabular-nums"
               />
             </div>
 
             <div>
               <label
                 htmlFor="create-club-mingrade"
-                className="block font-semibold text-tertiary mb-1"
+                className="block font-semibold text-slate-300 mb-1"
               >
                 Min. sinf:
               </label>
@@ -297,14 +300,14 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
                 max={11}
                 value={minGrade}
                 onChange={(e) => setMinGrade(Number(e.target.value))}
-                className="w-full px-3 py-1.5 text-xs bg-surface border border-border rounded-lg focus:outline-hidden focus:ring-1 focus:ring-border tabular-nums"
+                className="w-full px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 text-slate-100 rounded-lg focus:outline-hidden focus:border-blue-500 tabular-nums"
               />
             </div>
 
             <div>
               <label
                 htmlFor="create-club-maxgrade"
-                className="block font-semibold text-tertiary mb-1"
+                className="block font-semibold text-slate-300 mb-1"
               >
                 Maks. sinf:
               </label>
@@ -315,7 +318,7 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
                 max={11}
                 value={maxGrade}
                 onChange={(e) => setMaxGrade(Number(e.target.value))}
-                className="w-full px-3 py-1.5 text-xs bg-surface border border-border rounded-lg focus:outline-hidden focus:ring-1 focus:ring-border tabular-nums"
+                className="w-full px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 text-slate-100 rounded-lg focus:outline-hidden focus:border-blue-500 tabular-nums"
               />
             </div>
           </div>
@@ -325,7 +328,7 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
             <div>
               <label
                 htmlFor="create-club-feetype"
-                className="block font-semibold text-tertiary mb-1"
+                className="block font-semibold text-slate-200 mb-1"
               >
                 To'lov turi:
               </label>
@@ -333,7 +336,7 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
                 id="create-club-feetype"
                 value={feeType}
                 onChange={(e) => setFeeType(e.target.value as ClubFeeType)}
-                className="w-full px-3 py-2 text-sm bg-surface border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-border"
+                className="w-full px-3 py-2 text-sm bg-slate-900 border border-slate-700 text-slate-200 rounded-lg focus:outline-hidden focus:border-blue-500"
               >
                 <option value={ClubFeeType.FREE}>Bepul (Maktab dasturida)</option>
                 <option value={ClubFeeType.PAID}>Pullik (Qo'shimcha abonent to'lovi)</option>
@@ -344,7 +347,7 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
               <div>
                 <label
                   htmlFor="create-club-feeamount"
-                  className="block font-semibold text-tertiary mb-1"
+                  className="block font-semibold text-slate-200 mb-1"
                 >
                   Oylik to'lov summasi (so'm):
                 </label>
@@ -356,20 +359,22 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
                   value={monthlyFee}
                   onChange={(e) => setMonthlyFee(Number(e.target.value))}
                   placeholder="350000"
-                  className="w-full px-3 py-2 text-sm bg-surface border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-border tabular-nums"
+                  className="w-full px-3 py-2 text-sm bg-slate-900 border border-slate-700 text-slate-100 placeholder:text-slate-500 rounded-lg focus:outline-hidden focus:border-blue-500 tabular-nums"
                 />
               </div>
             )}
           </div>
 
           {/* Row 5: Schedule slots */}
-          <div className="space-y-2 pt-2 border-t border-border">
+          <div className="space-y-2 pt-2 border-t border-slate-800">
             <div className="flex items-center justify-between">
-              <label className="font-semibold text-tertiary">Mashg'ulot kunlari va vaqtlari:</label>
+              <label className="font-semibold text-slate-200">
+                Mashg'ulot kunlari va vaqtlari:
+              </label>
               <button
                 type="button"
                 onClick={handleAddScheduleSlot}
-                className="text-xs font-medium text-secondary hover:text-indigo-900"
+                className="text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors"
               >
                 + Vaqt qo'shish
               </button>
@@ -379,14 +384,14 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
               {schedules.map((slot, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-2 p-2 bg-muted-surface border border-border rounded-lg"
+                  className="flex items-center gap-2 p-2 bg-slate-950/40 border border-slate-800 rounded-lg"
                 >
                   <select
                     value={slot.dayOfWeek}
                     onChange={(e) =>
                       handleUpdateSchedule(index, 'dayOfWeek', Number(e.target.value))
                     }
-                    className="px-2 py-1 text-xs bg-surface border border-border rounded-lg"
+                    className="px-2 py-1 text-xs bg-slate-900 border border-slate-700 text-slate-200 rounded-lg"
                   >
                     {DAYS.map((d) => (
                       <option key={d.value} value={d.value}>
@@ -400,14 +405,14 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
                       type="text"
                       value={slot.startTime}
                       onChange={(e) => handleUpdateSchedule(index, 'startTime', e.target.value)}
-                      className="w-16 px-2 py-1 text-xs text-center bg-surface border border-border rounded-lg tabular-nums"
+                      className="w-16 px-2 py-1 text-xs text-center bg-slate-900 border border-slate-700 text-slate-100 rounded-lg tabular-nums"
                     />
-                    <span>-</span>
+                    <span className="text-slate-400">-</span>
                     <input
                       type="text"
                       value={slot.endTime}
                       onChange={(e) => handleUpdateSchedule(index, 'endTime', e.target.value)}
-                      className="w-16 px-2 py-1 text-xs text-center bg-surface border border-border rounded-lg tabular-nums"
+                      className="w-16 px-2 py-1 text-xs text-center bg-slate-900 border border-slate-700 text-slate-100 rounded-lg tabular-nums"
                     />
                   </div>
 
@@ -415,7 +420,7 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
                     <button
                       type="button"
                       onClick={() => handleRemoveScheduleSlot(index)}
-                      className="p-1 text-error hover:text-error ml-auto"
+                      className="p-1 text-rose-400 hover:text-rose-300 ml-auto transition-colors"
                       aria-label="Vaqtni o'chirish"
                     >
                       <svg
@@ -439,18 +444,18 @@ export const CreateClubModal: React.FC<CreateClubModalProps> = ({ isOpen, onClos
           </div>
 
           {/* Footer buttons */}
-          <div className="pt-3 border-t border-border flex items-center justify-end gap-2">
+          <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-medium text-tertiary bg-surface border border-border rounded-lg hover:bg-muted-surface transition-colors"
+              className="px-4 py-2 text-xs font-medium text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors"
             >
               Bekor qilish
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-4 py-2 text-xs font-semibold text-white bg-tertiary hover:bg-tertiary rounded-lg transition-colors disabled:opacity-50"
+              className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors disabled:opacity-50"
             >
               {submitting ? 'Saqlanmoqda...' : "To'garakni yaratish"}
             </button>
