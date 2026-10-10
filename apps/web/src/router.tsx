@@ -26,6 +26,9 @@ const ParentInviteAcceptPage = React.lazy(() =>
 const AttendancePage = React.lazy(() =>
   import('@/pages/AttendancePage').then((m) => ({ default: m.AttendancePage })),
 );
+const AuditLogsPage = React.lazy(() =>
+  import('@/pages/AuditLogsPage').then((m) => ({ default: m.AuditLogsPage })),
+);
 const BillingPage = React.lazy(() =>
   import('@/pages/BillingPage').then((m) => ({ default: m.BillingPage })),
 );
@@ -467,6 +470,25 @@ function BranchesRouteComponent(): React.ReactElement | null {
   );
 }
 
+const auditLogsRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/audit-logs',
+  component: AuditLogsRouteComponent,
+});
+
+function AuditLogsRouteComponent(): React.ReactElement | null {
+  const me = useCurrentUserQuery();
+  if (!me.data) return null;
+  if (me.data.role !== 'ADMIN' && me.data.role !== 'SUPER_ADMIN') {
+    return <Navigate to="/" />;
+  }
+  return (
+    <Suspense fallback={<div className="p-8 text-neutral-500 text-center">Loading...</div>}>
+      <AuditLogsPage />
+    </Suspense>
+  );
+}
+
 const routeTree = rootRoute.addChildren([
   loginRoute,
   telegramLoginRoute,
@@ -489,6 +511,7 @@ const routeTree = rootRoute.addChildren([
     reportsRoute,
     myClassRoute,
     profileRoute,
+    auditLogsRoute,
   ]),
 ]);
 

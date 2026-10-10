@@ -1,3 +1,4 @@
+import * as crypto from 'crypto';
 import { Injectable, NotFoundException, Optional } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -13,6 +14,7 @@ import { Student, StudentStatus } from '../students/entities/student.entity';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { PaymentsQueryDto } from './dto/payments-query.dto';
 import { PaymentRecord } from './entities/payment.entity';
+import { getCurrentTashkentMonth } from '../../common/utils/timezone.util';
 
 const DEFAULT_MONTHLY_FEE = 2_500_000;
 
@@ -36,8 +38,9 @@ export class BillingService {
       throw new NotFoundException(`Student with id ${dto.studentId} not found`);
     }
 
-    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-    const receiptNumber = `REC-${dto.month.replace('-', '')}-${randomSuffix}`;
+    const timeSuffix = Date.now().toString(36).toUpperCase();
+    const randomHex = crypto.randomBytes(3).toString('hex').toUpperCase();
+    const receiptNumber = `REC-${dto.month.replace('-', '')}-${timeSuffix}-${randomHex}`;
 
     const payment = this.paymentRepo.create({
       studentId: dto.studentId,
@@ -139,7 +142,7 @@ export class BillingService {
   }
 
   async getStats(month?: string): Promise<BillingStatsDto> {
-    const targetMonth = month || new Date().toISOString().slice(0, 7);
+    const targetMonth = month || getCurrentTashkentMonth();
 
     // Sum of confirmed payments for targetMonth
     const { totalCollected } = await this.paymentRepo
@@ -169,7 +172,7 @@ export class BillingService {
   }
 
   async getDebtors(month?: string): Promise<DebtorStudentDto[]> {
-    const targetMonth = month || new Date().toISOString().slice(0, 7);
+    const targetMonth = month || getCurrentTashkentMonth();
 
     const activeStudents = await this.studentRepo.find({
       where: { status: StudentStatus.ACTIVE },

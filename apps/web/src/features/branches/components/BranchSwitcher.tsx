@@ -68,7 +68,9 @@ export function BranchSwitcher(): React.ReactElement {
           />
         </svg>
 
-        <span className="truncate max-w-[150px] font-semibold">{displayName}</span>
+        <span className="truncate max-w-[95px] xs:max-w-[130px] sm:max-w-[180px] font-semibold">
+          {displayName}
+        </span>
 
         {/* Chevron Icon */}
         <svg
@@ -86,7 +88,7 @@ export function BranchSwitcher(): React.ReactElement {
 
       {open ? (
         <div
-          className="absolute left-0 mt-2 w-64 rounded-xl bg-surface shadow-xl border border-border py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100"
+          className="absolute left-0 mt-2 w-64 max-w-[calc(100vw-1.5rem)] rounded-xl bg-surface shadow-xl border border-border py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100"
           role="menu"
         >
           <div className="px-3 py-1.5 text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
@@ -97,7 +99,7 @@ export function BranchSwitcher(): React.ReactElement {
             type="button"
             onClick={() => handleSelect('all')}
             className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-muted-surface transition-colors ${
-              activeBranchId === 'all' ? 'font-bold text-secondary bg-[#DBEAFE]' : 'text-tertiary'
+              activeBranchId === 'all' ? 'font-bold text-primary bg-primary/10' : 'text-tertiary'
             }`}
             role="menuitem"
           >
@@ -107,7 +109,7 @@ export function BranchSwitcher(): React.ReactElement {
             </div>
             {activeBranchId === 'all' ? (
               <svg
-                className="h-4 w-4 text-secondary"
+                className="h-4 w-4 text-primary"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -132,7 +134,7 @@ export function BranchSwitcher(): React.ReactElement {
                 type="button"
                 onClick={() => handleSelect(b.id)}
                 className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-muted-surface transition-colors ${
-                  isSelected ? 'font-bold text-secondary bg-[#DBEAFE]' : 'text-tertiary'
+                  isSelected ? 'font-bold text-primary bg-primary/10' : 'text-tertiary'
                 }`}
                 role="menuitem"
               >
@@ -145,7 +147,7 @@ export function BranchSwitcher(): React.ReactElement {
                 </div>
                 {isSelected ? (
                   <svg
-                    className="h-4 w-4 text-secondary shrink-0"
+                    className="h-4 w-4 text-primary shrink-0"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -167,7 +169,7 @@ export function BranchSwitcher(): React.ReactElement {
           <Link
             to="/branches"
             onClick={() => setOpen(false)}
-            className="w-full text-left px-3 py-2 text-xs text-secondary hover:text-secondary hover:bg-[#DBEAFE] flex items-center gap-1.5 font-medium transition-colors"
+            className="w-full text-left px-3 py-2 text-xs text-primary hover:text-primary hover:bg-primary/10 flex items-center gap-1.5 font-medium transition-colors"
           >
             <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path

@@ -35,12 +35,11 @@ Two consumers only: `audit.log` (all `audit.*`) and `notifications.telegram` (al
 Socket.IO namespace `events`; rooms `user:<id>`, `role:<ROLE>`; emits `attendance.updated`,
 `notification.new`.
 
-### ⚠️ There is NO scheduled work in this system
+### Scheduled work in this system
 
-Verified: zero `@Cron`, `@Interval`, `node-cron`, `bullmq`, `@nestjs/schedule`.
-There is no timer anywhere in the backend. Every loop today is **human-triggered** —
-somebody opens a page and clicks. The event bus carries things that already happened
-(recorded → notify); it never decides *when* something should happen.
+`@nestjs/schedule` is integrated via `CronScheduleModule.forRoot()` in `AppModule` and managed by `TasksModule`:
+- **Daily midnight cleanup (`0 0 * * *`, `Asia/Tashkent`)**: Purges expired refresh tokens (`RefreshTokenService.purgeExpired()`) and soft-deletes expired parent invites older than 7 days (`ParentInviteService.cleanupExpiredInvites()`). Multi-replica deduplication guaranteed via Redis distributed lock (`cron:purge-expired:<YYYY-MM-DD>`).
+- **Monthly debtor recalculation (`0 0 1 * *`, `Asia/Tashkent`)**: Recalculates debtor balances and logs billing statistics at midnight on the 1st of each month (`BillingService.getStats()`). Multi-replica deduplication guaranteed via Redis distributed lock (`cron:recalculate-debtors:<YYYY-MM>`).
 
 ---
 
@@ -199,6 +198,7 @@ happens. Every loop today is a person opening a page and clicking.
 | `workflows/announcement-broadcast.md` | compose → preview → verified send to the right audience | event + on-demand |
 | `workflows/lead-followup.md` | stale leads in a board whose stages are not enforced | schedule 09:00 |
 | `workflows/student-graduation-sweep.md` | students who finished the year and are still `ACTIVE` | schedule 11:00, only while an ended year is unswept |
+| `workflows/monthly-tuition-collection.md` | DRAFT tuition batch → one brief → ISSUED on `ha` (TUITION only, due 10th) | schedule 1st 08:00 `Asia/Tashkent` |
 
 The three scheduled loops sit at 09:00, 11:00 and 18:00 on purpose — three briefs in one
 Telegram channel must not land on top of each other.
@@ -232,11 +232,32 @@ Recorded because a scout subagent found them and I had them wrong:
   `:102-104`.
 - `env.validation.ts:43` is a poor anchor; `:60-67` is the feature-flag block.
 
+## Settled — rounds 5–8 (loop B: monthly tuition, under wayfinder #33)
+
+| Decision | Answer |
+|---|---|
+| **Loop** | Monthly tuition collection (money loop; Excel lives here) |
+| **Trigger** | 1st 08:00 `Asia/Tashkent` — before the 09:00 lead brief |
+| **Scope** | `TUITION` only; CLUB/SERVICE/DISCOUNT/ADJUSTMENT follow-up |
+| **Autonomy** | Push right + approval: `DRAFT` → one brief → `ISSUED` on `ha`; never auto |
+| **Candidate** | `ACTIVE` + `class_id NOT NULL`; classless counted, never invoiced |
+| **Branch** | New `classes.branch_id` + backfill; invoice snapshots it. First to ship creates it |
+| **Proration** | Remaining / total WORKING days via `school_calendar_days`, Mon–Fri fallback |
+| **Credit** | Auto FIFO at generation, per-line visible |
+| **Brief** | Count + sum + exceptions; OVERDUE count+sum; `uz`, `NIS_MANAGER_CHAT_ID` |
+| **Checkpoint** | `ha` / `yo'q`, 48h; `yo'q`/expiry deletes DRAFTs; manual regenerate |
+| **Fee** | Constant `2_500_000` + `pricingSnapshot`; fee table later |
+| **Idempotency** | `(MONTHLY_TUITION, billing_month)` unique + `UNIQUE (student_id, billing_month)` |
+| **Parent notify** | None in v1 — its own loop with undo analysis |
+| **#39 boundary** | Migration, gateway FIFO, receipts, cutover stay in #39; this spec blocks on none |
+
+**Spec:** `workflows/monthly-tuition-collection.md` — 7 slices, ready to implement.
+
 ## Still open — needs the user
 
-- **Monthly tuition collection** is blocked on wayfinder issues #38 and #39 — its spec cannot be
-  finished until those close. It is the loop with real Excel dependency and the one that moves
-  actual money.
+- **Monthly tuition collection** spec'd (`workflows/monthly-tuition-collection.md`, TUITION only)
+  with the #39 boundary explicit (migration, gateway FIFO, receipts, cutover stay in #39).
+  Unblocked by #38 (closed). Next in this lane: reconciliation sweep, access granting.
 - Remaining loops from the candidate list, none yet specified: new-student onboarding chain,
   grade entry + quarter reporting, teacher substitution notification, club session, month-close
   finance review, staff onboarding, access granting.

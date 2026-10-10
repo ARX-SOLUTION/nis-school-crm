@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import type { BranchDto } from '@nis/shared';
+import { Plus } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
+import { Card } from '@/components/ui/Card';
 import { useBranchesQuery } from '../api/use-branches-query';
 import { CreateBranchModal } from './CreateBranchModal';
 
@@ -28,100 +32,94 @@ export function BranchesTable(): React.ReactElement {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={handleCreate}
-          className="min-h-[44px] px-4 py-2 bg-primary hover:bg-primary text-tertiary text-xs font-semibold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-        >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-          </svg>
+        <Button variant="primary" onClick={handleCreate}>
+          <Plus className="h-4 w-4 mr-1.5" />
           <span>Yangi filial qo‘shish</span>
-        </button>
+        </Button>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-border bg-surface shadow-xs">
-        <table className="w-full border-collapse text-left text-sm">
-          <thead>
-            <tr className="border-b border-border bg-muted-surface text-xs font-semibold uppercase tracking-wider text-neutral-500">
-              <th scope="col" className="p-3.5 w-12 text-center">
-                #
-              </th>
-              <th scope="col" className="p-3.5">
-                Filial nomi
-              </th>
-              <th scope="col" className="p-3.5">
-                Kodi
-              </th>
-              <th scope="col" className="p-3.5">
-                Manzil
-              </th>
-              <th scope="col" className="p-3.5">
-                Telefon
-              </th>
-              <th scope="col" className="p-3.5 text-center">
-                Holati
-              </th>
-              <th scope="col" className="p-3.5 text-center">
-                Amal
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {isLoading ? (
-              <tr>
-                <td colSpan={7} className="p-8 text-center text-xs text-neutral-400">
-                  Filiallar yuklanmoqda...
-                </td>
+      <Card className="overflow-hidden p-0">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left text-sm">
+            <thead>
+              <tr className="border-b border-slate-800 bg-slate-900/90 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                <th scope="col" className="px-2 sm:px-3 py-2.5 sm:py-3 w-12 text-center">
+                  #
+                </th>
+                <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
+                  Filial nomi
+                </th>
+                <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
+                  Kodi
+                </th>
+                <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
+                  Manzil
+                </th>
+                <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
+                  Telefon
+                </th>
+                <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3 text-center">
+                  Holati
+                </th>
+                <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3 text-center">
+                  Amal
+                </th>
               </tr>
-            ) : branches.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="p-8 text-center text-xs text-neutral-400">
-                  Hozircha filiallar kiritilmagan.
-                </td>
-              </tr>
-            ) : (
-              branches.map((b, idx) => (
-                <tr key={b.id} className="hover:bg-muted-surface transition-colors">
-                  <td className="p-3.5 text-center text-xs font-medium text-neutral-400">
-                    {idx + 1}
-                  </td>
-                  <td className="p-3.5">
-                    <div className="font-semibold text-tertiary">{b.name}</div>
-                  </td>
-                  <td className="p-3.5">
-                    <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-muted-surface text-tertiary">
-                      {b.code}
-                    </span>
-                  </td>
-                  <td className="p-3.5 text-xs text-neutral-500">{b.address || '-'}</td>
-                  <td className="p-3.5 text-xs font-mono text-neutral-500">{b.phone || '-'}</td>
-                  <td className="p-3.5 text-center">
-                    <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${
-                        b.isActive
-                          ? 'bg-[#E8F7D0] text-success border border-success'
-                          : 'bg-muted-surface text-neutral-500 border border-border'
-                      }`}
-                    >
-                      {b.isActive ? 'Faol' : 'Faol emas'}
-                    </span>
-                  </td>
-                  <td className="p-3.5 text-center">
-                    <button
-                      type="button"
-                      onClick={() => handleEdit(b)}
-                      className="min-h-[44px] px-3 py-1 text-xs font-medium text-secondary hover:underline hover:bg-[#DBEAFE] rounded-lg transition-colors"
-                    >
-                      Tahrirlash
-                    </button>
+            </thead>
+            <tbody className="divide-y divide-slate-800">
+              {isLoading ? (
+                <tr>
+                  <td colSpan={7} className="p-8 text-center text-xs text-slate-400">
+                    Filiallar yuklanmoqda...
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              ) : branches.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="p-8 text-center text-xs text-slate-400">
+                    Hozircha filiallar kiritilmagan.
+                  </td>
+                </tr>
+              ) : (
+                branches.map((b, idx) => (
+                  <tr key={b.id} className="hover:bg-slate-800/40 transition-colors">
+                    <td className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-xs font-medium text-slate-500">
+                      {idx + 1}
+                    </td>
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3">
+                      <div className="font-semibold text-slate-100">{b.name}</div>
+                    </td>
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3">
+                      <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
+                        {b.code}
+                      </span>
+                    </td>
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-xs text-slate-400">
+                      {b.address || '-'}
+                    </td>
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-xs font-mono text-slate-400">
+                      {b.phone || '-'}
+                    </td>
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-center">
+                      {b.isActive ? (
+                        <Badge variant="success" withDot>
+                          Faol
+                        </Badge>
+                      ) : (
+                        <Badge variant="neutral">Faol emas</Badge>
+                      )}
+                    </td>
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-center">
+                      <Button variant="ghost" size="sm" onClick={() => handleEdit(b)}>
+                        Tahrirlash
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Card>
 
       {modalOpen ? (
         <CreateBranchModal

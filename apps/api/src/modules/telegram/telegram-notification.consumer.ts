@@ -136,7 +136,9 @@ export class TelegramNotificationConsumer implements OnApplicationBootstrap {
       relations: ['parentUser'],
     });
 
-    return links.map((l) => l.parentUser).filter((u): u is User => Boolean(u && u.telegramChatId));
+    return links
+      .map((l) => l.parentUser)
+      .filter((u): u is User => Boolean(u && u.telegramChatId && u.isActive !== false));
   }
 
   private async handleUserAuthEvent(
@@ -176,6 +178,12 @@ export class TelegramNotificationConsumer implements OnApplicationBootstrap {
     }
 
     for (const parent of parents) {
+      if (parent.notificationPrefs && parent.notificationPrefs.telegramAttendance === false) {
+        this.logger.debug(
+          `notification skipped - parent ${parent.id} opted out of telegramAttendance`,
+        );
+        continue;
+      }
       const locale = pickLocale(parent.language);
       const text = renderAttendanceAlert(event, locale);
       await this.sendToUser(parent, text);
@@ -190,6 +198,10 @@ export class TelegramNotificationConsumer implements OnApplicationBootstrap {
     }
 
     for (const parent of parents) {
+      if (parent.notificationPrefs && parent.notificationPrefs.telegramGrades === false) {
+        this.logger.debug(`notification skipped - parent ${parent.id} opted out of telegramGrades`);
+        continue;
+      }
       const locale = pickLocale(parent.language);
       const text = renderGradeAlert(event, locale);
       await this.sendToUser(parent, text);
@@ -204,6 +216,12 @@ export class TelegramNotificationConsumer implements OnApplicationBootstrap {
     }
 
     for (const parent of parents) {
+      if (parent.notificationPrefs && parent.notificationPrefs.telegramPayments === false) {
+        this.logger.debug(
+          `notification skipped - parent ${parent.id} opted out of telegramPayments`,
+        );
+        continue;
+      }
       const locale = pickLocale(parent.language);
       const text = renderPaymentReceipt(event, locale);
       await this.sendToUser(parent, text);

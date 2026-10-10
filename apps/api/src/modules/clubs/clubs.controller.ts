@@ -30,6 +30,7 @@ export class ClubsController {
   constructor(private readonly clubsService: ClubsService) {}
 
   @Get()
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
   @ApiOperation({ summary: 'List all clubs with filters' })
   @ApiResponse({ status: 200 })
   async list(@Query() query: ClubQueryDto): Promise<ClubDto[]> {
@@ -38,6 +39,7 @@ export class ClubsController {
   }
 
   @Get('stats')
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
   @ApiOperation({ summary: 'Get summary statistics of clubs' })
   @ApiResponse({ status: 200 })
   async getStats(): Promise<ClubStatsDto> {
@@ -45,6 +47,7 @@ export class ClubsController {
   }
 
   @Get('conflicts/check')
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
   @ApiOperation({ summary: 'Check schedule and room conflicts' })
   @ApiResponse({ status: 200 })
   async checkConflict(
@@ -58,6 +61,7 @@ export class ClubsController {
   }
 
   @Get(':id')
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
   @ApiOperation({ summary: 'Get club details by ID' })
   @ApiResponse({ status: 200 })
   async getOne(@Param('id', ParseUUIDPipe) id: string): Promise<ClubDto> {
@@ -66,7 +70,7 @@ export class ClubsController {
   }
 
   @Post()
-  @Roles(RoleName.ADMIN, RoleName.MANAGER)
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER)
   @ApiOperation({ summary: 'Create a new club' })
   @ApiResponse({ status: 201 })
   async create(@Body() dto: CreateClubDto): Promise<ClubDto> {
@@ -75,7 +79,7 @@ export class ClubsController {
   }
 
   @Patch(':id')
-  @Roles(RoleName.ADMIN, RoleName.MANAGER)
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER)
   @ApiOperation({ summary: 'Update club details' })
   @ApiResponse({ status: 200 })
   async update(
@@ -87,7 +91,7 @@ export class ClubsController {
   }
 
   @Delete(':id')
-  @Roles(RoleName.ADMIN)
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
   @ApiOperation({ summary: 'Archive a club' })
   @ApiResponse({ status: 204 })
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
@@ -95,7 +99,7 @@ export class ClubsController {
   }
 
   @Post(':id/enroll')
-  @Roles(RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
   @ApiOperation({ summary: 'Enroll a student into a club' })
   @ApiResponse({ status: 201 })
   async enroll(
@@ -107,7 +111,7 @@ export class ClubsController {
   }
 
   @Delete(':id/enroll/:studentId')
-  @Roles(RoleName.ADMIN, RoleName.MANAGER)
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER)
   @ApiOperation({ summary: 'Drop a student from a club' })
   @ApiResponse({ status: 200 })
   async drop(
@@ -119,7 +123,7 @@ export class ClubsController {
   }
 
   @Post(':id/attendance')
-  @Roles(RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
   @ApiOperation({ summary: 'Bulk record club attendance for a date' })
   @ApiResponse({ status: 201 })
   async recordAttendance(
@@ -132,6 +136,7 @@ export class ClubsController {
   }
 
   @Get(':id/attendance')
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
   @ApiOperation({ summary: 'Get club attendance records' })
   @ApiResponse({ status: 200 })
   async getAttendance(

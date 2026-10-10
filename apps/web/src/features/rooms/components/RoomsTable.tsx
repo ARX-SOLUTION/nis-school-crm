@@ -42,63 +42,67 @@ export function RoomsTable({ rooms, canManage, onOpenCreate }: Props): React.Rea
         <table className="w-full text-left text-sm text-tertiary">
           <thead className="border-b border-border bg-muted-surface text-xs font-semibold uppercase tracking-wider text-neutral-500">
             <tr>
-              <th scope="col" className="px-4 py-3">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
                 Room
               </th>
-              <th scope="col" className="px-4 py-3">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
                 Name / Purpose
               </th>
-              <th scope="col" className="px-4 py-3">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
                 Type
               </th>
-              <th scope="col" className="px-4 py-3">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
                 Capacity
               </th>
-              <th scope="col" className="px-4 py-3">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
                 Floor
               </th>
-              <th scope="col" className="px-4 py-3">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
                 Status
               </th>
               {canManage ? (
-                <th scope="col" className="px-4 py-3 text-right">
+                <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3 text-right">
                   Actions
                 </th>
               ) : null}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-800">
             {rooms.map((r) => (
               <tr key={r.id} className="hover:bg-muted-surface transition-colors">
-                <td className="px-4 py-3 font-semibold text-tertiary">{r.roomNumber}</td>
-                <td className="px-4 py-3 text-tertiary">{r.name ?? 'Standard Classroom'}</td>
-                <td className="px-4 py-3">
+                <td className="px-3 sm:px-4 py-2.5 sm:py-3 font-semibold text-tertiary">
+                  {r.roomNumber}
+                </td>
+                <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-tertiary">
+                  {r.name ?? 'Standard Classroom'}
+                </td>
+                <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                   <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-medium bg-muted-surface text-tertiary border border-border">
                     {r.type}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-tertiary">{r.capacity} seats</td>
-                <td className="px-4 py-3 text-neutral-500">
+                <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-tertiary">{r.capacity} seats</td>
+                <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-neutral-500">
                   {r.floor !== null ? `Floor ${r.floor}` : '-'}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                   <span
-                    className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                    className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${
                       r.isActive
-                        ? 'bg-[#E8F7D0] text-success border border-success'
-                        : 'bg-muted-surface text-neutral-500 border border-border'
+                        ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                        : 'bg-muted-surface text-neutral-400 border border-border'
                     }`}
                   >
                     {r.isActive ? 'Active' : 'Inactive'}
                   </span>
                 </td>
                 {canManage ? (
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-right">
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => setDeleteTarget(r)}
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      className="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10"
                     >
                       Delete
                     </Button>

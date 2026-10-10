@@ -1,6 +1,9 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+import { ClassEntity } from '../classes/entities/class.entity';
+import { StudentClassHistory } from '../students/entities/student-class-history.entity';
 import { Student } from '../students/entities/student.entity';
 import { StudentCodeService } from '../students/services/student-code.service';
 import { Lead } from './entities/lead.entity';
@@ -22,6 +25,15 @@ describe('LeadsService', () => {
   let studentCodeService: {
     next: jest.Mock;
   };
+  let mockManager: {
+    findOne: jest.Mock;
+    save: jest.Mock;
+    create: jest.Mock;
+    getRepository: jest.Mock;
+  };
+  let mockDataSource: {
+    transaction: jest.Mock;
+  };
 
   const mockLead: Lead = {
     id: 'lead-1',
@@ -38,6 +50,19 @@ describe('LeadsService', () => {
     deletedAt: null,
   };
 
+  const mockClass = {
+    id: 'class-1',
+    name: '5-A',
+    gradeLevel: 5,
+    academicYear: '2026-2027',
+    maxStudents: 25,
+    isActive: true,
+    branchId: 'branch-1',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    deletedAt: null,
+  } as unknown as ClassEntity;
+
   beforeEach(async () => {
     leadRepo = {
       create: jest.fn(),
@@ -52,6 +77,15 @@ describe('LeadsService', () => {
     };
     studentCodeService = {
       next: jest.fn().mockResolvedValue('NIS-2026-00099'),
+    };
+    mockManager = {
+      findOne: jest.fn(),
+      save: jest.fn(),
+      create: jest.fn((cls, dto) => ({ ...dto, id: 'mock-created-id' })),
+      getRepository: jest.fn(),
+    };
+    mockDataSource = {
+      transaction: jest.fn(async (cb) => cb(mockManager)),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -68,6 +102,10 @@ describe('LeadsService', () => {
         {
           provide: StudentCodeService,
           useValue: studentCodeService,
+        },
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
         },
       ],
     }).compile();
@@ -115,27 +153,132 @@ describe('LeadsService', () => {
   });
 
   describe('convertToStudent', () => {
-    it('should_create_student_and_mark_lead_enrolled', async () => {
+    it('should_create_student_and_mark_lead_enrolled_in_transaction', async () => {
       const existingLead = { ...mockLead };
-      leadRepo.findOne.mockResolvedValue(existingLead);
+      mockManager.findOne.mockResolvedValueOnce(existingLead);
+
       const mockSavedStudent = { id: 'new-student-id' };
-      studentRepo.create.mockReturnValue(mockSavedStudent);
-      studentRepo.save.mockResolvedValue(mockSavedStudent);
-      leadRepo.save.mockImplementation((l) => Promise.resolve(l));
+      mockManager.save
+        .mockResolvedValueOnce(mockSavedStudent) // student save
+        .mockResolvedValueOnce({
+          ...existingLead,
+          stage: 'ENROLLED',
+          convertedStudentId: 'new-student-id',
+        }); // lead save
 
       const result = await service.convertToStudent('lead-1', {
         birthDate: '2015-04-10',
         gender: 'MALE',
       });
 
+      expect(mockDataSource.transaction).toHaveBeenCalled();
       expect(result.studentId).toBe('new-student-id');
       expect(result.lead.stage).toBe('ENROLLED');
       expect(result.lead.convertedStudentId).toBe('new-student-id');
       expect(studentCodeService.next).toHaveBeenCalled();
     });
 
+    it('should_assign_to_class_and_record_history_when_space_available (DATA-01, DATA-02)', async () => {
+      const existingLead = { ...mockLead };
+      mockManager.findOne
+        .mockResolvedValueOnce(existingLead) // lead find
+        .mockResolvedValueOnce(mockClass); // class find with lock
+
+      const mockStudentQb = {
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getCount: jest.fn().mockResolvedValue(20), // 20 < 25 maxStudents
+      };
+      mockManager.getRepository.mockReturnValue({
+        createQueryBuilder: jest.fn().mockReturnValue(mockStudentQb),
+      });
+
+      const mockSavedStudent = { id: 'new-student-id', classId: 'class-1' };
+      mockManager.save
+        .mockResolvedValueOnce(mockSavedStudent) // student save
+        .mockResolvedValueOnce({ id: 'history-1' }) // class history save
+        .mockResolvedValueOnce({
+          ...existingLead,
+          stage: 'ENROLLED',
+          convertedStudentId: 'new-student-id',
+        }); // lead save
+
+      const result = await service.convertToStudent('lead-1', {
+        birthDate: '2015-04-10',
+        gender: 'MALE',
+        classId: 'class-1',
+      });
+
+      expect(mockManager.findOne).toHaveBeenCalledWith(
+        ClassEntity,
+        expect.objectContaining({
+          where: { id: 'class-1', isActive: true },
+          lock: { mode: 'pessimistic_write' },
+        }),
+      );
+      expect(mockManager.save).toHaveBeenCalledWith(
+        StudentClassHistory,
+        expect.objectContaining({
+          studentId: 'new-student-id',
+          classId: 'class-1',
+        }),
+      );
+      expect(result.studentId).toBe('new-student-id');
+      expect(result.lead.stage).toBe('ENROLLED');
+      expect(studentCodeService.next).toHaveBeenCalledWith(2026, mockManager);
+    });
+
+    it('should_throw_BadRequestException_when_class_grade_level_mismatches_lead_targetGradeLevel (DEF-12)', async () => {
+      const existingLead = { ...mockLead, targetGradeLevel: 5 };
+      const mismatchClass = { ...mockClass, gradeLevel: 6 };
+      mockManager.findOne.mockResolvedValueOnce(existingLead).mockResolvedValueOnce(mismatchClass);
+
+      await expect(
+        service.convertToStudent('lead-1', {
+          classId: 'class-1',
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should_throw_BadRequestException_when_class_is_full (DATA-02)', async () => {
+      const existingLead = { ...mockLead };
+      mockManager.findOne.mockResolvedValueOnce(existingLead).mockResolvedValueOnce(mockClass); // maxStudents = 25
+
+      const mockStudentQb = {
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getCount: jest.fn().mockResolvedValue(25), // class already full!
+      };
+      mockManager.getRepository.mockReturnValue({
+        createQueryBuilder: jest.fn().mockReturnValue(mockStudentQb),
+      });
+
+      await expect(
+        service.convertToStudent('lead-1', {
+          classId: 'class-1',
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should_throw_NotFoundException_if_class_not_found', async () => {
+      const existingLead = { ...mockLead };
+      mockManager.findOne.mockResolvedValueOnce(existingLead).mockResolvedValueOnce(null); // class not found
+
+      await expect(
+        service.convertToStudent('lead-1', {
+          classId: 'non-existent-class',
+        }),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should_throw_NotFoundException_if_lead_not_found', async () => {
+      mockManager.findOne.mockResolvedValueOnce(null);
+
+      await expect(service.convertToStudent('non-existent', {})).rejects.toThrow(NotFoundException);
+    });
+
     it('should_throw_BadRequestException_if_already_converted', async () => {
-      leadRepo.findOne.mockResolvedValue({
+      mockManager.findOne.mockResolvedValueOnce({
         ...mockLead,
         convertedStudentId: 'already-converted-id',
       });

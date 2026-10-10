@@ -14,7 +14,9 @@ export function NewStudentsSparkline({ series }: Props): React.ReactElement {
   const barWidth = 32;
   const gap = 8;
   const width = series.length * (barWidth + gap) - gap;
-  const height = 96;
+  const chartHeight = 76;
+  const chartTop = 20;
+  const height = chartTop + chartHeight;
 
   return (
     <div role="img" aria-label="New students per day, last 7 days">
@@ -24,9 +26,9 @@ export function NewStudentsSparkline({ series }: Props): React.ReactElement {
         preserveAspectRatio="xMidYMid meet"
       >
         {series.map((d, i) => {
-          const h = Math.max(2, (d.count / max) * height);
+          const h = Math.max(2, (d.count / max) * chartHeight);
           const x = i * (barWidth + gap);
-          const y = height - h;
+          const y = chartTop + chartHeight - h;
           return (
             <g key={d.date}>
               <rect x={x} y={y} width={barWidth} height={h} rx={3} fill="currentColor" />

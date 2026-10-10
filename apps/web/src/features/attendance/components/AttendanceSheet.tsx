@@ -18,7 +18,7 @@ const STATUS_CONFIG: Record<
   PRESENT: {
     label: 'Bor',
     activeClass: 'bg-success text-white border-success font-semibold shadow-xs',
-    inactiveClass: 'bg-surface text-success border-border hover:bg-[#E8F7D0]',
+    inactiveClass: 'bg-surface text-success border-border hover:bg-emerald-500/15',
   },
   LATE: {
     label: 'Kechikdi',
@@ -28,12 +28,12 @@ const STATUS_CONFIG: Record<
   EXCUSED: {
     label: 'Sababli',
     activeClass: 'bg-primary text-tertiary border-primary font-semibold shadow-xs',
-    inactiveClass: 'bg-surface text-secondary border-border hover:bg-[#DBEAFE]',
+    inactiveClass: 'bg-surface text-secondary border-border hover:bg-blue-500/15',
   },
   ABSENT: {
     label: "Yo'q",
     activeClass: 'bg-rose-600 text-white border-rose-600 font-semibold shadow-xs',
-    inactiveClass: 'bg-surface text-error border-border hover:bg-[#FEE2E2]',
+    inactiveClass: 'bg-surface text-error border-border hover:bg-rose-500/15',
   },
 };
 
@@ -139,16 +139,16 @@ export function AttendanceSheet({
           <div className="bg-muted-surface px-3 py-1.5 rounded-lg font-medium text-tertiary">
             Jami: <span className="font-bold text-tertiary">{total}</span>
           </div>
-          <div className="bg-[#E8F7D0] text-success px-3 py-1.5 rounded-lg font-medium">
+          <div className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1.5 rounded-lg font-medium">
             Bor: <span className="font-bold">{present}</span>
           </div>
-          <div className="bg-muted-surface text-neutral-500 px-3 py-1.5 rounded-lg font-medium">
+          <div className="bg-muted-surface text-neutral-400 border border-border px-3 py-1.5 rounded-lg font-medium">
             Kechikdi: <span className="font-bold">{late}</span>
           </div>
-          <div className="bg-[#DBEAFE] text-secondary px-3 py-1.5 rounded-lg font-medium">
+          <div className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-1.5 rounded-lg font-medium">
             Sababli: <span className="font-bold">{excused}</span>
           </div>
-          <div className="bg-[#FEE2E2] text-error px-3 py-1.5 rounded-lg font-medium">
+          <div className="bg-rose-500/10 text-rose-400 border border-rose-500/20 px-3 py-1.5 rounded-lg font-medium">
             Yo'q: <span className="font-bold">{absent}</span>
           </div>
           <div className="bg-primary text-tertiary px-3 py-1.5 rounded-lg font-semibold shadow-xs">
@@ -182,38 +182,38 @@ export function AttendanceSheet({
         <table className="w-full border-collapse text-left text-sm">
           <thead>
             <tr className="border-b border-border bg-muted-surface text-xs font-semibold uppercase tracking-wider text-neutral-500">
-              <th scope="col" className="p-3.5 w-12 text-center">
+              <th scope="col" className="px-2 sm:px-3 py-2.5 sm:py-3 w-12 text-center">
                 #
               </th>
-              <th scope="col" className="p-3.5">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
                 O'quvchi
               </th>
-              <th scope="col" className="p-3.5">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
                 Kodi
               </th>
-              <th scope="col" className="p-3.5 text-center">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3 text-center">
                 Holati (Davomat)
               </th>
-              <th scope="col" className="p-3.5">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
                 Izoh / Sabab
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-800">
             {students.map((student, idx) => {
               const currentStatus = records[student.id]?.status ?? 'PRESENT';
               return (
                 <tr key={student.id} className="hover:bg-muted-surface transition-colors">
-                  <td className="p-3.5 text-center text-xs font-medium text-neutral-400">
+                  <td className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-xs font-medium text-neutral-400">
                     {idx + 1}
                   </td>
-                  <td className="p-3.5 font-semibold text-tertiary">
+                  <td className="px-3 sm:px-4 py-2.5 sm:py-3 font-semibold text-tertiary">
                     {student.lastName} {student.firstName}
                   </td>
-                  <td className="p-3.5 text-xs font-mono text-neutral-500">
+                  <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-xs font-mono text-neutral-500">
                     {student.studentCode}
                   </td>
-                  <td className="p-3.5">
+                  <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                     <div className="flex items-center justify-center gap-1.5">
                       {(['PRESENT', 'LATE', 'EXCUSED', 'ABSENT'] as AttendanceStatus[]).map(
                         (status) => {
@@ -235,7 +235,7 @@ export function AttendanceSheet({
                       )}
                     </div>
                   </td>
-                  <td className="p-3.5">
+                  <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                     <input
                       type="text"
                       placeholder="Sabab yoki eslatma..."
@@ -249,7 +249,7 @@ export function AttendanceSheet({
                           },
                         }))
                       }
-                      className="w-full text-xs rounded-lg border border-border px-2.5 py-1.5 text-tertiary placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full text-xs rounded-lg border border-border bg-surface px-2.5 py-1.5 text-tertiary placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                   </td>
                 </tr>

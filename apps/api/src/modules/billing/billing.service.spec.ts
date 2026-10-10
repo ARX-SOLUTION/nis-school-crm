@@ -104,6 +104,34 @@ describe('BillingService', () => {
       expect(result.amount).toBe(2500000);
       expect(result.studentName).toBe('Karimov Shaxzod');
       expect(result.className).toBe('5-A');
+      expect(paymentRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          receiptNumber: expect.stringMatching(/^REC-202609-[A-Z0-9]+-[A-F0-9]{6}$/),
+        }),
+      );
+    });
+
+    it('generates unique collision-resistant receipt numbers for consecutive payments (PAY-03)', async () => {
+      studentRepo.findOne.mockResolvedValue(mockStudent);
+      paymentRepo.create.mockImplementation((dto) => dto);
+      paymentRepo.save.mockImplementation(async (dto) => ({ ...dto, id: 'pay-uuid' }));
+
+      const res1 = await service.recordPayment({
+        studentId: 'student-1',
+        amount: 1000000,
+        method: 'CASH',
+        month: '2026-10',
+      });
+      const res2 = await service.recordPayment({
+        studentId: 'student-1',
+        amount: 1000000,
+        method: 'CASH',
+        month: '2026-10',
+      });
+
+      expect(res1.receiptNumber).not.toEqual(res2.receiptNumber);
+      expect(res1.receiptNumber).toMatch(/^REC-202610-[A-Z0-9]+-[A-F0-9]{6}$/);
+      expect(res2.receiptNumber).toMatch(/^REC-202610-[A-Z0-9]+-[A-F0-9]{6}$/);
     });
   });
 

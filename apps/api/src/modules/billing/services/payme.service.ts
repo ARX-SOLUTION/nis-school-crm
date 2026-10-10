@@ -1,8 +1,9 @@
 import { Injectable, Optional } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between } from 'typeorm';
+import { DataSource, Repository, Between } from 'typeorm';
 import { EVENT_PAYMENT_RECORDED, PaymentRecordedEvent } from '../../../common/events/contracts';
 import { EventBusService } from '../../../common/events/event-bus.service';
+import { getCurrentTashkentMonth } from '../../../common/utils/timezone.util';
 import { Student } from '../../students/entities/student.entity';
 import { PaymentRecord } from '../entities/payment.entity';
 import { PaymentTransaction } from '../entities/payment-transaction.entity';
@@ -32,6 +33,7 @@ const TIMEOUT_MS = 43_200_000; // 12 hours
 @Injectable()
 export class PaymeService {
   constructor(
+    private readonly dataSource: DataSource,
     @InjectRepository(PaymentTransaction)
     private readonly transRepo: Repository<PaymentTransaction>,
     @InjectRepository(PaymentRecord)
@@ -175,104 +177,128 @@ export class PaymeService {
     const account = params?.account as Record<string, unknown> | undefined;
     const studentCode = (account?.student_code || account?.studentCode) as string | undefined;
 
-    // Check existing transaction by paymeTransId
-    const existing = await this.transRepo.findOne({
-      where: { provider: 'PAYME', providerTransId: paymeTransId },
-    });
+    try {
+      return await this.dataSource.transaction(async (manager) => {
+        // Check existing transaction by paymeTransId with pessimistic lock
+        const existing = await manager.findOne(PaymentTransaction, {
+          where: { provider: 'PAYME', providerTransId: paymeTransId },
+          lock: { mode: 'pessimistic_write' },
+        });
 
-    if (existing) {
-      if (existing.state === 1) {
-        const createTime = Number(existing.meta?.time || existing.createdAt.getTime());
-        if (Date.now() - createTime > TIMEOUT_MS) {
-          existing.state = -1;
-          existing.status = 'CANCELLED';
-          existing.reason = 4;
-          await this.transRepo.save(existing);
-          return {
-            error: {
-              code: -31008,
-              message: {
-                uz: 'Tranzaksiya muddati otdi',
-                ru: 'Транзакция просрочена',
-                en: 'Transaction timed out',
+        if (existing) {
+          if (existing.state === 1) {
+            const createTime = Number(existing.meta?.time || existing.createdAt.getTime());
+            if (Date.now() - createTime > TIMEOUT_MS) {
+              existing.state = -1;
+              existing.status = 'CANCELLED';
+              existing.reason = 4;
+              await manager.save(PaymentTransaction, existing);
+              return {
+                error: {
+                  code: -31008,
+                  message: {
+                    uz: 'Tranzaksiya muddati otdi',
+                    ru: 'Транзакция просрочена',
+                    en: 'Transaction timed out',
+                  },
+                },
+                id,
+              };
+            }
+
+            return {
+              result: {
+                create_time: createTime,
+                transaction: existing.id,
+                state: existing.state,
               },
+              id,
+            };
+          }
+
+          return {
+            result: {
+              create_time: Number(existing.meta?.time || existing.createdAt.getTime()),
+              transaction: existing.id,
+              state: existing.state,
             },
             id,
           };
         }
 
+        // Verify student and amount if transaction does not exist
+        const checkRes = await this.checkPerformTransaction(params, id);
+        if (checkRes.error) {
+          return checkRes;
+        }
+
+        const student = await this.studentRepo.findOne({
+          where: { studentCode },
+          relations: ['class'],
+        });
+
+        if (!student) {
+          return {
+            error: {
+              code: -31050,
+              message: {
+                uz: "O'quvchi topilmadi",
+                ru: 'Ученик не найден',
+                en: 'Student not found',
+              },
+              data: 'student_code',
+            },
+            id,
+          };
+        }
+
+        const newTrans = manager.create(PaymentTransaction, {
+          provider: 'PAYME',
+          providerTransId: paymeTransId,
+          studentId: student.id,
+          studentCode: student.studentCode,
+          amount: amount / 100, // convert tiyin to UZS
+          state: 1,
+          status: 'PENDING',
+          meta: {
+            time,
+            account: params?.account,
+            studentName: `${student.lastName} ${student.firstName}`,
+            className: student.class?.name ?? null,
+          },
+        });
+
+        const saved = await manager.save(PaymentTransaction, newTrans);
+
         return {
           result: {
-            create_time: createTime,
-            transaction: existing.id,
-            state: existing.state,
+            create_time: time,
+            transaction: saved.id,
+            state: saved.state,
           },
           id,
         };
+      });
+    } catch (err: unknown) {
+      // Postgres unique constraint violation (23505) on concurrent duplicate requests
+      const pgErr = err as { code?: string; driverError?: { code?: string } };
+      if (pgErr?.code === '23505' || pgErr?.driverError?.code === '23505') {
+        const existing = await this.transRepo.findOne({
+          where: { provider: 'PAYME', providerTransId: paymeTransId },
+        });
+        if (existing) {
+          return {
+            result: {
+              create_time: Number(existing.meta?.time || existing.createdAt.getTime()),
+              transaction: existing.id,
+              state: existing.state,
+            },
+            id,
+          };
+        }
       }
-
-      return {
-        result: {
-          create_time: Number(existing.meta?.time || existing.createdAt.getTime()),
-          transaction: existing.id,
-          state: existing.state,
-        },
-        id,
-      };
+      throw err;
     }
-
-    // Verify student and amount
-    const checkRes = await this.checkPerformTransaction(params, id);
-    if (checkRes.error) {
-      return checkRes;
-    }
-
-    const student = await this.studentRepo.findOne({
-      where: { studentCode },
-      relations: ['class'],
-    });
-
-    if (!student) {
-      return {
-        error: {
-          code: -31050,
-          message: {
-            uz: "O'quvchi topilmadi",
-            ru: 'Ученик не найден',
-            en: 'Student not found',
-          },
-          data: 'student_code',
-        },
-        id,
-      };
-    }
-
-    const newTrans = this.transRepo.create({
-      provider: 'PAYME',
-      providerTransId: paymeTransId,
-      studentId: student.id,
-      studentCode: student.studentCode,
-      amount: amount / 100, // convert tiyin to UZS
-      state: 1,
-      status: 'PENDING',
-      meta: {
-        time,
-        account: params?.account,
-        studentName: `${student.lastName} ${student.firstName}`,
-        className: student.class?.name ?? null,
-      },
-    });
-
-    const saved = await this.transRepo.save(newTrans);
-
-    return {
-      result: {
-        create_time: time,
-        transaction: saved.id,
-        state: saved.state,
-      },
-      id,
-    };
   }
 
   private async performTransaction(
@@ -281,73 +307,82 @@ export class PaymeService {
   ): Promise<PaymeRpcResponse> {
     const paymeTransId = String(params?.id ?? '');
 
-    const trans = await this.transRepo.findOne({
-      where: { provider: 'PAYME', providerTransId: paymeTransId },
-      relations: ['student'],
-    });
+    const { response, eventToPublish } = await this.dataSource.transaction(
+      async (
+        manager,
+      ): Promise<{ response: PaymeRpcResponse; eventToPublish?: PaymentRecordedEvent }> => {
+        const trans = await manager.findOne(PaymentTransaction, {
+          where: { provider: 'PAYME', providerTransId: paymeTransId },
+          relations: ['student'],
+          lock: { mode: 'pessimistic_write' },
+        });
 
-    if (!trans) {
-      return {
-        error: {
-          code: -31007,
-          message: {
-            uz: 'Tranzaksiya topilmadi',
-            ru: 'Транзакция не найдена',
-            en: 'Transaction not found',
-          },
-        },
-        id,
-      };
-    }
-
-    if (trans.state === 1) {
-      const createTime = Number(trans.meta?.time || trans.createdAt.getTime());
-      if (Date.now() - createTime > TIMEOUT_MS) {
-        trans.state = -1;
-        trans.status = 'CANCELLED';
-        trans.reason = 4;
-        await this.transRepo.save(trans);
-        return {
-          error: {
-            code: -31008,
-            message: {
-              uz: 'Tranzaksiya muddati otdi',
-              ru: 'Транзакция просрочена',
-              en: 'Transaction timed out',
+        if (!trans) {
+          return {
+            response: {
+              error: {
+                code: -31007,
+                message: {
+                  uz: 'Tranzaksiya topilmadi',
+                  ru: 'Транзакция не найдена',
+                  en: 'Transaction not found',
+                },
+              },
+              id,
             },
-          },
-          id,
-        };
-      }
+          };
+        }
 
-      const now = new Date();
-      trans.state = 2;
-      trans.status = 'SUCCESS';
-      trans.performTime = now;
+        if (trans.state === 1) {
+          const createTime = Number(trans.meta?.time || trans.createdAt.getTime());
+          if (Date.now() - createTime > TIMEOUT_MS) {
+            trans.state = -1;
+            trans.status = 'CANCELLED';
+            trans.reason = 4;
+            await manager.save(PaymentTransaction, trans);
+            return {
+              response: {
+                error: {
+                  code: -31008,
+                  message: {
+                    uz: 'Tranzaksiya muddati otdi',
+                    ru: 'Транзакция просрочена',
+                    en: 'Transaction timed out',
+                  },
+                },
+                id,
+              },
+            };
+          }
 
-      const currentMonth = now.toISOString().slice(0, 7);
-      const receiptNumber = `PAYME-${paymeTransId}`;
+          const now = new Date();
+          trans.state = 2;
+          trans.status = 'SUCCESS';
+          trans.performTime = now;
 
-      // Create PaymentRecord in NIS CRM billing
-      const payment = this.paymentRepo.create({
-        studentId: trans.studentId,
-        amount: trans.amount,
-        method: 'PAYME',
-        status: 'CONFIRMED',
-        receiptNumber,
-        month: currentMonth,
-        paidAt: now,
-        comment: `Avtomatlashtirilgan Payme to'lovi (Trans ID: ${paymeTransId})`,
-      });
+          const currentMonth = getCurrentTashkentMonth(now);
+          const receiptNumber = `PAYME-${paymeTransId}`;
 
-      const savedPayment = await this.paymentRepo.save(payment);
-      trans.paymentRecordId = savedPayment.id;
-      await this.transRepo.save(trans);
+          // Create PaymentRecord in NIS CRM billing
+          const payment = manager.create(PaymentRecord, {
+            studentId: trans.studentId,
+            amount: trans.amount,
+            method: 'PAYME',
+            status: 'CONFIRMED',
+            receiptNumber,
+            month: currentMonth,
+            paidAt: now,
+            comment: `Avtomatlashtirilgan Payme to'lovi (Trans ID: ${paymeTransId})`,
+          });
 
-      if (this.eventBus) {
-        const student = await this.studentRepo.findOne({ where: { id: trans.studentId } });
-        await this.eventBus
-          .publish<PaymentRecordedEvent>(EVENT_PAYMENT_RECORDED, {
+          const savedPayment = await manager.save(PaymentRecord, payment);
+          trans.paymentRecordId = savedPayment.id;
+          await manager.save(PaymentTransaction, trans);
+
+          const student =
+            trans.student || (await manager.findOne(Student, { where: { id: trans.studentId } }));
+
+          const eventData: PaymentRecordedEvent = {
             studentId: trans.studentId,
             studentName: student ? `${student.lastName} ${student.firstName}` : trans.studentCode,
             amount: Number(savedPayment.amount),
@@ -355,42 +390,58 @@ export class PaymeService {
             receiptNumber: savedPayment.receiptNumber,
             month: savedPayment.month,
             paidAt: savedPayment.paidAt,
-          })
-          .catch(() => {});
-      }
+          };
 
-      return {
-        result: {
-          transaction: trans.id,
-          perform_time: trans.performTime.getTime(),
-          state: 2,
-        },
-        id,
-      };
-    }
+          return {
+            response: {
+              result: {
+                transaction: trans.id,
+                perform_time: trans.performTime.getTime(),
+                state: 2,
+              },
+              id,
+            },
+            eventToPublish: eventData,
+          };
+        }
 
-    if (trans.state === 2) {
-      return {
-        result: {
-          transaction: trans.id,
-          perform_time: trans.performTime ? trans.performTime.getTime() : Date.now(),
-          state: 2,
-        },
-        id,
-      };
-    }
+        if (trans.state === 2) {
+          return {
+            response: {
+              result: {
+                transaction: trans.id,
+                perform_time: trans.performTime ? trans.performTime.getTime() : Date.now(),
+                state: 2,
+              },
+              id,
+            },
+          };
+        }
 
-    return {
-      error: {
-        code: -31008,
-        message: {
-          uz: 'Tranzaksiya holati yaroqsiz',
-          ru: 'Недопустимый статус транзакции',
-          en: 'Invalid transaction status',
-        },
+        return {
+          response: {
+            error: {
+              code: -31008,
+              message: {
+                uz: 'Tranzaksiya holati yaroqsiz',
+                ru: 'Недопустимый статус транзакции',
+                en: 'Invalid transaction status',
+              },
+            },
+            id,
+          },
+        };
       },
-      id,
-    };
+    );
+
+    // DEF-01: Publish event only after DB transaction is committed
+    if (this.eventBus && eventToPublish) {
+      await this.eventBus
+        .publish<PaymentRecordedEvent>(EVENT_PAYMENT_RECORDED, eventToPublish)
+        .catch(() => {});
+    }
+
+    return response;
   }
 
   private async cancelTransaction(
@@ -400,73 +451,80 @@ export class PaymeService {
     const paymeTransId = String(params?.id ?? '');
     const reason = Number(params?.reason);
 
-    const trans = await this.transRepo.findOne({
-      where: { provider: 'PAYME', providerTransId: paymeTransId },
-    });
+    return await this.dataSource.transaction(async (manager) => {
+      const trans = await manager.findOne(PaymentTransaction, {
+        where: { provider: 'PAYME', providerTransId: paymeTransId },
+        lock: { mode: 'pessimistic_write' },
+      });
 
-    if (!trans) {
-      return {
-        error: {
-          code: -31007,
-          message: {
-            uz: 'Tranzaksiya topilmadi',
-            ru: 'Транзакция не найдена',
-            en: 'Transaction not found',
+      if (!trans) {
+        return {
+          error: {
+            code: -31007,
+            message: {
+              uz: 'Tranzaksiya topilmadi',
+              ru: 'Транзакция не найдена',
+              en: 'Transaction not found',
+            },
           },
-        },
-        id,
-      };
-    }
-
-    const now = new Date();
-
-    if (trans.state === 1) {
-      trans.state = -1;
-      trans.status = 'CANCELLED';
-      trans.cancelTime = now;
-      trans.reason = reason;
-      await this.transRepo.save(trans);
-
-      return {
-        result: {
-          transaction: trans.id,
-          cancel_time: now.getTime(),
-          state: -1,
-        },
-        id,
-      };
-    }
-
-    if (trans.state === 2) {
-      trans.state = -2;
-      trans.status = 'CANCELLED';
-      trans.cancelTime = now;
-      trans.reason = reason;
-
-      if (trans.paymentRecordId) {
-        await this.paymentRepo.update({ id: trans.paymentRecordId }, { status: 'REFUNDED' });
+          id,
+        };
       }
 
-      await this.transRepo.save(trans);
+      const now = new Date();
+
+      if (trans.state === 1) {
+        trans.state = -1;
+        trans.status = 'CANCELLED';
+        trans.cancelTime = now;
+        trans.reason = reason;
+        await manager.save(PaymentTransaction, trans);
+
+        return {
+          result: {
+            transaction: trans.id,
+            cancel_time: now.getTime(),
+            state: -1,
+          },
+          id,
+        };
+      }
+
+      if (trans.state === 2) {
+        trans.state = -2;
+        trans.status = 'CANCELLED';
+        trans.cancelTime = now;
+        trans.reason = reason;
+
+        if (trans.paymentRecordId) {
+          await manager.update(
+            PaymentRecord,
+            { id: trans.paymentRecordId },
+            { status: 'REFUNDED' },
+          );
+        }
+
+        await manager.save(PaymentTransaction, trans);
+
+        return {
+          result: {
+            transaction: trans.id,
+            cancel_time: now.getTime(),
+            state: -2,
+          },
+          id,
+        };
+      }
 
       return {
         result: {
           transaction: trans.id,
-          cancel_time: now.getTime(),
-          state: -2,
+          cancel_time: trans.cancelTime ? trans.cancelTime.getTime() : now.getTime(),
+          state: trans.state,
         },
         id,
       };
-    }
-
-    return {
-      result: {
-        transaction: trans.id,
-        cancel_time: trans.cancelTime ? trans.cancelTime.getTime() : now.getTime(),
-        state: trans.state,
-      },
-      id,
-    };
+    });
   }
 
   private async checkTransaction(

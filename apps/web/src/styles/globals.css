@@ -3,11 +3,62 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
+  --color-canvas-bg: #090D16;
+  --color-surface-base: #0F172A;
+  --color-surface-elevated: #1E293B;
+  --color-surface-subtle: #131B2E;
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+  --color-border-default: #1E293B;
+  --color-border-strong: #334155;
+  --color-border-focus: #3B82F6;
+  --color-action-primary: #2563EB;
+  --color-action-primary-hover: #3B82F6;
+  --color-action-primary-active: #1D4ED8;
+}
+
+::selection {
+  background: #2563EB;
+  color: #ffffff;
 }
 
 body {
-  @apply font-sans;
+  @apply font-sans bg-muted-surface text-tertiary antialiased;
+  font-feature-settings: 'tnum' on, 'cv05' on;
+}
+
+:focus-visible {
+  outline: 2px solid #3B82F6;
+  outline-offset: 2px;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* Ensure closed dialogs are never displayed regardless of utility classes */
+dialog:not([open]) {
+  display: none !important;
+}
+
+/* Custom subtle dark scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #090D16;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1E293B;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
 }
 
 @media (prefers-reduced-motion: reduce) {

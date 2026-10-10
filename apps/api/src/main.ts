@@ -60,10 +60,16 @@ async function bootstrap(): Promise<void> {
     SwaggerModule.setup('api/docs', app, document);
   }
 
-  const { RedisIoAdapter } = await import('./common/websockets/redis-io.adapter');
-  const redisIoAdapter = new RedisIoAdapter(app);
-  await redisIoAdapter.connectToRedis();
-  app.useWebSocketAdapter(redisIoAdapter);
+  try {
+    const { RedisIoAdapter } = await import('./common/websockets/redis-io.adapter');
+    const redisIoAdapter = new RedisIoAdapter(app);
+    await redisIoAdapter.connectToRedis();
+    app.useWebSocketAdapter(redisIoAdapter);
+  } catch (err) {
+    logger.warn(
+      `RedisIoAdapter connection failed: ${(err as Error).message}. Falling back to default adapter.`,
+    );
+  }
 
   const port = Number(process.env.PORT ?? 3000);
   await app.listen(port);

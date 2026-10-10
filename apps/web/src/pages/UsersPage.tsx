@@ -32,21 +32,21 @@ export function UsersPage({ actorRole }: Props): React.ReactElement {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-tertiary">Users</h1>
           <p className="text-sm text-neutral-500">Manage admins, managers, and teachers.</p>
         </div>
         <Button onClick={() => setCreateOpen(true)}>Create user</Button>
       </div>
 
-      <Card className="p-4">
+      <Card className="p-3 sm:p-4">
         <UsersFilters value={query} onChange={setQuery} />
       </Card>
 
-      <Card>
+      <Card className="overflow-hidden p-0">
         {error ? (
-          <div role="alert" className="p-6 text-sm text-red-600">
+          <div role="alert" className="p-6 text-sm text-red-400">
             Failed to load users:{' '}
             {Array.isArray(error.message) ? error.message.join('; ') : error.message}
           </div>

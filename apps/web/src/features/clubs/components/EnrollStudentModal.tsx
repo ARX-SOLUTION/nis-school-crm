@@ -102,23 +102,23 @@ export const EnrollStudentModal: React.FC<EnrollStudentModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="enroll-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-tertiary/50 backdrop-blur-xs animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-xs animate-in fade-in duration-150"
     >
-      <div className="relative w-full max-w-lg bg-surface rounded-xl shadow-2xl border border-border overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-lg bg-slate-900 rounded-xl shadow-2xl border border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-muted-surface">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
           <div>
-            <h2 id="enroll-modal-title" className="text-base font-semibold text-tertiary">
+            <h2 id="enroll-modal-title" className="text-base font-semibold text-slate-100">
               O'quvchini to'garakka yozish
             </h2>
-            <p className="text-xs text-neutral-500 mt-0.5">
+            <p className="text-xs text-slate-400 mt-0.5">
               {club.name} • {club.minGrade}-{club.maxGrade} sinflar
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-neutral-400 hover:text-neutral-500 rounded-lg hover:bg-muted-surface transition-colors"
+            className="p-1.5 text-slate-400 hover:text-slate-200 rounded-lg hover:bg-slate-800 transition-colors"
             aria-label="Modalni yopish"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -133,11 +133,14 @@ export const EnrollStudentModal: React.FC<EnrollStudentModalProps> = ({
         </div>
 
         {/* Content */}
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="p-4 sm:p-6 overflow-y-auto space-y-3.5 sm:space-y-4"
+        >
           {error && (
-            <div className="p-3 text-xs rounded-lg bg-[#FEE2E2] border border-error text-error flex items-start gap-2">
+            <div className="p-3 text-xs rounded-lg bg-red-950/40 border border-red-500/30 text-red-300 flex items-start gap-2">
               <svg
-                className="w-4 h-4 text-error shrink-0 mt-0.5"
+                className="w-4 h-4 text-red-400 shrink-0 mt-0.5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -154,16 +157,16 @@ export const EnrollStudentModal: React.FC<EnrollStudentModalProps> = ({
           )}
 
           {/* Quick Info Box */}
-          <div className="grid grid-cols-2 gap-3 p-3 bg-muted-surface rounded-xl border border-border text-xs">
+          <div className="grid grid-cols-2 gap-3 p-3 bg-slate-950/40 rounded-xl border border-slate-800 text-xs">
             <div>
-              <span className="text-neutral-500 block">Bo'sh o'rinlar:</span>
-              <span className="font-semibold text-tertiary tabular-nums">
+              <span className="text-slate-400 block">Bo'sh o'rinlar:</span>
+              <span className="font-semibold text-slate-200 tabular-nums">
                 {spotsLeft} ta (Jami sig'im: {club.capacity})
               </span>
             </div>
             <div>
-              <span className="text-neutral-500 block">Sinf chegarasi:</span>
-              <span className="font-semibold text-tertiary">
+              <span className="text-slate-400 block">Sinf chegarasi:</span>
+              <span className="font-semibold text-slate-200">
                 {club.minGrade} - {club.maxGrade} sinflar
               </span>
             </div>
@@ -173,7 +176,7 @@ export const EnrollStudentModal: React.FC<EnrollStudentModalProps> = ({
           <div>
             <label
               htmlFor="student-search-input"
-              className="block text-xs font-semibold text-tertiary mb-1.5"
+              className="block text-xs font-semibold text-slate-300 mb-1.5"
             >
               O'quvchini qidirish:
             </label>
@@ -183,25 +186,25 @@ export const EnrollStudentModal: React.FC<EnrollStudentModalProps> = ({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Ism, familiya yoki o'quvchi ID..."
-              className="w-full px-3 py-2 text-sm bg-surface border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-border focus:border-transparent transition-all placeholder:text-neutral-400"
+              className="w-full px-3 py-2 text-sm bg-slate-900 border border-slate-700 text-slate-100 rounded-lg focus:outline-hidden focus:border-blue-500 transition-all placeholder:text-slate-500"
             />
           </div>
 
           {/* Student selection list */}
           <div>
-            <label className="block text-xs font-semibold text-tertiary mb-1.5">
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
               O'quvchini tanlang:
             </label>
             {loading ? (
-              <div className="py-8 text-center text-xs text-neutral-400">
+              <div className="py-8 text-center text-xs text-slate-400">
                 O'quvchilar ro'yxati yuklanmoqda...
               </div>
             ) : filteredStudents.length === 0 ? (
-              <div className="py-6 text-center text-xs text-neutral-400 bg-muted-surface rounded-lg border border-dashed border-border">
+              <div className="py-6 text-center text-xs text-slate-400 bg-slate-950/40 rounded-lg border border-dashed border-slate-800">
                 O'quvchi topilmadi
               </div>
             ) : (
-              <div className="max-h-48 overflow-y-auto divide-y divide-slate-100 border border-border rounded-lg">
+              <div className="max-h-48 overflow-y-auto divide-y divide-slate-800 border border-slate-800 rounded-lg">
                 {filteredStudents.map((st) => {
                   const isSelected = selectedStudentId === st.id;
                   const isGradeEligible =
@@ -217,8 +220,8 @@ export const EnrollStudentModal: React.FC<EnrollStudentModalProps> = ({
                       }}
                       className={`w-full text-left px-3 py-2.5 flex items-center justify-between text-xs transition-colors ${
                         isSelected
-                          ? 'bg-tertiary text-white font-medium'
-                          : 'hover:bg-muted-surface text-tertiary'
+                          ? 'bg-blue-600 text-white font-medium'
+                          : 'hover:bg-slate-800 text-slate-200'
                       }`}
                     >
                       <div>
@@ -226,7 +229,7 @@ export const EnrollStudentModal: React.FC<EnrollStudentModalProps> = ({
                           {st.firstName} {st.lastName}
                         </div>
                         <div
-                          className={`text-[11px] ${isSelected ? 'text-border' : 'text-neutral-400'}`}
+                          className={`text-[11px] ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}
                         >
                           ID: {st.studentCode} • {st.gradeLevel}-sinf
                         </div>
@@ -236,8 +239,8 @@ export const EnrollStudentModal: React.FC<EnrollStudentModalProps> = ({
                         <span
                           className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
                             isSelected
-                              ? 'bg-neutral-400 text-tertiary'
-                              : 'bg-muted-surface text-neutral-500 border border-border'
+                              ? 'bg-blue-800 text-white'
+                              : 'bg-slate-800 text-slate-400 border border-slate-700'
                           }`}
                         >
                           Sinf mos emas
@@ -251,9 +254,9 @@ export const EnrollStudentModal: React.FC<EnrollStudentModalProps> = ({
           </div>
 
           {selectedStudent && (
-            <div className="p-3 bg-[#E8F7D0] border border-success rounded-lg text-xs text-success flex items-center gap-2">
+            <div className="p-3 bg-emerald-950/40 border border-emerald-500/30 rounded-lg text-xs text-emerald-400 flex items-center gap-2">
               <svg
-                className="w-4 h-4 text-success shrink-0"
+                className="w-4 h-4 text-emerald-400 shrink-0"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -276,18 +279,18 @@ export const EnrollStudentModal: React.FC<EnrollStudentModalProps> = ({
           )}
 
           {/* Actions */}
-          <div className="pt-3 border-t border-border flex items-center justify-end gap-2">
+          <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-medium text-tertiary bg-surface border border-border rounded-lg hover:bg-muted-surface transition-colors"
+              className="px-4 py-2 text-xs font-medium text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors"
             >
               Bekor qilish
             </button>
             <button
               type="submit"
               disabled={submitting || !selectedStudentId}
-              className="px-4 py-2 text-xs font-semibold text-white bg-tertiary hover:bg-tertiary rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submitting ? 'Yozilmoqda...' : "A'zo sifatida qo'shish"}
             </button>

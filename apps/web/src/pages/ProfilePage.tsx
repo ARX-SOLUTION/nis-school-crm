@@ -2,6 +2,7 @@ import type { UserResponseDto } from '@nis/shared';
 import { Card } from '@/components/ui/Card';
 import { ChangePasswordForm } from '@/features/profile/components/ChangePasswordForm';
 import { TelegramLinkCard } from '@/features/profile/components/TelegramLinkCard';
+import { NotificationPreferencesCard } from '@/features/profile/components/NotificationPreferencesCard';
 
 export function ProfilePage({ user }: { user: UserResponseDto }): React.ReactElement {
   return (
@@ -37,13 +38,7 @@ export function ProfilePage({ user }: { user: UserResponseDto }): React.ReactEle
         <TelegramLinkCard />
       </Card>
 
-      <Card className="p-4">
-        <h2 className="text-base font-medium mb-3">Notification Preferences</h2>
-        <p className="text-sm text-neutral-500 mb-4">
-          Current preferences: {JSON.stringify(user.notificationPrefs || {})}
-        </p>
-        {/* ponytail: skipped rich UI for prefs. Use PATCH /api/v1/auth/me/prefs manually or add a generic form when real toggles are defined. */}
-      </Card>
+      <NotificationPreferencesCard initialPrefs={user.notificationPrefs} />
     </div>
   );
 }

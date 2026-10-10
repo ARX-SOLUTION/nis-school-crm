@@ -57,9 +57,9 @@ export function GradesPage(): React.ReactElement {
   const students = studentsData?.data ?? [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 border-b border-border pb-3 sm:pb-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-tertiary">
             Elektron Jurnal (Gradebook)
@@ -71,9 +71,9 @@ export function GradesPage(): React.ReactElement {
       </div>
 
       {/* Filters */}
-      <Card className="p-4 flex flex-wrap items-center gap-4">
+      <Card className="p-3 sm:p-4 flex flex-wrap items-center gap-3 sm:gap-4">
         <div className="flex items-center gap-2">
-          <label htmlFor="class-select" className="text-sm font-medium text-tertiary">
+          <label htmlFor="class-select" className="text-sm font-medium text-slate-300">
             Sinf:
           </label>
           <select
@@ -81,7 +81,7 @@ export function GradesPage(): React.ReactElement {
             value={activeClassId}
             onChange={(e) => setSelectedClassId(e.target.value)}
             disabled={classesLoading || classes.length === 0}
-            className="rounded-lg border border-border bg-surface px-3 py-1.5 text-sm font-semibold text-tertiary focus:outline-none focus:ring-2 focus:ring-primary"
+            className="min-h-[44px] rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm font-medium text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
             {classes.length === 0 ? (
               <option value="">Sinflar mavjud emas</option>
@@ -96,7 +96,7 @@ export function GradesPage(): React.ReactElement {
         </div>
 
         <div className="flex items-center gap-2">
-          <label htmlFor="subject-select" className="text-sm font-medium text-tertiary">
+          <label htmlFor="subject-select" className="text-sm font-medium text-slate-300">
             Fan:
           </label>
           <select
@@ -104,7 +104,7 @@ export function GradesPage(): React.ReactElement {
             value={activeSubjectId}
             onChange={(e) => setSelectedSubjectId(e.target.value)}
             disabled={subjectsLoading || subjects.length === 0}
-            className="rounded-lg border border-border bg-surface px-3 py-1.5 text-sm font-semibold text-tertiary focus:outline-none focus:ring-2 focus:ring-primary"
+            className="min-h-[44px] rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm font-medium text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
             {subjects.length === 0 ? (
               <option value="">Fanlar mavjud emas</option>

@@ -1,9 +1,17 @@
-import { Injectable, Optional } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  Optional,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import type { AttendanceStatsDto } from '@nis/shared';
+import { RoleName } from '../../common/enums/role.enum';
 import { EVENT_ATTENDANCE_RECORDED, AttendanceRecordedEvent } from '../../common/events/contracts';
 import { EventBusService } from '../../common/events/event-bus.service';
+import { AuthenticatedUser } from '../auth/types/authenticated-user';
+import { ParentStudent } from '../parents/entities/parent-student.entity';
 import { AttendanceQueryDto } from './dto/attendance-query.dto';
 import { BulkAttendanceRequestDto } from './dto/bulk-attendance.dto';
 import { AttendanceRecord } from './entities/attendance.entity';
@@ -17,6 +25,9 @@ export class AttendanceService {
     private readonly attendanceRepo: Repository<AttendanceRecord>,
     @Optional() private readonly eventBus?: EventBusService,
     private readonly eventsGateway?: EventsGateway,
+    @Optional()
+    @InjectRepository(ParentStudent)
+    private readonly parentStudents?: Repository<ParentStudent>,
   ) {}
 
   async bulkRecord(
@@ -109,7 +120,21 @@ export class AttendanceService {
     return qb.orderBy('att.date', 'DESC').addOrderBy('student.lastName', 'ASC').getMany();
   }
 
-  async getStats(studentId: string): Promise<AttendanceStatsDto> {
+  async getStats(studentId: string, user?: AuthenticatedUser): Promise<AttendanceStatsDto> {
+    if (user?.role === RoleName.PARENT) {
+      if (!this.parentStudents) {
+        throw new InternalServerErrorException('Security dependency unavailable');
+      }
+      const isLinked = await this.parentStudents.findOne({
+        where: { parentUserId: user.id, studentId },
+      });
+      if (!isLinked) {
+        throw new ForbiddenException(
+          'Parents can only access attendance statistics for their own child',
+        );
+      }
+    }
+
     const records = await this.attendanceRepo.find({
       where: { studentId },
     });

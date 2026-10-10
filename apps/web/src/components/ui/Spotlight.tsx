@@ -197,7 +197,7 @@ export function Spotlight() {
                         onClick={() => handleNavigate(`/students`)}
                         className="w-full flex items-center px-3 py-2.5 text-sm rounded-xl hover:bg-muted-surface/80 transition-colors text-left focus:bg-muted-surface/80 focus:outline-none"
                       >
-                        <div className="h-8 w-8 rounded-full bg-[#E8F7D0] text-success flex items-center justify-center font-bold text-xs mr-3 shrink-0">
+                        <div className="h-8 w-8 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-xs mr-3 shrink-0">
                           {student.firstName[0]}
                           {student.lastName[0]}
                         </div>

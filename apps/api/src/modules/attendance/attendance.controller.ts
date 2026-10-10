@@ -17,7 +17,7 @@ export class AttendanceController {
   constructor(private readonly attendance: AttendanceService) {}
 
   @Post('bulk')
-  @Roles(RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
   @ApiOperation({ summary: 'Bulk record student attendance for a class on a date' })
   @ApiResponse({ status: 201, type: [AttendanceResponseDto] })
   async bulkRecord(
@@ -29,6 +29,7 @@ export class AttendanceController {
   }
 
   @Get()
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
   @ApiOperation({ summary: 'List attendance records filtered by class, student, or date' })
   @ApiResponse({ status: 200, type: [AttendanceResponseDto] })
   async list(@Query() query: AttendanceQueryDto): Promise<AttendanceResponseDto[]> {
@@ -37,11 +38,13 @@ export class AttendanceController {
   }
 
   @Get('stats/:studentId')
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER, RoleName.PARENT)
   @ApiOperation({ summary: 'Get student attendance summary statistics' })
   @ApiResponse({ status: 200 })
   async getStats(
     @Param('studentId', ParseUUIDPipe) studentId: string,
+    @CurrentUser() user: AuthenticatedUser,
   ): Promise<AttendanceStatsDto> {
-    return this.attendance.getStats(studentId);
+    return this.attendance.getStats(studentId, user);
   }
 }

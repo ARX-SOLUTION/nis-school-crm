@@ -5,6 +5,9 @@ import { Card } from '@/components/ui/Card';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { useClassesQuery } from '@/features/classes/api/use-classes-query';
 import { useScheduleQuery } from '@/features/schedule/api/use-schedule-queries';
+import { useSubjectsQuery } from '@/features/subjects/api/use-subjects-queries';
+import { useRoomsQuery } from '@/features/rooms/api/use-rooms-queries';
+import { useUsersQuery } from '@/features/users/api/use-users-query';
 import { WeeklyScheduleGrid } from '@/features/schedule/components/WeeklyScheduleGrid';
 
 interface Props {
@@ -18,6 +21,10 @@ export function SchedulePage({ actorRole: _actorRole }: Props): React.ReactEleme
     page: 1,
     limit: 50,
   });
+
+  const { data: subjectsData } = useSubjectsQuery({ limit: 100 });
+  const { data: roomsData } = useRoomsQuery({ limit: 100 });
+  const { data: teachersData } = useUsersQuery({ role: 'TEACHER', limit: 100 });
 
   const classes = classesData?.data ?? [];
   const activeClassId = selectedClassId || (classes.length > 0 ? classes[0].id : '');
@@ -51,7 +58,7 @@ export function SchedulePage({ actorRole: _actorRole }: Props): React.ReactEleme
       {/* Class Selector Bar */}
       <Card className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <label htmlFor="class-select" className="text-sm font-medium text-tertiary">
+          <label htmlFor="class-select" className="text-sm font-medium text-slate-300">
             Select Class:
           </label>
           <select
@@ -59,7 +66,7 @@ export function SchedulePage({ actorRole: _actorRole }: Props): React.ReactEleme
             value={activeClassId}
             onChange={(e) => setSelectedClassId(e.target.value)}
             disabled={classesLoading || classes.length === 0}
-            className="rounded-lg border border-border bg-surface px-3 py-1.5 text-sm font-medium text-tertiary focus:outline-none focus:ring-2 focus:ring-primary"
+            className="rounded-md border border-slate-700 bg-slate-900 px-3 py-1.5 text-sm font-medium text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
             {classes.length === 0 ? (
               <option value="">No classes available</option>
@@ -95,6 +102,9 @@ export function SchedulePage({ actorRole: _actorRole }: Props): React.ReactEleme
         <WeeklyScheduleGrid
           entries={scheduleEntries}
           classNameLabel={selectedClass ? selectedClass.name : undefined}
+          subjects={subjectsData?.data}
+          rooms={roomsData?.data}
+          teachers={teachersData?.data}
         />
       )}
     </div>

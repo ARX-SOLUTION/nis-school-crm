@@ -95,24 +95,24 @@ export function GradesSheet({
         <table className="w-full border-collapse text-left text-sm">
           <thead>
             <tr className="border-b border-border bg-muted-surface text-xs font-semibold uppercase tracking-wider text-neutral-500">
-              <th scope="col" className="p-3.5 w-12 text-center">
+              <th scope="col" className="px-2 sm:px-3 py-2.5 sm:py-3 w-12 text-center">
                 #
               </th>
-              <th scope="col" className="p-3.5">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
                 O'quvchi
               </th>
-              <th scope="col" className="p-3.5">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3">
                 Oldingi baholari
               </th>
-              <th scope="col" className="p-3.5 text-center">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3 text-center">
                 O'rtacha ball
               </th>
-              <th scope="col" className="p-3.5 text-center">
+              <th scope="col" className="px-3 sm:px-4 py-2.5 sm:py-3 text-center">
                 Baho qo'yish (1-click)
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-800">
             {students.map((student, idx) => {
               const summary = summaries.find((s) => s.studentId === student.id);
               const grades = summary?.grades ?? [];
@@ -120,10 +120,10 @@ export function GradesSheet({
 
               return (
                 <tr key={student.id} className="hover:bg-muted-surface transition-colors">
-                  <td className="p-3.5 text-center text-xs font-medium text-neutral-400">
+                  <td className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-xs font-medium text-neutral-400">
                     {idx + 1}
                   </td>
-                  <td className="p-3.5 font-semibold text-tertiary">
+                  <td className="px-3 sm:px-4 py-2.5 sm:py-3 font-semibold text-tertiary">
                     <div>
                       {student.lastName} {student.firstName}
                     </div>
@@ -131,7 +131,7 @@ export function GradesSheet({
                       {student.studentCode}
                     </div>
                   </td>
-                  <td className="p-3.5">
+                  <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                     {grades.length === 0 ? (
                       <span className="text-xs text-neutral-400 italic">Baholar mavjud emas</span>
                     ) : (
@@ -142,12 +142,12 @@ export function GradesSheet({
                             title={`${g.date}: ${g.gradeType} ${g.comment ? `(${g.comment})` : ''}`}
                             className={`inline-flex items-center justify-center w-7 h-7 rounded-lg text-xs font-bold border ${
                               g.score >= 4.5
-                                ? 'bg-[#E8F7D0] text-success border-success'
+                                ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
                                 : g.score >= 3.5
-                                  ? 'bg-[#DBEAFE] text-secondary border-secondary/20'
+                                  ? 'bg-blue-500/15 text-blue-400 border-blue-500/30'
                                   : g.score >= 2.5
-                                    ? 'bg-muted-surface text-neutral-500 border-border'
-                                    : 'bg-[#FEE2E2] text-error border-error'
+                                    ? 'bg-muted-surface text-neutral-400 border-border'
+                                    : 'bg-rose-500/15 text-rose-400 border-rose-500/30'
                             }`}
                           >
                             {g.score}
@@ -156,22 +156,22 @@ export function GradesSheet({
                       </div>
                     )}
                   </td>
-                  <td className="p-3.5 text-center">
+                  <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-center">
                     <span
-                      className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold ${
+                      className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold border ${
                         avg >= 4.5
-                          ? 'bg-[#D9F2B3] text-success'
+                          ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
                           : avg >= 3.5
-                            ? 'bg-[#DBEAFE] text-secondary'
+                            ? 'bg-blue-500/15 text-blue-400 border-blue-500/30'
                             : avg > 0
-                              ? 'bg-amber-100 text-neutral-500'
-                              : 'bg-muted-surface text-neutral-500'
+                              ? 'bg-amber-500/15 text-amber-400 border-amber-500/30'
+                              : 'bg-muted-surface text-neutral-400 border-border'
                       }`}
                     >
                       {avg > 0 ? avg : '-'}
                     </span>
                   </td>
-                  <td className="p-3.5">
+                  <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                     <div className="flex items-center justify-center gap-1.5">
                       {[5, 4, 3, 2].map((val) => (
                         <button

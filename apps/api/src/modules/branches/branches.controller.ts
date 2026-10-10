@@ -22,6 +22,7 @@ export class BranchesController {
   constructor(private readonly branchesService: BranchesService) {}
 
   @Get()
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
   @ApiOperation({ summary: "Filiallar ro'yxati (List branches)" })
   @ApiQuery({ name: 'onlyActive', required: false, type: Boolean })
   async findAll(@Query('onlyActive') onlyActive?: string) {
@@ -29,12 +30,14 @@ export class BranchesController {
   }
 
   @Get(':id')
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER)
   @ApiOperation({ summary: "Filial ma'lumotlari (Get branch by ID)" })
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.branchesService.findOne(id);
   }
 
   @Get(':id/stats')
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER)
   @ApiOperation({ summary: 'Filial statistikasi (Get branch stats)' })
   async getStats(@Param('id', ParseUUIDPipe) id: string) {
     return this.branchesService.getStats(id);

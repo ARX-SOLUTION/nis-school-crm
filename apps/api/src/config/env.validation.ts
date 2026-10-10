@@ -57,6 +57,25 @@ export const envValidationSchema = Joi.object({
   TELEGRAM_BOT_USERNAME: Joi.string().allow('').default(''),
   TELEGRAM_LOGIN_DOMAIN: Joi.string().allow('').default(''),
 
+  // Payment gateways (Payme & Click)
+  PAYME_KEY: Joi.string()
+    .description('Payme merchant authentication key')
+    .when('NODE_ENV', {
+      is: 'production',
+      then: Joi.string().min(8).required(),
+      otherwise: Joi.string().allow('').default(''),
+    }),
+  PAYME_MERCHANT_ID: Joi.string().allow('').default('').description('Payme merchant ID'),
+  CLICK_SECRET_KEY: Joi.string()
+    .description('Click shop webhook secret key for MD5 signatures')
+    .when('NODE_ENV', {
+      is: 'production',
+      then: Joi.string().min(8).required(),
+      otherwise: Joi.string().allow('').default(''),
+    }),
+  CLICK_SERVICE_ID: Joi.string().allow('').default('').description('Click service ID'),
+  CLICK_MERCHANT_ID: Joi.string().allow('').default('').description('Click merchant ID'),
+
   // Feature flags — all default to false. Enable per-environment via env vars.
   FEATURE_TELEGRAM_LOGIN_ENABLED: Joi.boolean().default(false),
   FEATURE_PARENT_PORTAL_ENABLED: Joi.boolean().default(false),

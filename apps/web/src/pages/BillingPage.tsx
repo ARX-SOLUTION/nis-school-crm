@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { CreatePaymentRequestDto } from '@nis/shared';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { formatUzbekSum } from '@/lib/format-currency';
 import { Pagination } from '@/components/ui/Pagination';
 import { DebtorsTable } from '@/features/billing/components/DebtorsTable';
@@ -54,17 +55,17 @@ export function BillingPage(): React.ReactElement {
   const students = studentsData?.data ?? [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-tertiary">Moliya va To'lovlar</h1>
-          <p className="text-sm text-neutral-500 mt-1">
+          <p className="text-sm text-neutral-500 mt-0.5">
             O'quvchilar shartnoma to'lovlari hisobi, tushumlar tahlili va qarzdorlar monitoringi.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <input
             type="month"
             value={selectedMonth}
@@ -72,7 +73,7 @@ export function BillingPage(): React.ReactElement {
               setSelectedMonth(e.target.value);
               setPaymentsPage(1);
             }}
-            className="text-sm rounded-lg border border-border px-3 py-2 text-tertiary bg-surface font-medium focus:outline-none focus:ring-2 focus:ring-primary"
+            className="text-sm rounded-lg border border-slate-700 px-3 py-2 text-slate-200 bg-slate-900 font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 min-h-[44px]"
           />
           <Button variant="primary" onClick={() => handleOpenModal()}>
             + To'lov qabul qilish
@@ -82,9 +83,9 @@ export function BillingPage(): React.ReactElement {
 
       {/* Success banner */}
       {successMessage && (
-        <div className="rounded-xl border border-success bg-[#E8F7D0] p-4 text-sm font-medium text-success flex items-center gap-2">
+        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm font-medium text-emerald-400 flex items-center gap-2">
           <svg
-            className="w-5 h-5 text-success"
+            className="w-5 h-5 text-emerald-400"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -96,68 +97,66 @@ export function BillingPage(): React.ReactElement {
       )}
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Total Collected */}
-        <div className="p-5 bg-surface rounded-xl border border-border shadow-xs">
-          <div className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+        <Card variant="metric" className="p-3.5 sm:p-5 border-emerald-500/20 bg-emerald-950/10">
+          <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
             Jami tushum ({selectedMonth})
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono tabular-nums text-success">
+          <div className="mt-2 text-2xl font-bold font-mono tabular-nums text-emerald-400">
             {statsLoading ? '...' : formatUzbekSum(stats?.totalCollectedThisMonth ?? 0)}
           </div>
-          <div className="mt-1 text-xs text-neutral-400">O'quvchilar tomonidan to'langan</div>
-        </div>
+          <div className="mt-1 text-xs text-slate-400">O'quvchilar tomonidan to'langan</div>
+        </Card>
 
         {/* Expected */}
-        <div className="p-5 bg-surface rounded-xl border border-border shadow-xs">
-          <div className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+        <Card variant="metric" className="p-3.5 sm:p-5">
+          <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
             Kutilayotgan summa
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono tabular-nums text-tertiary">
+          <div className="mt-2 text-2xl font-bold font-mono tabular-nums text-slate-100">
             {statsLoading ? '...' : formatUzbekSum(stats?.expectedThisMonth ?? 0)}
           </div>
-          <div className="mt-1 text-xs text-neutral-400">
-            Faol o'quvchilar shartnomalari bo'yicha
-          </div>
-        </div>
+          <div className="mt-1 text-xs text-slate-400">Faol o'quvchilar shartnomalari bo'yicha</div>
+        </Card>
 
         {/* Collection Rate */}
-        <div className="p-5 bg-surface rounded-xl border border-border shadow-xs">
-          <div className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+        <Card variant="metric" className="p-3.5 sm:p-5 border-blue-500/20 bg-blue-950/10">
+          <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
             Yig'ish ko'rsatkichi
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-secondary">
+          <div className="mt-2 text-2xl font-bold font-mono text-blue-400">
             {statsLoading ? '...' : `${stats?.collectionRate ?? 0}%`}
           </div>
-          <div className="w-full bg-muted-surface rounded-full h-2 mt-2 overflow-hidden">
+          <div className="w-full bg-slate-800 rounded-full h-2 mt-2 overflow-hidden">
             <div
-              className="bg-primary h-2 rounded-full transition-all duration-500"
+              className="bg-blue-500 h-2 rounded-full transition-all duration-500"
               style={{ width: `${Math.min(100, stats?.collectionRate ?? 0)}%` }}
             />
           </div>
-        </div>
+        </Card>
 
         {/* Debtors count */}
-        <div className="p-5 bg-surface rounded-xl border border-border shadow-xs">
-          <div className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+        <Card variant="metric" className="p-3.5 sm:p-5 border-red-500/20 bg-red-950/10">
+          <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
             Qarzdor o'quvchilar
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-error">
+          <div className="mt-2 text-2xl font-bold font-mono text-red-400">
             {statsLoading ? '...' : (stats?.debtorCount ?? 0)} nafar
           </div>
-          <div className="mt-1 text-xs text-neutral-400">To'lov muddati kechikkan</div>
-        </div>
+          <div className="mt-1 text-xs text-slate-400">To'lov muddati kechikkan</div>
+        </Card>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-border pb-3">
+      <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
         <button
           type="button"
           onClick={() => setActiveTab('payments')}
           className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${
             activeTab === 'payments'
-              ? 'bg-primary text-tertiary shadow-xs'
-              : 'bg-surface text-neutral-500 hover:bg-muted-surface'
+              ? 'bg-blue-600 text-white shadow-sm'
+              : 'bg-slate-900 border border-slate-700 text-slate-300 hover:bg-slate-800'
           }`}
         >
           To'lovlar tarixi ({payments.length})
@@ -167,8 +166,8 @@ export function BillingPage(): React.ReactElement {
           onClick={() => setActiveTab('debtors')}
           className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${
             activeTab === 'debtors'
-              ? 'bg-primary text-tertiary shadow-xs'
-              : 'bg-surface text-neutral-500 hover:bg-muted-surface'
+              ? 'bg-blue-600 text-white shadow-sm'
+              : 'bg-slate-900 border border-slate-700 text-slate-300 hover:bg-slate-800'
           }`}
         >
           Qarzdorlar ro'yxati ({debtors.length})
@@ -177,7 +176,7 @@ export function BillingPage(): React.ReactElement {
 
       {/* Tab content */}
       {activeTab === 'payments' ? (
-        <div className="bg-surface rounded-xl border border-border overflow-hidden shadow-xs">
+        <Card className="overflow-hidden p-0">
           <PaymentsTable data={payments} isLoading={paymentsLoading} />
           {paymentsData && paymentsData.meta ? (
             <Pagination
@@ -192,13 +191,15 @@ export function BillingPage(): React.ReactElement {
               }}
             />
           ) : null}
-        </div>
+        </Card>
       ) : (
-        <DebtorsTable
-          data={debtors}
-          isLoading={debtorsLoading}
-          onPay={(studentId) => handleOpenModal(studentId)}
-        />
+        <Card className="overflow-hidden p-0">
+          <DebtorsTable
+            data={debtors}
+            isLoading={debtorsLoading}
+            onPay={(studentId) => handleOpenModal(studentId)}
+          />
+        </Card>
       )}
 
       {/* Record Payment Modal */}

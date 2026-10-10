@@ -8,9 +8,9 @@ set -euo pipefail
 
 SCHEDULE="${CRON_SCHEDULE:-0 2 * * *}"
 
-# Pass DB env into cron's environment (cron strips the parent process
+# Pass DB, backup, and cloud storage env into cron's environment (cron strips the parent process
 # env by default).
-env | grep -E '^(DB_|BACKUP_)' > /etc/environment
+env | grep -E '^(DB_|BACKUP_|S3_|AWS_)' > /etc/environment
 
 echo "${SCHEDULE} root . /etc/environment; /usr/local/bin/backup.sh >> /proc/1/fd/1 2>&1" \
   > /etc/crontabs/root

@@ -47,4 +47,17 @@ describe('HealthController', () => {
     expect(redis.isHealthy).toHaveBeenCalledWith('redis');
     expect(rabbit.isHealthy).toHaveBeenCalledWith('rabbitmq');
   });
+
+  it('should_return_ok_for_liveness_probe', () => {
+    const live = controller.live();
+    expect(live.status).toBe('ok');
+    expect(typeof live.uptime).toBe('number');
+    expect(typeof live.timestamp).toBe('string');
+  });
+
+  it('should_delegate_ready_probe_to_health_check_service', async () => {
+    const result = await controller.ready();
+    expect(healthCheck.check).toHaveBeenCalledTimes(1);
+    expect(result).toEqual({ status: 'ok' });
+  });
 });

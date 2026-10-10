@@ -584,6 +584,30 @@ export function AppShell({ user, children }: Props): React.ReactElement {
               </svg>
             ),
           },
+          ...(user.role === 'ADMIN' || user.role === 'SUPER_ADMIN'
+            ? [
+                {
+                  to: '/audit-logs',
+                  label: 'Audit loglar',
+                  icon: (_active: boolean) => (
+                    <svg
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                      />
+                    </svg>
+                  ),
+                },
+              ]
+            : []),
           {
             to: '/profile',
             label: 'Profile',
@@ -634,7 +658,7 @@ export function AppShell({ user, children }: Props): React.ReactElement {
               aria-label="Expand sidebar"
               title="Expand sidebar (Ctrl+B)"
             >
-              <div className="h-9 w-9 rounded-lg bg-primary text-tertiary font-bold flex items-center justify-center text-sm shadow-sm tracking-wide">
+              <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 border border-blue-400/30 text-white font-extrabold flex items-center justify-center text-sm shadow-sm shadow-blue-900/40 tracking-wide">
                 NIS
               </div>
             </button>
@@ -644,7 +668,7 @@ export function AppShell({ user, children }: Props): React.ReactElement {
                 to="/"
                 className="flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
               >
-                <div className="h-9 w-9 rounded-lg bg-primary text-tertiary font-bold flex items-center justify-center text-sm shadow-sm tracking-wide shrink-0">
+                <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 border border-blue-400/30 text-white font-extrabold flex items-center justify-center text-sm shadow-sm shadow-blue-900/40 tracking-wide shrink-0">
                   NIS
                 </div>
                 <div className="flex flex-col min-w-0">
@@ -689,11 +713,11 @@ export function AppShell({ user, children }: Props): React.ReactElement {
                     sidebarCollapsed ? 'justify-center px-2' : 'gap-3 px-3'
                   } ${
                     active
-                      ? 'bg-[#DBEAFE] text-secondary font-semibold'
-                      : 'text-neutral-500 hover:text-tertiary hover:bg-muted-surface'
+                      ? 'bg-blue-600/15 text-blue-400 border border-blue-500/30 font-semibold'
+                      : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/80'
                   }`}
                 >
-                  <span className={`shrink-0 ${active ? 'text-secondary' : 'text-neutral-400'}`}>
+                  <span className={`shrink-0 ${active ? 'text-blue-400' : 'text-slate-400'}`}>
                     {item.icon(active)}
                   </span>
                   {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
@@ -731,7 +755,7 @@ export function AppShell({ user, children }: Props): React.ReactElement {
         <div className="lg:hidden fixed inset-0 z-50 flex" role="dialog" aria-modal="true">
           {/* Overlay backdrop */}
           <div
-            className="fixed inset-0 bg-tertiary/40 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity"
             onClick={() => setMobileMenuOpen(false)}
             aria-hidden="true"
           />
@@ -745,7 +769,7 @@ export function AppShell({ user, children }: Props): React.ReactElement {
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-2.5"
               >
-                <div className="h-8 w-8 rounded-lg bg-primary text-tertiary font-bold flex items-center justify-center text-sm shadow-sm">
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 border border-blue-400/30 text-white font-extrabold flex items-center justify-center text-sm shadow-sm">
                   NIS
                 </div>
                 <span className="font-semibold text-tertiary text-base">Nordic CRM</span>
@@ -783,11 +807,11 @@ export function AppShell({ user, children }: Props): React.ReactElement {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`min-h-[44px] px-3 py-2.5 rounded-lg text-sm font-medium flex items-center gap-3 transition-colors ${
                       active
-                        ? 'bg-[#DBEAFE] text-secondary font-semibold'
-                        : 'text-tertiary hover:bg-muted-surface hover:text-tertiary'
+                        ? 'bg-blue-600/15 text-blue-400 border border-blue-500/30 font-semibold'
+                        : 'text-slate-300 hover:bg-slate-800/80 hover:text-slate-100'
                     }`}
                   >
-                    <span className={active ? 'text-secondary' : 'text-neutral-400'}>
+                    <span className={active ? 'text-blue-400' : 'text-slate-400'}>
                       {item.icon(active)}
                     </span>
                     <span>{item.label}</span>
@@ -808,9 +832,9 @@ export function AppShell({ user, children }: Props): React.ReactElement {
         }`}
       >
         {/* TOP HEADER BAR */}
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border/50 bg-surface/95 backdrop-blur-sm px-4 sm:px-6 lg:px-8">
+        <header className="sticky top-0 z-20 flex h-14 sm:h-16 items-center justify-between border-b border-border/50 bg-surface/95 backdrop-blur-sm px-3 sm:px-5 lg:px-6">
           {/* Mobile hamburger & Desktop toggle button */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             {/* Mobile hamburger */}
             <button
               type="button"
@@ -841,23 +865,23 @@ export function AppShell({ user, children }: Props): React.ReactElement {
               {sidebarCollapsed ? <SidebarExpandIcon /> : <SidebarCollapseIcon />}
             </button>
 
-            <div className="hidden sm:flex items-center gap-2.5">
-              <span className="text-sm font-semibold text-tertiary tracking-tight">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="hidden md:inline text-sm font-semibold text-tertiary tracking-tight truncate">
                 Nordic International School
               </span>
-              <span className="text-border">/</span>
+              <span className="hidden md:inline text-border">/</span>
               <BranchSwitcher />
             </div>
           </div>
 
-          <div className="flex-1 max-w-md mx-4 hidden md:block">
+          <div className="flex-1 max-w-md mx-3 lg:mx-4 hidden md:block">
             <button
               type="button"
               onClick={() => window.dispatchEvent(new Event('open-spotlight'))}
-              className="w-full flex items-center text-left px-3 py-1.5 text-sm text-neutral-500 bg-muted-surface hover:bg-border rounded-lg border border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full flex items-center text-left px-3.5 py-2 text-sm text-neutral-400 bg-slate-900 hover:bg-slate-800/80 rounded-lg border border-slate-700/80 hover:border-slate-600 transition-colors focus:outline-none focus:ring-2 focus:ring-primary shadow-dark-sm"
             >
               <svg
-                className="h-4 w-4 mr-2 text-neutral-400"
+                className="h-4 w-4 mr-2.5 text-neutral-400 shrink-0"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth="2"
@@ -869,145 +893,172 @@ export function AppShell({ user, children }: Props): React.ReactElement {
                   d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
                 />
               </svg>
-              Search or type a command...
-              <span className="ml-auto flex gap-1 items-center">
-                <kbd className="font-sans text-[10px] px-1.5 py-0.5 rounded-lg bg-surface border border-border/50 shadow-sm text-neutral-500 font-medium">
+              <span className="truncate">Search or type a command...</span>
+              <span className="ml-auto flex gap-1 items-center shrink-0">
+                <kbd className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400 font-medium">
                   Cmd+K
                 </kbd>
               </span>
             </button>
           </div>
 
-          {/* TOP-RIGHT PROFILE ZONE */}
-          <div className="relative" ref={profileRef}>
-            {/* Profile Button Trigger (R-03 >=44px touch target) */}
+          {/* TOP-RIGHT ACTIONS & PROFILE ZONE */}
+          <div className="flex items-center gap-1 sm:gap-2">
+            {/* Mobile search button */}
             <button
               type="button"
-              id="profile-menu-button"
-              onClick={() => setProfileCardOpen(!profileCardOpen)}
-              className="min-h-[44px] flex items-center gap-3 pl-2 pr-3 py-1.5 rounded-full hover:bg-muted-surface border border-border/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              aria-haspopup="true"
-              aria-expanded={profileCardOpen}
-              aria-label="User profile menu"
+              onClick={() => window.dispatchEvent(new Event('open-spotlight'))}
+              className="md:hidden min-h-[44px] min-w-[44px] p-2 inline-flex items-center justify-center rounded-lg text-neutral-400 hover:text-tertiary hover:bg-muted-surface transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              aria-label="Search"
+              title="Search (Cmd+K)"
             >
-              {/* Avatar circle */}
-              <div className="h-8 w-8 rounded-full bg-primary text-tertiary font-semibold flex items-center justify-center text-xs shadow-sm ring-2 ring-white">
-                {initials}
-              </div>
-
-              {/* Name & Role (hidden on tiny screens) */}
-              <div className="text-left hidden sm:block leading-tight">
-                <div className="text-sm font-semibold text-tertiary truncate max-w-[130px]">
-                  {user.fullName}
-                </div>
-                <div className="text-[11px] font-medium text-neutral-500 uppercase tracking-wide">
-                  {user.role}
-                </div>
-              </div>
-
-              {/* Down chevron icon */}
               <svg
-                className={`h-4 w-4 text-neutral-400 transition-transform duration-200 ${
-                  profileCardOpen ? 'rotate-180 text-secondary' : ''
-                }`}
+                className="h-5 w-5"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor"
                 strokeWidth="2"
-                aria-hidden="true"
+                stroke="currentColor"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                />
               </svg>
             </button>
 
-            {/* PROFILE CARD POPOVER */}
-            {profileCardOpen ? (
-              <div
-                className="absolute right-0 top-full mt-2 w-72 rounded-xl bg-surface shadow-xl border-none ring-1 ring-border divide-y divide-slate-100 z-50 animate-in fade-in zoom-in-95 duration-100"
-                role="menu"
-                aria-orientation="vertical"
-                aria-labelledby="profile-menu-button"
+            <div className="relative" ref={profileRef}>
+              {/* Profile Button Trigger (R-03 >=44px touch target) */}
+              <button
+                type="button"
+                id="profile-menu-button"
+                onClick={() => setProfileCardOpen(!profileCardOpen)}
+                className="min-h-[44px] flex items-center gap-3 pl-2 pr-3 py-1.5 rounded-full hover:bg-muted-surface border border-border/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                aria-haspopup="true"
+                aria-expanded={profileCardOpen}
+                aria-label="User profile menu"
               >
-                {/* User Identity Card Header */}
-                <div className="p-4 flex items-center gap-3 bg-muted-surface/70 rounded-t-xl">
-                  <div className="h-11 w-11 rounded-full bg-primary text-tertiary font-bold flex items-center justify-center text-sm shadow-sm ring-2 ring-secondary/20 shrink-0">
-                    {initials}
+                {/* Avatar circle */}
+                <div className="h-8 w-8 rounded-full bg-primary text-tertiary font-semibold flex items-center justify-center text-xs shadow-sm ring-2 ring-blue-500/30 border border-blue-400/20">
+                  {initials}
+                </div>
+
+                {/* Name & Role (hidden on tiny screens) */}
+                <div className="text-left hidden sm:block leading-tight">
+                  <div className="text-sm font-semibold text-tertiary truncate max-w-[130px]">
+                    {user.fullName}
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-sm font-semibold text-tertiary truncate">
-                      {user.fullName}
-                    </div>
-                    <div className="text-xs text-neutral-500 truncate" title={user.email}>
-                      {user.email}
-                    </div>
-                    <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#DBEAFE] text-secondary uppercase tracking-wider">
-                      {user.role}
-                    </span>
+                  <div className="text-[11px] font-medium text-neutral-500 uppercase tracking-wide">
+                    {user.role}
                   </div>
                 </div>
 
-                {/* Quick Navigation Links */}
-                <div className="p-2 space-y-1">
-                  <Link
-                    to="/profile"
-                    onClick={() => setProfileCardOpen(false)}
-                    className="min-h-[44px] flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-tertiary hover:bg-muted-surface hover:text-tertiary transition-colors"
-                    role="menuitem"
-                  >
-                    <svg
-                      className="h-4 w-4 text-neutral-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      aria-hidden="true"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
-                    <span>My Profile</span>
-                  </Link>
-                </div>
+                {/* Down chevron icon */}
+                <svg
+                  className={`h-4 w-4 text-neutral-400 transition-transform duration-200 ${
+                    profileCardOpen ? 'rotate-180 text-secondary' : ''
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
 
-                {/* Card Action / Sign Out */}
-                <div className="p-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setProfileCardOpen(false);
-                      logout.mutate();
-                    }}
-                    disabled={logout.isPending}
-                    className="min-h-[44px] w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-error hover:bg-[#FEE2E2] hover:text-error transition-colors focus:outline-none focus:ring-2 focus:ring-error"
-                    role="menuitem"
-                  >
-                    <svg
-                      className="h-4 w-4 text-error"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      aria-hidden="true"
+              {/* PROFILE CARD POPOVER */}
+              {profileCardOpen ? (
+                <div
+                  className="absolute right-0 top-full mt-2 w-72 rounded-xl bg-slate-900 shadow-dark-lg border border-slate-700 divide-y divide-slate-800 z-50 animate-in fade-in zoom-in-95 duration-100"
+                  role="menu"
+                  aria-orientation="vertical"
+                  aria-labelledby="profile-menu-button"
+                >
+                  {/* User Identity Card Header */}
+                  <div className="p-4 flex items-center gap-3 bg-slate-900/90 rounded-t-xl">
+                    <div className="h-11 w-11 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-sm shadow-sm ring-2 ring-blue-500/20 shrink-0">
+                      {initials}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold text-slate-100 truncate">
+                        {user.fullName}
+                      </div>
+                      <div className="text-xs text-slate-400 truncate" title={user.email}>
+                        {user.email}
+                      </div>
+                      <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/15 text-blue-400 border border-blue-500/30 uppercase tracking-wider">
+                        {user.role}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Quick Navigation Links */}
+                  <div className="p-2 space-y-1">
+                    <Link
+                      to="/profile"
+                      onClick={() => setProfileCardOpen(false)}
+                      className="min-h-[44px] flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-200 hover:bg-slate-800 hover:text-white transition-colors"
+                      role="menuitem"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                      />
-                    </svg>
-                    <span>{logout.isPending ? 'Signing out...' : 'Sign out'}</span>
-                  </button>
+                      <svg
+                        className="h-4 w-4 text-slate-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                      <span>My Profile</span>
+                    </Link>
+                  </div>
+
+                  {/* Card Action / Sign Out */}
+                  <div className="p-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setProfileCardOpen(false);
+                        logout.mutate();
+                      }}
+                      disabled={logout.isPending}
+                      className="min-h-[44px] w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+                      role="menuitem"
+                    >
+                      <svg
+                        className="h-4 w-4 text-error"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                        />
+                      </svg>
+                      <span>{logout.isPending ? 'Signing out...' : 'Sign out'}</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ) : null}
+              ) : null}
+            </div>
           </div>
         </header>
 
         {/* PAGE CONTENT */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">{children}</main>
+        <main className="flex-1 px-3 py-4 sm:px-5 sm:py-5 lg:px-6 lg:py-6 w-full max-w-[1600px] mx-auto min-w-0">
+          {children}
+        </main>
       </div>
     </div>
   );

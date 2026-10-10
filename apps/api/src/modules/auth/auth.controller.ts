@@ -22,6 +22,7 @@ import { TelegramLinkDto } from './dto/telegram-link.dto';
 import { CreateParentInviteDto } from './dto/create-parent-invite.dto';
 import { AcceptParentInviteDto } from './dto/accept-parent-invite.dto';
 import { ParentInviteResponseDto } from './dto/parent-invite-response.dto';
+import { Authenticated } from './decorators/authenticated.decorator';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { Public } from './decorators/public.decorator';
 import { Roles } from './decorators/roles.decorator';
@@ -77,6 +78,8 @@ export class AuthController {
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard)
+  @Authenticated()
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER, RoleName.PARENT)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Revoke the supplied refresh token (must belong to caller)' })
   async logout(
@@ -89,6 +92,8 @@ export class AuthController {
   @Post('change-password')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard)
+  @Authenticated()
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER, RoleName.PARENT)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Change the current user password' })
   async changePassword(
@@ -104,6 +109,8 @@ export class AuthController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
+  @Authenticated()
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER, RoleName.PARENT)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Return the authenticated user profile' })
   async me(@CurrentUser() current: AuthenticatedUser): Promise<UserResponseDto> {
@@ -113,6 +120,8 @@ export class AuthController {
 
   @Patch('me/prefs')
   @UseGuards(JwtAuthGuard)
+  @Authenticated()
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER, RoleName.PARENT)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update my notification preferences' })
   async updatePrefs(
@@ -155,6 +164,8 @@ export class AuthController {
 
   @RequireFeature('TELEGRAM_LOGIN')
   @UseGuards(FeatureFlagGuard)
+  @Authenticated()
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.MANAGER, RoleName.TEACHER, RoleName.PARENT)
   @Post('telegram/link')
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()

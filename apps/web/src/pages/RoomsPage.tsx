@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { RoleName } from '@nis/shared';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { Input } from '@/components/ui/Input';
 import { LoadingState } from '@/components/ui/LoadingState';
@@ -27,8 +28,8 @@ export function RoomsPage({ actorRole }: Props): React.ReactElement {
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-4">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 border-b border-border pb-3 sm:pb-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-tertiary">
             Rooms & Facilities
@@ -44,18 +45,20 @@ export function RoomsPage({ actorRole }: Props): React.ReactElement {
         ) : null}
       </div>
 
-      <div className="flex items-center gap-3">
-        <div className="w-full sm:w-72">
-          <Input
-            placeholder="Search by room number or name..."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-          />
+      <Card className="p-3 sm:p-4">
+        <div className="flex items-center gap-3">
+          <div className="w-full sm:w-72">
+            <Input
+              placeholder="Search by room number or name..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+            />
+          </div>
         </div>
-      </div>
+      </Card>
 
       {isLoading ? (
         <LoadingState label="Loading classrooms and facilities..." />
@@ -66,7 +69,7 @@ export function RoomsPage({ actorRole }: Props): React.ReactElement {
           onRetry={() => refetch()}
         />
       ) : (
-        <div className="bg-surface rounded-xl border border-border overflow-hidden shadow-xs">
+        <Card className="overflow-hidden p-0">
           <RoomsTable
             rooms={data?.data ?? []}
             canManage={canManage}
@@ -85,7 +88,7 @@ export function RoomsPage({ actorRole }: Props): React.ReactElement {
               }}
             />
           ) : null}
-        </div>
+        </Card>
       )}
 
       {isCreateOpen ? (

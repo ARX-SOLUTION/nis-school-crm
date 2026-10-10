@@ -1,0 +1,2532 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#090D16" />
+<title>Enterprise Automation Design System · NIS School CRM (DS v2.2 Handoff)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Onest:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  /* ──────────────────────────────────────────────────────────────────────────
+     DESIGN SYSTEM TOKENS — PRODUCTION SOURCE: tailwind.config.ts
+     ────────────────────────────────────────────────────────────────────────── */
+  :root {
+    /* Primitive Grayscale Ramp (Slate) */
+    --slate-50:  #F8FAFC;
+    --slate-100: #F1F5F9;
+    --slate-200: #E2E8F0;
+    --slate-300: #CBD5E1;
+    --slate-400: #94A3B8;
+    --slate-500: #64748B;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1E293B;
+    --slate-900: #0F172A;
+    --slate-950: #090D16;
+
+    /* Primitive Primary Ramp (Tech Blue) */
+    --blue-50:  #EFF6FF;
+    --blue-100: #DBEAFE;
+    --blue-200: #BFDBFE;
+    --blue-300: #93C5FD;
+    --blue-400: #60A5FA;
+    --blue-500: #3B82F6;
+    --blue-600: #2563EB; /* Primary Brand Action */
+    --blue-700: #1D4ED8;
+    --blue-800: #1E40AF;
+    --blue-900: #1E3A8A;
+
+    /* Semantic Depth Layers */
+    --canvas:           var(--slate-950); /* #090D16 Level 0 */
+    --surface-base:     var(--slate-900); /* #0F172A Level 1 */
+    --surface-subtle:   #131B2E;          /* #131B2E Table headers, filters */
+    --surface-elevated: var(--slate-800); /* #1E293B Level 2/3 */
+    --surface-hover:    #243249;          /* Hover highlight */
+
+    /* Precision Borders */
+    --border-subtle:  rgba(255, 255, 255, 0.06);
+    --border-default: var(--slate-800);          /* #1E293B */
+    --border-strong:  var(--slate-700);          /* #334155 */
+    --border-focus:   var(--blue-500);           /* #3B82F6 */
+
+    /* Typography Hierarchy */
+    --text-primary:   var(--slate-50);  /* #F8FAFC 15.8:1 contrast */
+    --text-secondary: var(--slate-200); /* #E2E8F0 12.2:1 contrast */
+    --text-muted:     var(--slate-400); /* #94A3B8 5.4:1 contrast (WCAG AA pass) */
+    --text-disabled:  var(--slate-600); /* #475569 */
+
+    /* Actions & Accents */
+    --primary:        var(--blue-600);
+    --primary-hover:  var(--blue-500);
+    --primary-active: var(--blue-700);
+    --primary-light:  var(--blue-400);
+    --primary-tint:   rgba(37, 99, 235, 0.12);
+    --primary-glow:   rgba(37, 99, 235, 0.28);
+
+    /* Semantic Status Tokens */
+    --success:        #10B981;
+    --success-bg:     rgba(16, 185, 129, 0.12);
+    --success-border: rgba(16, 185, 129, 0.25);
+    --success-text:   #34D399;
+
+    --warning:        #F59E0B;
+    --warning-bg:     rgba(245, 158, 11, 0.12);
+    --warning-border: rgba(245, 158, 11, 0.25);
+    --warning-text:   #FBBF24;
+
+    --error:          #EF4444;
+    --error-bg:       rgba(239, 68, 68, 0.12);
+    --error-border:   rgba(239, 68, 68, 0.25);
+    --error-text:     #F87171;
+
+    --info:           #06B6D4;
+    --info-bg:        rgba(6, 182, 212, 0.12);
+    --info-border:    rgba(6, 182, 212, 0.25);
+    --info-text:      #22D3EE;
+
+    /* Foundations */
+    --shadow-dark-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px -1px rgba(0, 0, 0, 0.5);
+    --shadow-dark-md: 0 4px 10px -1px rgba(0, 0, 0, 0.6), 0 2px 5px -2px rgba(0, 0, 0, 0.5);
+    --shadow-dark-lg: 0 14px 32px -4px rgba(0, 0, 0, 0.8), 0 6px 14px -6px rgba(0, 0, 0, 0.7);
+
+    --r-sm: 4px;
+    --r-md: 6px;
+    --r-lg: 8px;
+    --r-xl: 12px;
+    --r-pill: 9999px;
+
+    /* Motion Curves (from 60fps.design) */
+    --ease-instant: cubic-bezier(0, 0, 0.2, 1);
+    --ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out:  cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    --dur-instant: 75ms;
+    --dur-fast:    150ms;
+    --dur-smooth:  250ms;
+    --dur-slow:    400ms;
+
+    --font: 'Onest', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     RESET & BASE
+     ────────────────────────────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 88px;
+    background: var(--canvas);
+  }
+  body {
+    margin: 0;
+    background: var(--canvas);
+    color: var(--text-secondary);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 20px;
+    font-feature-settings: 'tnum' 1, 'cv05' 1;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--blue-600); color: #fff; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--canvas); }
+  ::-webkit-scrollbar-thumb { background: var(--slate-700); border-radius: 4px; border: 2px solid var(--canvas); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--slate-600); }
+
+  :focus-visible {
+    outline: 2px solid var(--blue-500);
+    outline-offset: 2px;
+    border-radius: var(--r-sm);
+  }
+
+  button, input, select, textarea { font-family: inherit; font-size: inherit; }
+  code, kbd, samp, .mono { font-family: var(--mono); }
+  .tnum { font-family: var(--mono); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+
+  /* Blueprint Grid Overlay (Toggleable via G key) */
+  body.show-grid {
+    background-image:
+      radial-gradient(circle, rgba(59, 130, 246, 0.15) 1px, transparent 1px),
+      linear-gradient(to right, rgba(30, 41, 59, 0.25) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(30, 41, 59, 0.25) 1px, transparent 1px);
+    background-size: 24px 24px, 96px 96px, 96px 96px;
+  }
+
+  /* Dev Mode Inspection Outlines (Toggleable via D key) */
+  body.dev-mode [data-dev] {
+    position: relative;
+    outline: 1px dashed rgba(96, 165, 250, 0.6) !important;
+  }
+  body.dev-mode [data-dev]::after {
+    content: attr(data-dev);
+    position: absolute;
+    top: -9px;
+    right: 8px;
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 700;
+    color: #60A5FA;
+    background: #090D16;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    padding: 0 5px;
+    border-radius: 3px;
+    pointer-events: none;
+    z-index: 10;
+    line-height: 14px;
+    text-transform: none;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     FIGMA CHROME & TOPBAR
+     ────────────────────────────────────────────────────────────────────────── */
+  .figma-chrome {
+    position: sticky; top: 0; z-index: 90;
+    background: rgba(9, 13, 22, 0.88);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-default);
+  }
+  .chrome-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    height: 40px; padding: 0 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .chrome-crumbs {
+    display: flex; align-items: center; gap: 8px; font-weight: 500;
+  }
+  .chrome-crumbs .sep { color: var(--slate-600); }
+  .chrome-crumbs .active { color: var(--text-primary); font-weight: 600; }
+  .figma-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(59, 130, 246, 0.3);
+    color: var(--blue-400); font-family: var(--mono); font-size: 10px; font-weight: 600;
+    padding: 1px 7px; border-radius: 4px;
+  }
+  .chrome-actions {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tool-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 26px; padding: 0 9px; border-radius: var(--r-sm);
+    background: var(--surface-base); border: 1px solid var(--border-strong);
+    color: var(--text-secondary); font-size: 11px; font-weight: 500;
+    cursor: pointer; transition: all var(--dur-fast) var(--ease-out);
+  }
+  .tool-btn:hover {
+    background: var(--surface-elevated); color: var(--text-primary); border-color: var(--slate-500);
+  }
+  .tool-btn.active {
+    background: var(--primary); color: #fff; border-color: var(--primary-hover);
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+  }
+  .tool-btn kbd {
+    font-size: 9px; padding: 1px 4px; border-radius: 3px;
+    background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .nav-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    height: 48px; padding: 0 24px;
+  }
+  .brand-group {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .brand-logo {
+    width: 28px; height: 28px; border-radius: var(--r-md);
+    background: linear-gradient(135deg, var(--blue-600), var(--blue-800));
+    border: 1px solid rgba(96, 165, 250, 0.35);
+    display: grid; place-items: center;
+    color: #fff; font-weight: 800; font-size: 11px;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+  }
+  .brand-title {
+    line-height: 1.2;
+  }
+  .brand-title strong { display: block; font-size: 13px; color: var(--text-primary); }
+  .brand-title span { font-size: 10px; color: var(--text-muted); font-family: var(--mono); }
+
+  .nav-sections {
+    display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none;
+  }
+  .nav-sections::-webkit-scrollbar { display: none; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: var(--r-md);
+    color: var(--text-muted); text-decoration: none; font-size: 12px; font-weight: 500;
+    transition: all var(--dur-fast) var(--ease-out);
+    white-space: nowrap;
+  }
+  .nav-link:hover { color: var(--text-primary); background: var(--surface-base); }
+  .nav-link.active {
+    color: var(--blue-400); background: rgba(37, 99, 235, 0.14);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+  }
+  .nav-link .tag { font-family: var(--mono); font-size: 10px; opacity: 0.7; }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     CONTAINER & FIGMA FRAMES
+     ────────────────────────────────────────────────────────────────────────── */
+  .canvas-wrap {
+    max-width: 1440px; margin: 0 auto; padding: 48px 32px 120px;
+    transition: transform var(--dur-smooth) var(--ease-out);
+    transform-origin: top center;
+  }
+  @media (max-width: 768px) { .canvas-wrap { padding: 24px 16px 80px; } }
+
+  /* Figma Section Header */
+  .frame-section {
+    position: relative;
+    margin-bottom: 72px;
+    scroll-margin-top: 104px;
+  }
+  .frame-meta-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin-bottom: 12px; flex-wrap: wrap;
+  }
+  .frame-id {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 12px; font-weight: 600;
+    color: var(--blue-400); background: rgba(37, 99, 235, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    padding: 3px 10px; border-radius: var(--r-sm);
+    letter-spacing: 0.04em;
+  }
+  .frame-specs {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--mono); font-size: 11px; color: var(--slate-500);
+  }
+  .frame-specs span { display: inline-flex; align-items: center; gap: 4px; }
+  .frame-title {
+    margin: 0 0 10px; color: var(--text-primary);
+    font-size: 32px; line-height: 38px; font-weight: 800; letter-spacing: -0.025em;
+  }
+  .frame-lead {
+    margin: 0 0 32px; max-width: 84ch;
+    font-size: 15px; line-height: 24px; color: var(--text-muted);
+  }
+  .frame-lead strong { color: var(--text-secondary); }
+
+  /* Card Canvas Panel (Figma Frame style) */
+  .panel {
+    background: var(--surface-base);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-dark-sm);
+    padding: 32px;
+    margin-bottom: 28px;
+    position: relative;
+  }
+  @media (max-width: 768px) { .panel { padding: 20px; } }
+
+  .panel-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin: -32px -32px 28px; padding: 16px 24px;
+    border-bottom: 1px solid var(--border-default);
+    background: var(--surface-subtle);
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+    flex-wrap: wrap;
+  }
+  @media (max-width: 768px) { .panel-header { margin: -20px -20px 20px; } }
+  .panel-header-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; font-weight: 700; color: var(--text-primary);
+  }
+  .panel-header-title .figma-tag {
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    color: var(--blue-400); background: rgba(37, 99, 235, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3); padding: 1px 6px; border-radius: 3px;
+  }
+  .panel-header-actions {
+    display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-muted);
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     DS - 00 OVERVIEW SPECIFICS
+     ────────────────────────────────────────────────────────────────────────── */
+  .hero-canvas {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(9, 13, 22, 0.95) 100%);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-xl);
+    padding: 48px;
+    margin-bottom: 56px;
+    position: relative;
+    overflow: hidden;
+  }
+  @media (max-width: 768px) { .hero-canvas { padding: 24px; } }
+  .hero-canvas::before {
+    content: ''; position: absolute; top: -140px; right: -140px; width: 440px; height: 440px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-headline {
+    font-size: 46px; line-height: 52px; font-weight: 900; letter-spacing: -0.03em;
+    color: var(--text-primary); margin: 0 0 16px; max-width: 22ch;
+  }
+  @media (max-width: 768px) { .hero-headline { font-size: 32px; line-height: 38px; } }
+  .hero-desc {
+    font-size: 16px; line-height: 26px; color: var(--slate-300); max-width: 78ch; margin: 0 0 32px;
+  }
+  .kpi-matrix {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;
+    margin-top: 32px;
+  }
+  .kpi-tile {
+    background: rgba(9, 13, 22, 0.7);
+    border: 1px solid var(--border-default);
+    border-radius: var(--r-lg);
+    padding: 16px 20px;
+  }
+  .kpi-tile .kpi-num {
+    font-size: 26px; font-weight: 800; color: var(--text-primary); line-height: 1.1; margin-bottom: 4px;
+  }
+  .kpi-tile .kpi-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .kpi-tile .kpi-sub { font-size: 12px; color: var(--blue-400); margin-top: 4px; }
+
+  /* Token Pipeline Diagram */
+  .token-pipeline {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0;
+  }
+  @media (max-width: 900px) { .token-pipeline { grid-template-columns: 1fr; } }
+  .pipe-step {
+    background: var(--canvas); border: 1px solid var(--border-default);
+    border-radius: var(--r-lg); padding: 20px; position: relative;
+  }
+  .pipe-step .badge-step {
+    font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--blue-400);
+    margin-bottom: 8px; display: inline-block;
+  }
+  .pipe-step h4 { margin: 0 0 8px; font-size: 15px; color: var(--text-primary); }
+  .pipe-step p { margin: 0; font-size: 12px; color: var(--text-muted); line-height: 18px; }
+  .pipe-code {
+    margin-top: 12px; padding: 10px; background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.06); border-radius: var(--r-sm);
+    font-family: var(--mono); font-size: 11px; color: var(--slate-300);
+  }
+
+  /* Principles & Rules */
+  .principles-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;
+  }
+  .principle-card {
+    background: var(--canvas); border: 1px solid var(--border-default);
+    border-radius: var(--r-lg); padding: 24px; transition: border-color var(--dur-fast);
+  }
+  .principle-card:hover { border-color: var(--border-strong); }
+  .principle-card .p-index {
+    font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--blue-400);
+    margin-bottom: 8px; display: inline-block;
+  }
+  .principle-card h3 { margin: 0 0 8px; font-size: 16px; font-weight: 700; color: var(--text-primary); }
+  .principle-card p { margin: 0; font-size: 13px; line-height: 21px; color: var(--text-muted); }
+
+  .do-dont-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 24px;
+  }
+  @media (max-width: 768px) { .do-dont-grid { grid-template-columns: 1fr; } }
+  .do-card {
+    background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: var(--r-lg); padding: 20px;
+  }
+  .dont-card {
+    background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: var(--r-lg); padding: 20px;
+  }
+  .do-dont-head {
+    display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; margin-bottom: 10px;
+  }
+  .do-card .do-dont-head { color: var(--success-text); }
+  .dont-card .do-dont-head { color: var(--error-text); }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     DS - 01 COLOR SPECIFICS
+     ────────────────────────────────────────────────────────────────────────── */
+  .swatch-ramp {
+    display: grid; grid-template-columns: repeat(11, 1fr); gap: 8px;
+  }
+  .swatch-ramp.ten-cols { grid-template-columns: repeat(10, 1fr); }
+  @media (max-width: 1200px) { .swatch-ramp, .swatch-ramp.ten-cols { grid-template-columns: repeat(6, 1fr); } }
+  @media (max-width: 640px) { .swatch-ramp, .swatch-ramp.ten-cols { grid-template-columns: repeat(3, 1fr); } }
+
+  .swatch-item {
+    display: flex; flex-direction: column; gap: 8px; cursor: pointer;
+    background: var(--canvas); border: 1px solid var(--border-default);
+    border-radius: var(--r-md); padding: 8px;
+    transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast);
+  }
+  .swatch-item:hover {
+    transform: translateY(-3px); border-color: var(--blue-400);
+    box-shadow: var(--shadow-dark-md);
+  }
+  .swatch-item.key-token {
+    border-color: var(--blue-500); background: rgba(37, 99, 235, 0.05);
+  }
+  .swatch-color-box {
+    height: 72px; border-radius: var(--r-sm); border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex; align-items: flex-end; justify-content: space-between; padding: 6px;
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+  }
+  .swatch-step { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--text-primary); }
+  .swatch-hex { font-family: var(--mono); font-size: 10px; color: var(--text-muted); }
+  .swatch-ratio {
+    font-family: var(--mono); font-size: 9px; padding: 1px 4px; border-radius: 3px;
+    background: rgba(0,0,0,0.5); color: #fff;
+  }
+  .swatch-role {
+    font-size: 10px; line-height: 14px; color: var(--text-muted); min-height: 28px;
+  }
+
+  /* Semantic Matrix */
+  .sem-table-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;
+  }
+  .sem-box {
+    background: var(--canvas); border: 1px solid var(--border-default); border-radius: var(--r-lg); overflow: hidden;
+  }
+  .sem-box-head {
+    padding: 12px 18px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-muted);
+    background: var(--surface-subtle); border-bottom: 1px solid var(--border-default);
+  }
+  .sem-row-item {
+    display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; align-items: center;
+    padding: 11px 18px; border-bottom: 1px solid rgba(30, 41, 59, 0.5); cursor: pointer;
+    transition: background var(--dur-fast);
+  }
+  .sem-row-item:last-child { border-bottom: 0; }
+  .sem-row-item:hover { background: rgba(30, 41, 59, 0.4); }
+  .sem-chip {
+    width: 22px; height: 22px; border-radius: 5px; border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .sem-name { font-family: var(--mono); font-size: 11px; color: var(--text-secondary); font-weight: 600; }
+  .sem-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .sem-val { font-family: var(--mono); font-size: 11px; color: var(--text-muted); text-align: right; }
+
+  /* Interactive Contrast Checker */
+  .contrast-tester {
+    background: var(--surface-subtle); border: 1px solid var(--border-strong);
+    border-radius: var(--r-lg); padding: 20px; margin-top: 24px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; align-items: center;
+  }
+  @media (max-width: 840px) { .contrast-tester { grid-template-columns: 1fr; } }
+  .contrast-preview {
+    padding: 24px; border-radius: var(--r-md); border: 1px solid var(--border-default);
+    text-align: center;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     DS - 02 TYPOGRAPHY SPECIFICS
+     ────────────────────────────────────────────────────────────────────────── */
+  .type-specimen-row {
+    display: grid; grid-template-columns: 260px 1fr; gap: 28px;
+    padding: 24px 0; border-top: 1px solid var(--border-default); align-items: baseline;
+  }
+  .type-specimen-row:first-of-type { border-top: 0; padding-top: 8px; }
+  @media (max-width: 860px) { .type-specimen-row { grid-template-columns: 1fr; gap: 10px; } }
+  .spec-info .spec-role { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+  .spec-info .spec-math { font-family: var(--mono); font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .spec-info .spec-class {
+    display: inline-block; margin-top: 8px; font-family: var(--mono); font-size: 10px;
+    color: var(--blue-400); background: rgba(37, 99, 235, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 4px; padding: 2px 7px;
+    max-width: 100%; word-break: break-all;
+  }
+  .spec-render { overflow-wrap: anywhere; min-width: 0; }
+
+  /* Typography Scale Styles */
+  .type-display { font-size: 32px; line-height: 38px; font-weight: 800; letter-spacing: -0.025em; color: var(--slate-100); }
+  .type-h2      { font-size: 24px; line-height: 30px; font-weight: 700; letter-spacing: -0.02em; color: var(--slate-100); }
+  .type-h3      { font-size: 18px; line-height: 24px; font-weight: 600; color: var(--slate-200); }
+  .type-h4      { font-size: 15px; line-height: 20px; font-weight: 600; color: var(--slate-300); }
+  .type-body-lg { font-size: 16px; line-height: 24px; color: var(--slate-200); }
+  .type-body    { font-size: 14px; line-height: 20px; color: var(--slate-300); }
+  .type-body-md { font-size: 14px; line-height: 20px; font-weight: 500; color: var(--slate-200); }
+  .type-caption { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--slate-400); }
+  .type-micro   { font-size: 11px; line-height: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--blue-400); }
+
+  /* Ticking Tabular Numbers Demo */
+  .tnum-sandbox {
+    background: var(--canvas); border: 1px solid var(--border-default);
+    border-radius: var(--r-lg); padding: 20px; margin-top: 24px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  @media (max-width: 768px) { .tnum-sandbox { grid-template-columns: 1fr; } }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     DS - 03 FOUNDATIONS SPECIFICS
+     ────────────────────────────────────────────────────────────────────────── */
+  .foundations-layout {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  @media (max-width: 1040px) { .foundations-layout { grid-template-columns: 1fr; } }
+
+  /* Spacing Scale */
+  .space-token-row {
+    display: grid; grid-template-columns: 84px 1fr 64px; gap: 14px; align-items: center;
+    padding: 8px 0; border-top: 1px solid rgba(30, 41, 59, 0.5);
+  }
+  .space-token-row:first-of-type { border-top: 0; }
+  .space-bar {
+    height: 14px; background: linear-gradient(90deg, var(--blue-600), var(--blue-400));
+    border-radius: 3px; min-width: 2px;
+  }
+
+  /* Radius Matrix */
+  .radius-deck {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; text-align: center;
+  }
+  @media (max-width: 600px) { .radius-deck { grid-template-columns: repeat(3, 1fr); } }
+  .radius-tile .r-shape {
+    height: 76px; background: var(--surface-subtle);
+    border: 1px solid var(--blue-400); margin-bottom: 8px;
+    display: grid; place-items: center; font-family: var(--mono); font-size: 10px; color: var(--blue-400);
+  }
+
+  /* Motion Sandbox (from 60fps.design) */
+  .motion-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 20px;
+  }
+  .motion-box {
+    background: var(--canvas); border: 1px solid var(--border-default);
+    border-radius: var(--r-lg); padding: 18px;
+  }
+  .motion-demo-track {
+    height: 38px; background: var(--surface-subtle); border-radius: var(--r-md);
+    position: relative; overflow: hidden; margin: 12px 0; border: 1px solid rgba(255,255,255,0.04);
+  }
+  .motion-ball {
+    width: 24px; height: 24px; border-radius: var(--r-sm);
+    background: var(--blue-500); position: absolute; top: 6px; left: 8px;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     DS - 04 COMPONENT USAGE SPECIFICS
+     ────────────────────────────────────────────────────────────────────────── */
+  .anatomy-canvas {
+    display: grid; grid-template-columns: 1fr 340px; gap: 32px; align-items: start;
+  }
+  @media (max-width: 1024px) { .anatomy-canvas { grid-template-columns: 1fr; } }
+
+  .anatomy-frame {
+    background: var(--surface-base); border: 1px solid var(--border-strong);
+    border-radius: var(--r-xl); overflow: hidden; box-shadow: var(--shadow-dark-md);
+  }
+  .anatomy-slot {
+    position: relative; margin: 12px; border: 1px dashed rgba(96, 165, 250, 0.45);
+    border-radius: var(--r-md); transition: all var(--dur-fast);
+  }
+  .anatomy-slot.highlight {
+    border-color: var(--blue-400); background: rgba(37, 99, 235, 0.08);
+  }
+  .slot-pin {
+    position: absolute; top: -10px; left: 12px;
+    font-family: var(--mono); font-size: 10px; font-weight: 800;
+    color: #fff; background: var(--blue-600);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px; padding: 1px 8px; z-index: 5;
+  }
+  .anatomy-legend {
+    display: grid; gap: 12px;
+  }
+  .legend-row {
+    display: grid; grid-template-columns: 28px 1fr; gap: 12px; padding: 12px;
+    background: var(--canvas); border: 1px solid var(--border-default);
+    border-radius: var(--r-md); cursor: pointer; transition: all var(--dur-fast);
+  }
+  .legend-row:hover, .legend-row.active {
+    border-color: var(--blue-500); background: rgba(37, 99, 235, 0.08);
+  }
+  .legend-row .pin-num {
+    width: 26px; height: 26px; border-radius: 6px;
+    background: rgba(37, 99, 235, 0.2); border: 1px solid rgba(59, 130, 246, 0.4);
+    color: var(--blue-400); font-family: var(--mono); font-weight: 700;
+    display: grid; place-items: center; font-size: 11px;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     DS - 05 CORE COMPONENTS SPECIFICS
+     ────────────────────────────────────────────────────────────────────────── */
+  .comp-state-col {
+    display: grid; gap: 16px;
+  }
+  .state-head {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-muted); margin-bottom: 8px; font-family: var(--mono);
+  }
+  .comp-matrix-row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 40px; padding: 0 16px; border-radius: var(--r-md);
+    font-size: 14px; font-weight: 600; line-height: 1; white-space: nowrap;
+    border: 1px solid transparent; cursor: pointer;
+    transition: all var(--dur-fast) var(--ease-out);
+    user-select: none; text-decoration: none;
+  }
+  .btn:active { transform: scale(0.98); }
+
+  .btn-primary {
+    background: var(--blue-600); color: #fff;
+    border-color: rgba(96, 165, 250, 0.3);
+    box-shadow: 0 1px 2px rgba(30, 58, 138, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+  .btn-primary:hover, .btn-primary.is-hover {
+    background: var(--blue-500); border-color: rgba(96, 165, 250, 0.5);
+  }
+  .btn-primary:active, .btn-primary.is-active { background: var(--blue-700); }
+
+  .btn-secondary {
+    background: var(--slate-900); border-color: var(--slate-700);
+    color: var(--slate-200); font-weight: 500;
+  }
+  .btn-secondary:hover, .btn-secondary.is-hover {
+    background: var(--slate-800); color: #fff; border-color: var(--slate-600);
+  }
+
+  .btn-outline {
+    background: transparent; border-color: var(--slate-700);
+    color: var(--slate-200); font-weight: 500;
+  }
+  .btn-outline:hover, .btn-outline.is-hover {
+    background: var(--slate-800); color: #fff;
+  }
+
+  .btn-ghost {
+    background: transparent; color: var(--slate-300); font-weight: 500;
+  }
+  .btn-ghost:hover, .btn-ghost.is-hover {
+    background: var(--slate-800); color: #fff;
+  }
+
+  .btn-danger {
+    background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.3);
+    color: var(--error-text); font-weight: 500;
+  }
+  .btn-danger:hover, .btn-danger.is-hover {
+    background: var(--error); border-color: var(--error); color: #fff;
+  }
+
+  .btn-link {
+    background: transparent; color: var(--blue-400); font-weight: 500;
+    padding: 0; height: auto; border: 0;
+  }
+  .btn-link:hover, .btn-link.is-hover {
+    color: var(--blue-300); text-decoration: underline; text-underline-offset: 4px;
+  }
+
+  .btn:disabled, .btn.is-disabled {
+    opacity: 0.45; cursor: not-allowed; pointer-events: none; box-shadow: none;
+  }
+
+  .btn-sm { height: 34px; padding: 0 12px; font-size: 13px; }
+  .btn-lg { height: 48px; padding: 0 24px; font-size: 15px; }
+
+  .btn-spinner {
+    width: 14px; height: 14px; border-radius: 999px;
+    border: 2px solid rgba(255, 255, 255, 0.3); border-top-color: #fff;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Form Text Fields */
+  .field-wrap { width: 100%; max-width: 320px; }
+  .field-label {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; font-weight: 600; color: var(--slate-300); margin-bottom: 6px;
+  }
+  .input-shell {
+    display: flex; align-items: center; gap: 8px; width: 100%; height: 40px;
+    background: var(--slate-900); border: 1px solid var(--slate-700);
+    border-radius: var(--r-md); padding: 0 12px;
+    color: var(--slate-100); font-size: 14px; caret-color: var(--blue-400);
+    transition: all var(--dur-fast) var(--ease-out);
+  }
+  .input-shell input {
+    background: transparent; border: 0; color: inherit; width: 100%; outline: none; font-size: 14px;
+  }
+  .input-shell input::placeholder { color: var(--slate-500); }
+  .input-shell:focus-within, .input-shell.is-focus {
+    border-color: var(--blue-500);
+    box-shadow: 0 0 0 1px var(--blue-500), 0 0 8px rgba(59, 130, 246, 0.25);
+  }
+  .input-shell.is-error {
+    border-color: var(--error);
+    box-shadow: 0 0 0 1px var(--error), 0 0 8px rgba(239, 68, 68, 0.2);
+  }
+  .input-shell.is-disabled {
+    opacity: 0.5; background: var(--slate-950); cursor: not-allowed;
+  }
+  .field-helper {
+    font-size: 12px; color: var(--slate-500); margin-top: 6px; line-height: 16px;
+  }
+  .field-helper.err { color: var(--error-text); display: flex; align-items: center; gap: 6px; }
+
+  /* Status Badges */
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px; border-radius: var(--r-pill);
+    font-size: 11px; line-height: 14px; font-weight: 700;
+    letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid;
+    font-family: var(--font);
+  }
+  .badge .b-dot { width: 6px; height: 6px; border-radius: 999px; background: currentColor; }
+  .badge-success { background: var(--success-bg); color: var(--success-text); border-color: var(--success-border); }
+  .badge-warning { background: var(--warning-bg); color: var(--warning-text); border-color: var(--warning-border); }
+  .badge-error   { background: var(--error-bg);   color: var(--error-text);   border-color: var(--error-border); }
+  .badge-info    { background: rgba(37, 99, 235, 0.12); color: var(--blue-400); border-color: rgba(59, 130, 246, 0.25); }
+  .badge-cyan    { background: var(--info-bg);    color: var(--info-text);    border-color: var(--info-border); }
+  .badge-neutral { background: var(--slate-800); color: var(--slate-400); border-color: var(--slate-700); }
+
+  /* Navigation Item Matrix */
+  .nav-stack-demo {
+    width: 260px; background: var(--slate-900); border: 1px solid var(--border-strong);
+    border-radius: var(--r-lg); padding: 8px; display: grid; gap: 3px;
+  }
+  .nav-tile {
+    display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 12px;
+    border-radius: var(--r-md); color: var(--slate-300); font-size: 13px; font-weight: 500;
+    border: 1px solid transparent; cursor: pointer; text-decoration: none;
+    transition: all var(--dur-fast);
+  }
+  .nav-tile svg { width: 18px; height: 18px; flex-shrink: 0; color: inherit; }
+  .nav-tile:hover, .nav-tile.is-hover { background: var(--slate-800); color: #fff; }
+  .nav-tile.active {
+    background: rgba(37, 99, 235, 0.16); color: var(--blue-400); border-color: rgba(59, 130, 246, 0.35);
+  }
+  .nav-tile .nav-cnt {
+    margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--slate-500);
+  }
+  .nav-tile.active .nav-cnt { color: var(--blue-400); font-weight: 600; }
+
+  /* Full Context Data Table */
+  .data-grid { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+  .data-grid th {
+    padding: 10px 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--slate-400);
+    background: var(--surface-subtle); border-bottom: 1px solid var(--border-strong);
+  }
+  .data-grid td {
+    padding: 12px 14px; border-bottom: 1px solid var(--border-default); color: var(--slate-300);
+  }
+  .data-grid tbody tr:hover td { background: rgba(30, 41, 59, 0.35); }
+  .data-grid .money-cell { font-family: var(--mono); text-align: right; color: var(--slate-100); }
+
+  /* Toast Notification */
+  #toast {
+    position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 14px);
+    background: var(--surface-elevated); border: 1px solid var(--border-strong);
+    color: var(--text-primary); font-size: 13px; font-weight: 600;
+    padding: 10px 18px; border-radius: var(--r-lg); box-shadow: var(--shadow-dark-lg);
+    display: flex; align-items: center; gap: 10px;
+    opacity: 0; pointer-events: none; transition: all var(--dur-fast) var(--ease-spring);
+    z-index: 100;
+  }
+  #toast.show { opacity: 1; transform: translate(-50%, 0); }
+  #toast svg { color: var(--success-text); }
+
+  /* Quick Command Palette Modal */
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+    display: none; place-items: center; z-index: 100; padding: 20px;
+  }
+  .modal-backdrop.open { display: grid; }
+  .cmd-palette {
+    width: 100%; max-width: 580px; background: var(--surface-base);
+    border: 1px solid var(--border-strong); border-radius: var(--r-xl);
+    box-shadow: var(--shadow-dark-lg); overflow: hidden;
+  }
+  .cmd-input-wrap {
+    display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+    border-bottom: 1px solid var(--border-default);
+  }
+  .cmd-input-wrap input {
+    background: transparent; border: 0; color: #fff; width: 100%; font-size: 15px; outline: none;
+  }
+  .cmd-list {
+    max-height: 320px; overflow-y: auto; padding: 8px;
+  }
+  .cmd-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; border-radius: var(--r-md); cursor: pointer;
+    color: var(--slate-300); font-size: 13px;
+  }
+  .cmd-item:hover, .cmd-item.active { background: var(--surface-elevated); color: #fff; }
+  .cmd-item .cmd-tag { font-family: var(--mono); font-size: 10px; color: var(--blue-400); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body class="show-grid">
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     FIGMA TOPBAR & CONTROL CHROME
+     ══════════════════════════════════════════════════════════════════════════ -->
+<header class="figma-chrome">
+  <div class="chrome-bar">
+    <div class="chrome-crumbs">
+      <span>NIS CRM</span>
+      <span class="sep">/</span>
+      <span>Design Systems</span>
+      <span class="sep">/</span>
+      <span class="active">Enterprise Automation Board</span>
+      <span class="figma-badge">❖ DS v2.2</span>
+    </div>
+    <div class="chrome-actions">
+      <button class="tool-btn" id="btn-grid-toggle" title="Toggle Blueprint Grid (G)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Grid <kbd>G</kbd>
+      </button>
+      <button class="tool-btn" id="btn-dev-toggle" title="Toggle Dev Mode Bounding Boxes (D)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Dev Mode <kbd>D</kbd>
+      </button>
+      <button class="tool-btn" id="btn-cmd-toggle" title="Command Palette (Cmd+K)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Search <kbd>⌘K</kbd>
+      </button>
+      <button class="tool-btn active" id="btn-copy-tokens" title="Export Tailwind Configuration">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export Tokens
+      </button>
+    </div>
+  </div>
+
+  <nav class="nav-bar" aria-label="Design System Navigation">
+    <div class="brand-group">
+      <div class="brand-logo">NIS</div>
+      <div class="brand-title">
+        <strong>Enterprise Automation</strong>
+        <span>Production Design System</span>
+      </div>
+    </div>
+    <div class="nav-sections">
+      <a href="#ds00" class="nav-link active"><span class="tag">00</span> Overview</a>
+      <a href="#ds01" class="nav-link"><span class="tag">01</span> Color</a>
+      <a href="#ds02" class="nav-link"><span class="tag">02</span> Typography</a>
+      <a href="#ds03" class="nav-link"><span class="tag">03</span> Foundations</a>
+      <a href="#ds04" class="nav-link"><span class="tag">04</span> Component Usage</a>
+      <a href="#ds05" class="nav-link"><span class="tag">05</span> Components</a>
+    </div>
+  </nav>
+</header>
+
+<main class="canvas-wrap" id="canvas-container">
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       HERO: SYSTEM COCKPIT & METRICS
+       ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="hero-canvas" data-dev="❖ Hero Cockpit · AutoLayout">
+    <div class="frame-id" style="margin-bottom:16px">ENTERPRISE AUTOMATION SYSTEM</div>
+    <h1 class="hero-headline">Deep Dark Architecture for High-Density Operations.</h1>
+    <p class="hero-desc">
+      A battle-tested design documentation board engineered for <strong>NIS School CRM</strong>.
+      Extracting strict, type-safe tokens directly from <code>tailwind.config.ts</code> and <code>docs/DESIGN_SYSTEM.md</code>.
+      Purpose-built for zero cognitive friction across 14+ modules: admissions, billing pipelines, student ledgers, and audit logs.
+    </p>
+
+    <div class="kpi-matrix">
+      <div class="kpi-tile">
+        <div class="kpi-num tnum">100%</div>
+        <div class="kpi-label">WCAG 2.1 AA Compliance</div>
+        <div class="kpi-sub">≥ 4.5:1 text contrast on dark</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-num tnum">4px / 8px</div>
+        <div class="kpi-label">Spatial Baseline</div>
+        <div class="kpi-sub">Strict micro &amp; layout grid</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-num tnum">≥ 44px</div>
+        <div class="kpi-label">Touch &amp; Tap Area</div>
+        <div class="kpi-sub">Fitts's Law ergonomics</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-num tnum">14 Modules</div>
+        <div class="kpi-label">Unified Anatomies</div>
+        <div class="kpi-sub">Single rhythm across CRM</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       DS - 00 OVERVIEW: PRINCIPLES & USAGE RULES
+       ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="frame-section" id="ds00">
+    <div class="frame-meta-bar">
+      <div class="frame-id">DS - 00</div>
+      <div class="frame-specs">
+        <span>❖ Frame 00</span>
+        <span>·</span>
+        <span>Auto Layout [V:32px Gap:24px]</span>
+        <span>·</span>
+        <span class="figma-badge">Handoff Ready</span>
+      </div>
+    </div>
+    <h2 class="frame-title">Overview &amp; Design Principles</h2>
+    <p class="frame-lead">
+      The constitutional rules of NIS School CRM. When two visual rules conflict in dense operational views,
+      <strong>operator cognitive clarity and error prevention</strong> always take precedence.
+    </p>
+
+    <!-- Token Tier Flow Architecture -->
+    <div class="panel" data-dev="Token Architecture Tier Pipeline">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Three-Tier Token Architecture</span>
+          <span class="figma-tag">Mental Model</span>
+        </div>
+        <div class="panel-header-actions">
+          <span>Primitives → Semantic Roles → Component Tokens</span>
+        </div>
+      </div>
+
+      <div class="token-pipeline">
+        <div class="pipe-step">
+          <span class="badge-step">TIER 1 · GLOBAL PRIMITIVES</span>
+          <h4>Raw Color &amp; Scales</h4>
+          <p>Raw numeric ramps (Slate 50–950, Blue 50–900). Never used directly inside feature code or JSX templates.</p>
+          <div class="pipe-code">--slate-900: #0F172A<br>--blue-600:  #2563EB</div>
+        </div>
+        <div class="pipe-step">
+          <span class="badge-step">TIER 2 · SEMANTIC ROLES</span>
+          <h4>Contextual Purpose</h4>
+          <p>Meaning-driven aliases for surfaces, text, borders, and interactive feedback. Swappable per density mode.</p>
+          <div class="pipe-code">--surface-base: var(--slate-900)<br>--action-primary: var(--blue-600)</div>
+        </div>
+        <div class="pipe-step">
+          <span class="badge-step">TIER 3 · COMPONENT SCOPE</span>
+          <h4>Atomic Scopes</h4>
+          <p>Tied to specific components like &lt;Card&gt;, &lt;Button&gt;, &lt;Badge&gt;. Strict composition contracts.</p>
+          <div class="pipe-code">&lt;Card className="bg-surface border-border"&gt;<br>&lt;Button variant="primary"&gt;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 Principles Cards -->
+    <div class="panel" data-dev="Principles Matrix">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Core Design Principles</span>
+          <span class="figma-tag">5 Immutable Tenets</span>
+        </div>
+      </div>
+      <div class="principles-grid">
+        <div class="principle-card">
+          <span class="p-index">01 / DENSITY</span>
+          <h3>Density with Clarity</h3>
+          <p>Enterprise school operators process high volumes of student transactions, contract states, and attendance logs. Every pixel must earn its presence: eliminate decorative clutter, heighten typography contrast, and use tabular numerals for alignment.</p>
+        </div>
+        <div class="principle-card">
+          <span class="p-index">02 / ANATOMY</span>
+          <h3>Predictable Anatomies</h3>
+          <p>Every card, table, modal, and drawer follows a shared layout rhythm across all 14 CRM modules. Operators never need to re-learn where primary actions live, where filters reside, or how table pagination behaves.</p>
+        </div>
+        <div class="principle-card">
+          <span class="p-index">03 / DEPTH</span>
+          <h3>Deliberate Dark Hierarchy</h3>
+          <p>Pure pitch-black (#000000) is banned for UI surfaces to avoid severe contrast fatigue. We step from Canvas (#090D16) to Cards (#0F172A) to Elevated Sub-surfaces (#1E293B) with precision 1px borders.</p>
+        </div>
+        <div class="principle-card">
+          <span class="p-index">04 / STATE</span>
+          <h3>Instant State Feedback</h3>
+          <p>Every clickable element provides explicit feedback within 150ms. Hover, active press, keyboard focus (2px blue ring with 2px offset), and disabled states adhere strictly to WCAG 2.1 AA specifications.</p>
+        </div>
+        <div class="principle-card">
+          <span class="p-index">05 / SAFETY</span>
+          <h3>Type-Safe Design Tokens</h3>
+          <p>All styling values map strictly from <code>tailwind.config.ts</code> into strongly-typed React component props. Arbitrary magic values (e.g. <code>bg-[#131d2f]</code> or <code>p-[13px]</code>) are rejected at lint time.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Do's and Don'ts Visual Code Comparison -->
+    <div class="panel" data-dev="Do & Don't Guidelines">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Implementation Discipline</span>
+          <span class="figma-tag">Do vs Don't</span>
+        </div>
+      </div>
+      <div class="do-dont-grid">
+        <div class="do-card">
+          <div class="do-dont-head">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            DO: Layer Depth &amp; Compound Components
+          </div>
+          <p style="font-size:13px; line-height:20px; color:var(--slate-200); margin:0 0 10px;">
+            Compose views using the standardized <code>&lt;Card&gt;</code> component hierarchy, 1px slate-800 borders, and tabular numbers for all money amounts and dates.
+          </p>
+          <div class="pipe-code" style="color:#34D399">&lt;Card&gt;<br>&nbsp;&nbsp;&lt;CardHeader&gt;&lt;CardTitle&gt;To'lovlar&lt;/CardTitle&gt;&lt;/CardHeader&gt;<br>&nbsp;&nbsp;&lt;CardContent&gt;&lt;span className="tnum"&gt;1 250 000 so'm&lt;/span&gt;&lt;/CardContent&gt;<br>&lt;/Card&gt;</div>
+        </div>
+        <div class="dont-card">
+          <div class="do-dont-head">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            DON'T: Raw Magic Divs &amp; Pure Blacks
+          </div>
+          <p style="font-size:13px; line-height:20px; color:var(--slate-200); margin:0 0 10px;">
+            Never use raw <code>div</code> with inline hex codes, pitch black (#000000) backgrounds, or skip surface elevation levels without container borders.
+          </p>
+          <div class="pipe-code" style="color:#F87171">&lt;div className="bg-[#000] p-3 rounded-[13px]"&gt;<br>&nbsp;&nbsp;&lt;h2&gt;To'lovlar&lt;/h2&gt;<br>&nbsp;&nbsp;&lt;p&gt;1250000 sum&lt;/p&gt;<br>&lt;/div&gt;</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       DS - 01 COLOR: PRIMITIVES & SEMANTICS
+       ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="frame-section" id="ds01">
+    <div class="frame-meta-bar">
+      <div class="frame-id">DS - 01</div>
+      <div class="frame-specs">
+        <span>❖ Frame 01</span>
+        <span>·</span>
+        <span>Auto Layout [V:32px Gap:24px]</span>
+        <span>·</span>
+        <span class="figma-badge">Token Set</span>
+      </div>
+    </div>
+    <h2 class="frame-title">Color System &amp; Semantic Matrix</h2>
+    <p class="frame-lead">
+      Deep slate grays form the entire optical depth system; tech-focused blue serves as the singular brand action hue.
+      <strong>Click any swatch</strong> to copy its production token or hex code.
+    </p>
+
+    <!-- Grayscale Slate Ramp -->
+    <div class="panel" data-dev="Primitive Slate Ramp 50-950">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Primitive Grayscale &amp; Surfaces — Slate</span>
+          <span class="figma-tag">11 Ramps (50–950)</span>
+        </div>
+        <div class="panel-header-actions">
+          <span>Contrast ratios measured against #090D16 Canvas</span>
+        </div>
+      </div>
+
+      <div class="swatch-ramp">
+        <div class="swatch-item" data-copy="#F8FAFC" data-token="slate-50" title="Click to copy #F8FAFC">
+          <div class="swatch-color-box" style="background:#F8FAFC; color:#090D16">
+            <span>50</span><span class="swatch-ratio">15.8:1</span>
+          </div>
+          <span class="swatch-step">50</span>
+          <span class="swatch-hex">#F8FAFC</span>
+          <span class="swatch-role">High-contrast headings</span>
+        </div>
+        <div class="swatch-item" data-copy="#F1F5F9" data-token="slate-100" title="Click to copy #F1F5F9">
+          <div class="swatch-color-box" style="background:#F1F5F9; color:#090D16">
+            <span>100</span><span class="swatch-ratio">14.6:1</span>
+          </div>
+          <span class="swatch-step">100</span>
+          <span class="swatch-hex">#F1F5F9</span>
+          <span class="swatch-role">Primary headings, KPIs</span>
+        </div>
+        <div class="swatch-item" data-copy="#E2E8F0" data-token="slate-200" title="Click to copy #E2E8F0">
+          <div class="swatch-color-box" style="background:#E2E8F0; color:#090D16">
+            <span>200</span><span class="swatch-ratio">12.5:1</span>
+          </div>
+          <span class="swatch-step">200</span>
+          <span class="swatch-hex">#E2E8F0</span>
+          <span class="swatch-role">Card titles, body text</span>
+        </div>
+        <div class="swatch-item" data-copy="#CBD5E1" data-token="slate-300" title="Click to copy #CBD5E1">
+          <div class="swatch-color-box" style="background:#CBD5E1; color:#090D16">
+            <span>300</span><span class="swatch-ratio">10.1:1</span>
+          </div>
+          <span class="swatch-step">300</span>
+          <span class="swatch-hex">#CBD5E1</span>
+          <span class="swatch-role">Secondary body text</span>
+        </div>
+        <div class="swatch-item" data-copy="#94A3B8" data-token="slate-400" title="Click to copy #94A3B8">
+          <div class="swatch-color-box" style="background:#94A3B8; color:#090D16">
+            <span>400</span><span class="swatch-ratio">5.4:1 AA</span>
+          </div>
+          <span class="swatch-step">400</span>
+          <span class="swatch-hex">#94A3B8</span>
+          <span class="swatch-role">Captions, helper text</span>
+        </div>
+        <div class="swatch-item" data-copy="#64748B" data-token="slate-500" title="Click to copy #64748B">
+          <div class="swatch-color-box" style="background:#64748B; color:#fff">
+            <span>500</span><span class="swatch-ratio">3.1:1</span>
+          </div>
+          <span class="swatch-step">500</span>
+          <span class="swatch-hex">#64748B</span>
+          <span class="swatch-role">Placeholders, subtle lines</span>
+        </div>
+        <div class="swatch-item" data-copy="#475569" data-token="slate-600" title="Click to copy #475569">
+          <div class="swatch-color-box" style="background:#475569; color:#fff">
+            <span>600</span><span class="swatch-ratio">2.1:1</span>
+          </div>
+          <span class="swatch-step">600</span>
+          <span class="swatch-hex">#475569</span>
+          <span class="swatch-role">Border hover accents</span>
+        </div>
+        <div class="swatch-item" data-copy="#334155" data-token="slate-700" title="Click to copy #334155">
+          <div class="swatch-color-box" style="background:#334155; color:#fff">
+            <span>700</span><span class="swatch-ratio">1.5:1</span>
+          </div>
+          <span class="swatch-step">700</span>
+          <span class="swatch-hex">#334155</span>
+          <span class="swatch-role">Elevated/modal borders</span>
+        </div>
+        <div class="swatch-item" data-copy="#1E293B" data-token="slate-800" title="Click to copy #1E293B">
+          <div class="swatch-color-box" style="background:#1E293B; color:#fff">
+            <span>800</span><span class="swatch-ratio">1.2:1</span>
+          </div>
+          <span class="swatch-step">800</span>
+          <span class="swatch-hex">#1E293B</span>
+          <span class="swatch-role">Sub-surfaces, headers</span>
+        </div>
+        <div class="swatch-item key-token" data-copy="#0F172A" data-token="slate-900" title="Click to copy #0F172A">
+          <div class="swatch-color-box" style="background:#0F172A; color:#60A5FA; border-color:#3B82F6">
+            <span>900</span><span class="swatch-ratio">Key</span>
+          </div>
+          <span class="swatch-step" style="color:var(--blue-400)">900</span>
+          <span class="swatch-hex">#0F172A</span>
+          <span class="swatch-role"><b>Card surface (Level 1)</b></span>
+        </div>
+        <div class="swatch-item key-token" data-copy="#090D16" data-token="slate-950" title="Click to copy #090D16">
+          <div class="swatch-color-box" style="background:#090D16; color:#60A5FA; border-color:#3B82F6">
+            <span>950</span><span class="swatch-ratio">Root</span>
+          </div>
+          <span class="swatch-step" style="color:var(--blue-400)">950</span>
+          <span class="swatch-hex">#090D16</span>
+          <span class="swatch-role"><b>App Canvas (Level 0)</b></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Primitive Tech Blue Brand Ramp -->
+    <div class="panel" data-dev="Primitive Tech Blue Ramp 50-900">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Primary Brand Action — Tech Blue</span>
+          <span class="figma-tag">10 Ramps (50–900)</span>
+        </div>
+        <div class="panel-header-actions">
+          <span>Action color reserved for buttons &amp; active navigation</span>
+        </div>
+      </div>
+
+      <div class="swatch-ramp ten-cols">
+        <div class="swatch-item" data-copy="#EFF6FF" data-token="blue-50">
+          <div class="swatch-color-box" style="background:#EFF6FF; color:#1E3A8A"><span>50</span></div>
+          <span class="swatch-step">50</span><span class="swatch-hex">#EFF6FF</span>
+          <span class="swatch-role">Documentation tints</span>
+        </div>
+        <div class="swatch-item" data-copy="#DBEAFE" data-token="blue-100">
+          <div class="swatch-color-box" style="background:#DBEAFE; color:#1E3A8A"><span>100</span></div>
+          <span class="swatch-step">100</span><span class="swatch-hex">#DBEAFE</span>
+          <span class="swatch-role">Chip highlight text</span>
+        </div>
+        <div class="swatch-item" data-copy="#BFDBFE" data-token="blue-200">
+          <div class="swatch-color-box" style="background:#BFDBFE; color:#1E3A8A"><span>200</span></div>
+          <span class="swatch-step">200</span><span class="swatch-hex">#BFDBFE</span>
+          <span class="swatch-role">Interactive focus accent</span>
+        </div>
+        <div class="swatch-item" data-copy="#93C5FD" data-token="blue-300">
+          <div class="swatch-color-box" style="background:#93C5FD; color:#090D16"><span>300</span></div>
+          <span class="swatch-step">300</span><span class="swatch-hex">#93C5FD</span>
+          <span class="swatch-role">Light link hover</span>
+        </div>
+        <div class="swatch-item" data-copy="#60A5FA" data-token="blue-400">
+          <div class="swatch-color-box" style="background:#60A5FA; color:#090D16"><span>400</span></div>
+          <span class="swatch-step">400</span><span class="swatch-hex">#60A5FA</span>
+          <span class="swatch-role">Active nav icons, links</span>
+        </div>
+        <div class="swatch-item" data-copy="#3B82F6" data-token="blue-500">
+          <div class="swatch-color-box" style="background:#3B82F6; color:#fff"><span>500</span></div>
+          <span class="swatch-step">500</span><span class="swatch-hex">#3B82F6</span>
+          <span class="swatch-role">Hover state, focus ring</span>
+        </div>
+        <div class="swatch-item key-token" data-copy="#2563EB" data-token="blue-600">
+          <div class="swatch-color-box" style="background:#2563EB; color:#fff; border-color:#60A5FA"><span>600</span></div>
+          <span class="swatch-step" style="color:var(--blue-400)">600</span><span class="swatch-hex">#2563EB</span>
+          <span class="swatch-role"><b>Primary Brand Action</b></span>
+        </div>
+        <div class="swatch-item" data-copy="#1D4ED8" data-token="blue-700">
+          <div class="swatch-color-box" style="background:#1D4ED8; color:#fff"><span>700</span></div>
+          <span class="swatch-step">700</span><span class="swatch-hex">#1D4ED8</span>
+          <span class="swatch-role">Active / pressed state</span>
+        </div>
+        <div class="swatch-item" data-copy="#1E40AF" data-token="blue-800">
+          <div class="swatch-color-box" style="background:#1E40AF; color:#fff"><span>800</span></div>
+          <span class="swatch-step">800</span><span class="swatch-hex">#1E40AF</span>
+          <span class="swatch-role">Deep accent borders</span>
+        </div>
+        <div class="swatch-item" data-copy="#1E3A8A" data-token="blue-900">
+          <div class="swatch-color-box" style="background:#1E3A8A; color:#fff"><span>900</span></div>
+          <span class="swatch-step">900</span><span class="swatch-hex">#1E3A8A</span>
+          <span class="swatch-role">Glow backdrops (15%)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Semantic Mapping Tables -->
+    <div class="panel" data-dev="Semantic Roles Matrix">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Semantic Roles &amp; Tokens</span>
+          <span class="figma-tag">CSS Custom Properties</span>
+        </div>
+        <div class="panel-header-actions">
+          <span>Direct mapping from docs/DESIGN_SYSTEM.md</span>
+        </div>
+      </div>
+
+      <div class="sem-table-grid">
+        <div class="sem-box">
+          <div class="sem-box-head">Surfaces &amp; Layers</div>
+          <div class="sem-row-item" data-copy="#090D16">
+            <div class="sem-chip" style="background:#090D16; border-color:#334155"></div>
+            <div>
+              <div class="sem-name">--color-canvas-bg</div>
+              <div class="sem-desc">Root application backdrop · Level 0</div>
+            </div>
+            <div class="sem-val tnum">#090D16</div>
+          </div>
+          <div class="sem-row-item" data-copy="#0F172A">
+            <div class="sem-chip" style="background:#0F172A"></div>
+            <div>
+              <div class="sem-name">--color-surface-base</div>
+              <div class="sem-desc">Cards, sidebars, headers · Level 1</div>
+            </div>
+            <div class="sem-val tnum">#0F172A</div>
+          </div>
+          <div class="sem-row-item" data-copy="#1E293B">
+            <div class="sem-chip" style="background:#1E293B"></div>
+            <div>
+              <div class="sem-name">--color-surface-elevated</div>
+              <div class="sem-desc">Modals, dropdowns, hovered rows · Level 2/3</div>
+            </div>
+            <div class="sem-val tnum">#1E293B</div>
+          </div>
+          <div class="sem-row-item" data-copy="#131B2E">
+            <div class="sem-chip" style="background:#131B2E"></div>
+            <div>
+              <div class="sem-name">--color-surface-subtle</div>
+              <div class="sem-desc">Filter bars, table headers</div>
+            </div>
+            <div class="sem-val tnum">#131B2E</div>
+          </div>
+        </div>
+
+        <div class="sem-box">
+          <div class="sem-box-head">Borders &amp; Typography</div>
+          <div class="sem-row-item" data-copy="#1E293B">
+            <div class="sem-chip" style="background:#1E293B"></div>
+            <div>
+              <div class="sem-name">--color-border-subtle</div>
+              <div class="sem-desc">Card internal dividers</div>
+            </div>
+            <div class="sem-val tnum">#1E293B</div>
+          </div>
+          <div class="sem-row-item" data-copy="#334155">
+            <div class="sem-chip" style="background:#334155"></div>
+            <div>
+              <div class="sem-name">--color-border-default</div>
+              <div class="sem-desc">Card &amp; input boundaries</div>
+            </div>
+            <div class="sem-val tnum">#334155</div>
+          </div>
+          <div class="sem-row-item" data-copy="#F8FAFC">
+            <div class="sem-chip" style="background:#F8FAFC"></div>
+            <div>
+              <div class="sem-name">--color-text-primary</div>
+              <div class="sem-desc">Headings, KPI values (15.8:1)</div>
+            </div>
+            <div class="sem-val tnum">#F8FAFC</div>
+          </div>
+          <div class="sem-row-item" data-copy="#CBD5E1">
+            <div class="sem-chip" style="background:#CBD5E1"></div>
+            <div>
+              <div class="sem-name">--color-text-secondary</div>
+              <div class="sem-desc">Table cells, form labels</div>
+            </div>
+            <div class="sem-val tnum">#CBD5E1</div>
+          </div>
+        </div>
+
+        <div class="sem-box">
+          <div class="sem-box-head">Interactive &amp; Status States</div>
+          <div class="sem-row-item" data-copy="#2563EB">
+            <div class="sem-chip" style="background:#2563EB"></div>
+            <div>
+              <div class="sem-name">--color-action-primary</div>
+              <div class="sem-desc">Primary actions · Hover #3B82F6</div>
+            </div>
+            <div class="sem-val tnum">#2563EB</div>
+          </div>
+          <div class="sem-row-item" data-copy="#10B981">
+            <div class="sem-chip" style="background:#10B981"></div>
+            <div>
+              <div class="sem-name">--color-status-success</div>
+              <div class="sem-desc">Confirmed payments, active students</div>
+            </div>
+            <div class="sem-val tnum">#10B981</div>
+          </div>
+          <div class="sem-row-item" data-copy="#F59E0B">
+            <div class="sem-chip" style="background:#F59E0B"></div>
+            <div>
+              <div class="sem-name">--color-status-warning</div>
+              <div class="sem-desc">Arrears, pending review</div>
+            </div>
+            <div class="sem-val tnum">#F59E0B</div>
+          </div>
+          <div class="sem-row-item" data-copy="#EF4444">
+            <div class="sem-chip" style="background:#EF4444"></div>
+            <div>
+              <div class="sem-name">--color-status-error</div>
+              <div class="sem-desc">Critical alerts, overdue payments</div>
+            </div>
+            <div class="sem-val tnum">#EF4444</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Interactive Contrast Checker Tool -->
+      <div class="contrast-tester" data-dev="Interactive WCAG Contrast Checker">
+        <div>
+          <div class="state-head">Interactive Contrast Sandbox</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
+            Test any text color against container backgrounds to confirm WCAG 2.1 AA/AAA compliance.
+          </div>
+          <div style="display:flex; gap:8px;">
+            <select id="contrast-bg" class="tool-btn" style="height:32px;">
+              <option value="#090D16">Canvas (#090D16)</option>
+              <option value="#0F172A" selected>Surface Base (#0F172A)</option>
+              <option value="#1E293B">Surface Elevated (#1E293B)</option>
+            </select>
+            <select id="contrast-fg" class="tool-btn" style="height:32px;">
+              <option value="#F8FAFC" selected>Slate 50 (Heading)</option>
+              <option value="#CBD5E1">Slate 300 (Body)</option>
+              <option value="#94A3B8">Slate 400 (Caption)</option>
+              <option value="#60A5FA">Blue 400 (Active Link)</option>
+            </select>
+          </div>
+        </div>
+        <div class="contrast-preview" id="contrast-box" style="background:#0F172A; color:#F8FAFC">
+          <div style="font-size:18px; font-weight:700" id="contrast-sample-text">Talabalar to'lovi 2026</div>
+          <div style="font-size:12px; margin-top:4px; opacity:0.8">Enterprise Accessibility Sample</div>
+        </div>
+        <div>
+          <div class="state-head">Compliance Result</div>
+          <div style="display:flex; align-items:baseline; gap:8px;">
+            <span class="tnum" style="font-size:28px; font-weight:800; color:var(--success-text)" id="contrast-ratio-val">14.6:1</span>
+            <span class="badge badge-success" id="contrast-badge">WCAG AAA PASS</span>
+          </div>
+          <div style="font-size:11px; color:var(--text-muted); margin-top:6px;" id="contrast-desc">
+            Exceeds normal text requirement (4.5:1) and large text requirement (3:1).
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       DS - 02 TYPOGRAPHY: SCALE & WRITING SYSTEM
+       ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="frame-section" id="ds02">
+    <div class="frame-meta-bar">
+      <div class="frame-id">DS - 02</div>
+      <div class="frame-specs">
+        <span>❖ Frame 02</span>
+        <span>·</span>
+        <span>Font: Onest + JetBrains Mono</span>
+        <span>·</span>
+        <span class="figma-badge">9 Scale Steps</span>
+      </div>
+    </div>
+    <h2 class="frame-title">Typography &amp; Product Writing</h2>
+    <p class="frame-lead">
+      Singular typeface <code>Onest</code> with global <code>font-feature-settings: 'tnum' 1, 'cv05' 1</code>.
+      Tabular numerals ensure numbers align vertically without jitter in financial tables and real-time counters.
+    </p>
+
+    <!-- Type Scale Hierarchy -->
+    <div class="panel" data-dev="Type Scale Hierarchy 9 Levels">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Type Scale Hierarchy</span>
+          <span class="figma-tag">Display H1 → Micro/Badge</span>
+        </div>
+        <div class="panel-header-actions">
+          <span>Live editable specimens below</span>
+        </div>
+      </div>
+
+      <div class="type-specimen-row">
+        <div class="spec-info">
+          <div class="spec-role">Display H1</div>
+          <div class="spec-math tnum">32px / 38px · Bold 800 · -2.5% tracking</div>
+          <span class="spec-class">text-2xl lg:text-3xl font-bold tracking-tight text-slate-100</span>
+        </div>
+        <div class="spec-render">
+          <div class="type-display live-text">Talabalar boshqaruvi va hisoboti</div>
+        </div>
+      </div>
+
+      <div class="type-specimen-row">
+        <div class="spec-info">
+          <div class="spec-role">Section H2</div>
+          <div class="spec-math tnum">24px / 30px · Semibold 700 · -2% tracking</div>
+          <span class="spec-class">text-xl lg:text-2xl font-semibold text-slate-100</span>
+        </div>
+        <div class="spec-render">
+          <div class="type-h2 live-text">To'lovlar va oylik shartnomalar</div>
+        </div>
+      </div>
+
+      <div class="type-specimen-row">
+        <div class="spec-info">
+          <div class="spec-role">Card H3</div>
+          <div class="spec-math tnum">18px / 24px · Semibold 600</div>
+          <span class="spec-class">text-lg font-semibold text-slate-200</span>
+        </div>
+        <div class="spec-render">
+          <div class="type-h3 live-text">Robototexnika va fan to'garaklari</div>
+        </div>
+      </div>
+
+      <div class="type-specimen-row">
+        <div class="spec-info">
+          <div class="spec-role">Subheading H4</div>
+          <div class="spec-math tnum">15px / 20px · Medium 500</div>
+          <span class="spec-class">text-[15px] font-medium text-slate-300</span>
+        </div>
+        <div class="spec-render">
+          <div class="type-h4 live-text">Fan olimpiadasi saralash bosqichi natijalari</div>
+        </div>
+      </div>
+
+      <div class="type-specimen-row">
+        <div class="spec-info">
+          <div class="spec-role">Body Large</div>
+          <div class="spec-math tnum">16px / 24px · Regular 400</div>
+          <span class="spec-class">text-base text-slate-200</span>
+        </div>
+        <div class="spec-render">
+          <div class="type-body-lg live-text">Bugun 24 ta yangi ariza kelib tushdi va 8 ta kontrakt to'lovi to'liq tasdiqlandi. Registrga o'tish uchun 3 ta ariza ma'muriyat tekshiruvini kutmoqda.</div>
+        </div>
+      </div>
+
+      <div class="type-specimen-row">
+        <div class="spec-info">
+          <div class="spec-role">Body Regular</div>
+          <div class="spec-math tnum">14px / 20px · Regular 400</div>
+          <span class="spec-class">text-sm text-slate-300</span>
+        </div>
+        <div class="spec-render">
+          <div class="type-body live-text">Talaba 11-A sinfda o'qiydi va dasturlash to'garagiga a'zo. Bog'lanish: +998 90 123 45 67, qonuniy vasiy — Aziza Karimova.</div>
+        </div>
+      </div>
+
+      <div class="type-specimen-row">
+        <div class="spec-info">
+          <div class="spec-role">Body Medium</div>
+          <div class="spec-math tnum">14px / 20px · Medium 500</div>
+          <span class="spec-class">text-sm font-medium text-slate-200</span>
+        </div>
+        <div class="spec-render">
+          <div class="type-body-md live-text">To'lov muddati: <span class="tnum" style="color:var(--text-primary)">2026-10-15</span> · Qoldiq: <span class="tnum" style="color:var(--text-primary)">1 250 000 so'm</span></div>
+        </div>
+      </div>
+
+      <div class="type-specimen-row">
+        <div class="spec-info">
+          <div class="spec-role">Caption / Label</div>
+          <div class="spec-math tnum">12px / 16px · Medium 500</div>
+          <span class="spec-class">text-xs font-medium text-slate-400</span>
+        </div>
+        <div class="spec-render">
+          <div class="type-caption live-text">Oxirgi sinxronizatsiya: 5 daqiqa oldin · Tizim operatori: Admin (ID: #4092)</div>
+        </div>
+      </div>
+
+      <div class="type-specimen-row">
+        <div class="spec-info">
+          <div class="spec-role">Micro / Badge</div>
+          <div class="spec-math tnum">11px / 14px · Semibold 700 · +8% caps tracking</div>
+          <span class="spec-class">text-[11px] font-semibold uppercase tracking-wider</span>
+        </div>
+        <div class="spec-render" style="display:flex; gap:12px; flex-wrap:wrap">
+          <span class="badge badge-success"><span class="b-dot"></span>Faol</span>
+          <span class="badge badge-warning"><span class="b-dot"></span>Kutilmoqda</span>
+          <span class="badge badge-error"><span class="b-dot"></span>Muddati o'tgan</span>
+          <span class="badge badge-info"><span class="b-dot"></span>Tasdiqlangan</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabular Numerals Live Comparison Sandbox -->
+    <div class="tnum-sandbox" data-dev="Tabular Figures Comparison">
+      <div>
+        <div class="state-head" style="color:var(--success-text)">Tabular Numerals (tnum ON) — Standard</div>
+        <p style="font-size:12px; color:var(--text-muted); margin:0 0 12px">Monospaced digit metrics prevent layout jitter when live sums update.</p>
+        <div style="background:var(--surface-base); padding:14px; border-radius:var(--r-md); border:1px solid var(--border-default); font-family:var(--mono);">
+          <div style="display:flex; justify-content:space-between; padding:3px 0"><span>Aziza K.</span><span style="color:#fff">1 845 000 so'm</span></div>
+          <div style="display:flex; justify-content:space-between; padding:3px 0"><span>Bekzod Y.</span><span style="color:#fff">0 120 000 so'm</span></div>
+          <div style="display:flex; justify-content:space-between; padding:3px 0"><span>Malika T.</span><span style="color:#fff">9 999 000 so'm</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="state-head" style="color:var(--error-text)">Proportional Numerals (tnum OFF) — Anti-pattern</div>
+        <p style="font-size:12px; color:var(--text-muted); margin:0 0 12px">Variable width characters create jagged unaligned columns.</p>
+        <div style="background:var(--surface-base); padding:14px; border-radius:var(--r-md); border:1px solid var(--border-default); font-family:var(--font); font-variant-numeric:proportional-nums;">
+          <div style="display:flex; justify-content:space-between; padding:3px 0"><span>Aziza K.</span><span style="color:#fff">1 845 000 so'm</span></div>
+          <div style="display:flex; justify-content:space-between; padding:3px 0"><span>Bekzod Y.</span><span style="color:#fff">0 120 000 so'm</span></div>
+          <div style="display:flex; justify-content:space-between; padding:3px 0"><span>Malika T.</span><span style="color:#fff">9 999 000 so'm</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Writing Rules (Uzbek Latin) -->
+    <div class="panel" style="margin-top:24px" data-dev="Product Writing Rules">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Writing &amp; Localization Rules</span>
+          <span class="figma-tag">Uzbek Latin Specification</span>
+        </div>
+      </div>
+      <div class="principles-grid">
+        <div class="principle-card">
+          <span class="p-index">W1 · CASE</span>
+          <h3>Sentence Case Baseline</h3>
+          <p>Headings and action buttons always use sentence case (e.g., <em>"Yangi talaba qo'shish"</em>). ALL CAPS is strictly reserved for micro status pills (11px, +8% tracking).</p>
+        </div>
+        <div class="principle-card">
+          <span class="p-index">W2 · ORTHOGRAPHY</span>
+          <h3>Typographic Apostrophes</h3>
+          <p>Uzbek Latin characters <code>o'</code> and <code>g'</code> use the typographic apostrophe U+2019 (<code>’</code>), never raw tick (<code>`</code>) or ASCII quotation mark (<code>'</code>).</p>
+        </div>
+        <div class="principle-card">
+          <span class="p-index">W3 · CURRENCY &amp; DATES</span>
+          <h3>Tabular Finance Formats</h3>
+          <p>Money sums always use thin group spaces: <code>1 250 000 so'm</code>. Dates follow ISO 8601 <code>YYYY-MM-DD</code> format with explicit tabular digit spacing.</p>
+        </div>
+        <div class="principle-card">
+          <span class="p-index">W4 · ACTIONS &amp; ERRORS</span>
+          <h3>Direct Verbs &amp; Recovery Path</h3>
+          <p>Buttons specify the precise action (<em>"Saqlash"</em>, <em>"Eksport qilish"</em>). Error alerts describe the problem and the immediate recovery route.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       DS - 03 FOUNDATIONS: SPACING, RADIUS, SHADOWS & MOTION
+       ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="frame-section" id="ds03">
+    <div class="frame-meta-bar">
+      <div class="frame-id">DS - 03</div>
+      <div class="frame-specs">
+        <span>❖ Frame 03</span>
+        <span>·</span>
+        <span>Spatial, Radius, Shadows, Motion</span>
+        <span>·</span>
+        <span class="figma-badge">Foundations</span>
+      </div>
+    </div>
+    <h2 class="frame-title">Foundations &amp; Motion Curves</h2>
+    <p class="frame-lead">
+      The mathematical bedrock: 4px micro-grid, 8px layout rhythm, 5 discrete border radii,
+      dark-tuned shadow diffusion, and 60fps physics curves for micro-interactions.
+    </p>
+
+    <div class="foundations-layout">
+      <!-- Spacing Scale -->
+      <div class="panel" data-dev="Spacing Scale 4-64px">
+        <div class="panel-header">
+          <div class="panel-header-title">
+            <span>Spacing Tokens</span>
+            <span class="figma-tag">4px / 8px Grid</span>
+          </div>
+        </div>
+
+        <div class="space-token-row"><span class="mono" style="font-size:12px; color:var(--text-secondary)">space-1</span><div class="space-bar" style="width:4px"></div><span class="mono tnum" style="font-size:12px; color:var(--text-muted); text-align:right">4px</span></div>
+        <div class="space-token-row"><span class="mono" style="font-size:12px; color:var(--text-secondary)">space-2</span><div class="space-bar" style="width:8px"></div><span class="mono tnum" style="font-size:12px; color:var(--text-muted); text-align:right">8px</span></div>
+        <div class="space-token-row"><span class="mono" style="font-size:12px; color:var(--text-secondary)">space-3</span><div class="space-bar" style="width:12px"></div><span class="mono tnum" style="font-size:12px; color:var(--text-muted); text-align:right">12px</span></div>
+        <div class="space-token-row"><span class="mono" style="font-size:12px; color:var(--text-secondary)">space-4</span><div class="space-bar" style="width:16px"></div><span class="mono tnum" style="font-size:12px; color:var(--text-muted); text-align:right">16px</span></div>
+        <div class="space-token-row"><span class="mono" style="font-size:12px; color:var(--text-secondary)">space-5</span><div class="space-bar" style="width:20px"></div><span class="mono tnum" style="font-size:12px; color:var(--text-muted); text-align:right">20px</span></div>
+        <div class="space-token-row"><span class="mono" style="font-size:12px; color:var(--text-secondary)">space-6</span><div class="space-bar" style="width:24px"></div><span class="mono tnum" style="font-size:12px; color:var(--text-muted); text-align:right">24px</span></div>
+        <div class="space-token-row"><span class="mono" style="font-size:12px; color:var(--text-secondary)">space-8</span><div class="space-bar" style="width:32px"></div><span class="mono tnum" style="font-size:12px; color:var(--text-muted); text-align:right">32px</span></div>
+        <div class="space-token-row"><span class="mono" style="font-size:12px; color:var(--text-secondary)">space-12</span><div class="space-bar" style="width:48px"></div><span class="mono tnum" style="font-size:12px; color:var(--text-muted); text-align:right">48px</span></div>
+        <div class="space-token-row"><span class="mono" style="font-size:12px; color:var(--text-secondary)">space-16</span><div class="space-bar" style="width:64px"></div><span class="mono tnum" style="font-size:12px; color:var(--text-muted); text-align:right">64px</span></div>
+      </div>
+
+      <!-- Border Radius Scale -->
+      <div class="panel" data-dev="Border Radius Scale">
+        <div class="panel-header">
+          <div class="panel-header-title">
+            <span>Border Radius Tokens</span>
+            <span class="figma-tag">5 Exact Radii</span>
+          </div>
+        </div>
+
+        <div class="radius-deck">
+          <div class="radius-tile">
+            <div class="r-shape" style="border-radius:4px">4px</div>
+            <div class="mono" style="font-size:11px; color:var(--text-secondary)">rounded-sm</div>
+            <div style="font-size:10px; color:var(--text-muted)">Badges, tags</div>
+          </div>
+          <div class="radius-tile">
+            <div class="r-shape" style="border-radius:6px">6px</div>
+            <div class="mono" style="font-size:11px; color:var(--text-secondary)">rounded-md</div>
+            <div style="font-size:10px; color:var(--text-muted)">Buttons, inputs</div>
+          </div>
+          <div class="radius-tile">
+            <div class="r-shape" style="border-radius:8px">8px</div>
+            <div class="mono" style="font-size:11px; color:var(--text-secondary)">rounded-lg</div>
+            <div style="font-size:10px; color:var(--text-muted)">Cards, menus</div>
+          </div>
+          <div class="radius-tile">
+            <div class="r-shape" style="border-radius:12px">12px</div>
+            <div class="mono" style="font-size:11px; color:var(--text-secondary)">rounded-xl</div>
+            <div style="font-size:10px; color:var(--text-muted)">Modals, panels</div>
+          </div>
+          <div class="radius-tile">
+            <div class="r-shape" style="border-radius:9999px">Pill</div>
+            <div class="mono" style="font-size:11px; color:var(--text-secondary)">rounded-full</div>
+            <div style="font-size:10px; color:var(--text-muted)">Avatars, pills</div>
+          </div>
+        </div>
+
+        <div style="margin-top:28px; padding-top:20px; border-top:1px solid var(--border-default)">
+          <div class="state-head">Concentric Radius Rule</div>
+          <p style="font-size:12px; color:var(--text-muted); line-height:18px; margin:0">
+            When nesting containers, inner radius must match: <code>R_inner = R_outer - Padding</code>. A <code>rounded-xl</code> (12px) container with 6px padding contains <code>rounded-md</code> (6px) items to eliminate corner clashes.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shadows & Elevation Stack -->
+    <div class="panel" style="margin-top:24px" data-dev="Shadow & Depth Stack">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Elevation Layers &amp; Dark-Tuned Shadows</span>
+          <span class="figma-tag">4 Elevation Tiers</span>
+        </div>
+        <div class="panel-header-actions">
+          <span>In dark mode, shadows must always be paired with a crisp 1px border</span>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+        <div style="background:var(--slate-900); border:1px solid var(--slate-800); border-radius:var(--r-lg); padding:20px; box-shadow:var(--shadow-dark-sm)">
+          <div class="mono" style="font-size:12px; font-weight:700; color:var(--text-primary)">shadow-dark-sm</div>
+          <div style="font-size:11px; color:var(--blue-400); margin:4px 0 10px;">Level 1 · Card Containers</div>
+          <div class="mono" style="font-size:10px; color:var(--text-muted); line-height:15px">0 1px 3px 0 rgba(0,0,0,0.5)<br>0 1px 2px -1px rgba(0,0,0,0.5)</div>
+        </div>
+        <div style="background:var(--slate-800); border:1px solid var(--slate-700); border-radius:var(--r-lg); padding:20px; box-shadow:var(--shadow-dark-md)">
+          <div class="mono" style="font-size:12px; font-weight:700; color:var(--text-primary)">shadow-dark-md</div>
+          <div style="font-size:11px; color:var(--blue-400); margin:4px 0 10px;">Level 2 · Dropdowns, Hover Rows</div>
+          <div class="mono" style="font-size:10px; color:var(--text-muted); line-height:15px">0 4px 10px -1px rgba(0,0,0,0.6)<br>0 2px 5px -2px rgba(0,0,0,0.5)</div>
+        </div>
+        <div style="background:var(--slate-800); border:1px solid var(--slate-700); border-radius:var(--r-lg); padding:20px; box-shadow:var(--shadow-dark-lg)">
+          <div class="mono" style="font-size:12px; font-weight:700; color:var(--text-primary)">shadow-dark-lg</div>
+          <div style="font-size:11px; color:var(--blue-400); margin:4px 0 10px;">Level 3 · Modals, Command Palette</div>
+          <div class="mono" style="font-size:10px; color:var(--text-muted); line-height:15px">0 14px 32px -4px rgba(0,0,0,0.8)<br>0 6px 14px -6px rgba(0,0,0,0.7)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Motion Tokens (60fps.design) -->
+    <div class="panel" style="margin-top:24px" data-dev="Motion Physics 60fps.design">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Motion Timing &amp; Physics Curves</span>
+          <span class="figma-tag">60fps.design Standards</span>
+        </div>
+        <div class="panel-header-actions">
+          <span>Click "Test Motion" to preview transition curves</span>
+        </div>
+      </div>
+
+      <div class="motion-grid">
+        <div class="motion-box">
+          <div class="mono" style="font-size:12px; font-weight:700; color:var(--text-primary)">motion-instant · 75ms</div>
+          <div style="font-size:11px; color:var(--text-muted)">Tooltips, checkboxes, micro-ticks</div>
+          <div class="motion-demo-track">
+            <div class="motion-ball" id="ball-instant" style="transition:transform 75ms cubic-bezier(0,0,0.2,1)"></div>
+          </div>
+          <button class="tool-btn" onclick="animateBall('ball-instant')">Test Motion</button>
+        </div>
+
+        <div class="motion-box">
+          <div class="mono" style="font-size:12px; font-weight:700; color:var(--text-primary)">motion-fast · 150ms</div>
+          <div style="font-size:11px; color:var(--text-muted)">Buttons, hover shifts, segmented tabs</div>
+          <div class="motion-demo-track">
+            <div class="motion-ball" id="ball-fast" style="transition:transform 150ms cubic-bezier(0.16,1,0.3,1)"></div>
+          </div>
+          <button class="tool-btn" onclick="animateBall('ball-fast')">Test Motion</button>
+        </div>
+
+        <div class="motion-box">
+          <div class="mono" style="font-size:12px; font-weight:700; color:var(--text-primary)">motion-smooth · 250ms</div>
+          <div style="font-size:11px; color:var(--text-muted)">Modals, side drawers, accordion panels</div>
+          <div class="motion-demo-track">
+            <div class="motion-ball" id="ball-smooth" style="transition:transform 250ms cubic-bezier(0.16,1,0.3,1)"></div>
+          </div>
+          <button class="tool-btn" onclick="animateBall('ball-smooth')">Test Motion</button>
+        </div>
+
+        <div class="motion-box">
+          <div class="mono" style="font-size:12px; font-weight:700; color:var(--text-primary)">motion-spring · 350ms</div>
+          <div style="font-size:11px; color:var(--text-muted)">Toast entry, notification pops, badges</div>
+          <div class="motion-demo-track">
+            <div class="motion-ball" id="ball-spring" style="transition:transform 350ms cubic-bezier(0.34,1.56,0.64,1)"></div>
+          </div>
+          <button class="tool-btn" onclick="animateBall('ball-spring')">Test Motion</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       DS - 04 COMPONENT USAGE: ANATOMY & BEHAVIOR
+       ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="frame-section" id="ds04">
+    <div class="frame-meta-bar">
+      <div class="frame-id">DS - 04</div>
+      <div class="frame-specs">
+        <span>❖ Frame 04</span>
+        <span>·</span>
+        <span>Anatomy Guidelines &amp; Interaction Contracts</span>
+        <span>·</span>
+        <span class="figma-badge">Architecture</span>
+      </div>
+    </div>
+    <h2 class="frame-title">Component Anatomy &amp; Behavior</h2>
+    <p class="frame-lead">
+      Anatomy standards define the component contract. Hover or click pins <strong>[1] to [5]</strong>
+      to inspect slot responsibilities, Tailwind props, and accessibility ARIA requirements.
+    </p>
+
+    <!-- Unified Card Anatomy -->
+    <div class="panel" data-dev="Compound Card Anatomy">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Card Anatomy Contract</span>
+          <span class="figma-tag">src/components/ui/Card.tsx</span>
+        </div>
+        <div class="panel-header-actions">
+          <span>Hover a numbered legend item to spotlight the region</span>
+        </div>
+      </div>
+
+      <div class="anatomy-canvas">
+        <div class="anatomy-frame">
+          <!-- 1: Header -->
+          <div class="anatomy-slot" id="slot-1">
+            <span class="slot-pin">1</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:18px;">
+              <div>
+                <div style="font-size:16px; font-weight:700; color:var(--slate-100)" id="slot-2">
+                  <span class="slot-pin" style="left:-6px; top:-8px">2</span>
+                  Oylik to'lovlar monitoringi
+                </div>
+                <div style="font-size:12px; color:var(--slate-400); margin-top:3px">2026-o'quv yili 1-chorak statistikasi</div>
+              </div>
+              <button class="btn btn-secondary btn-sm" type="button">Batafsil</button>
+            </div>
+          </div>
+
+          <!-- 3: Content -->
+          <div class="anatomy-slot" id="slot-3">
+            <span class="slot-pin">3</span>
+            <div style="padding:18px;">
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+                <div style="background:var(--surface-subtle); border:1px solid var(--border-default); border-radius:8px; padding:14px">
+                  <div class="type-caption">Jami yig'ilgan summa</div>
+                  <div class="tnum" style="font-size:22px; font-weight:800; color:var(--slate-100); margin-top:4px">184 500 000 so'm</div>
+                </div>
+                <div style="background:var(--surface-subtle); border:1px solid var(--border-default); border-radius:8px; padding:14px">
+                  <div class="type-caption">Qarzdorlik miqdori</div>
+                  <div class="tnum" style="font-size:22px; font-weight:800; color:var(--warning-text); margin-top:4px">12 300 000 so'm</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4: Footer -->
+          <div class="anatomy-slot" id="slot-4">
+            <span class="slot-pin">4</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-top:1px solid var(--border-default)">
+              <span class="type-caption">Sinxronizatsiya: <span class="tnum">Bugun, 09:42</span></span>
+              <span class="badge badge-success"><span class="b-dot"></span>To'langan</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="anatomy-legend">
+          <div class="legend-row" onmouseenter="spotlightSlot('slot-1')" onmouseleave="unspotlightSlot('slot-1')">
+            <span class="pin-num">1</span>
+            <div>
+              <strong style="font-size:13px; color:var(--text-primary)">&lt;CardHeader&gt;</strong>
+              <div class="mono" style="font-size:11px; color:var(--text-muted); margin-top:3px">flex justify-between items-center</div>
+              <div style="font-size:11px; color:var(--slate-400); margin-top:4px">Container for Title, Description, and primary view toggle actions.</div>
+            </div>
+          </div>
+
+          <div class="legend-row" onmouseenter="spotlightSlot('slot-2')" onmouseleave="unspotlightSlot('slot-2')">
+            <span class="pin-num">2</span>
+            <div>
+              <strong style="font-size:13px; color:var(--text-primary)">&lt;CardTitle&gt; + &lt;CardDescription&gt;</strong>
+              <div class="mono" style="font-size:11px; color:var(--text-muted); margin-top:3px">text-base lg:text-lg font-semibold</div>
+              <div style="font-size:11px; color:var(--slate-400); margin-top:4px">High-contrast title with subdued contextual metadata description.</div>
+            </div>
+          </div>
+
+          <div class="legend-row" onmouseenter="spotlightSlot('slot-3')" onmouseleave="unspotlightSlot('slot-3')">
+            <span class="pin-num">3</span>
+            <div>
+              <strong style="font-size:13px; color:var(--text-primary)">&lt;CardContent&gt;</strong>
+              <div class="mono" style="font-size:11px; color:var(--text-muted); margin-top:3px">p-4 lg:p-5 flex-1</div>
+              <div style="font-size:11px; color:var(--slate-400); margin-top:4px">The only free-form slot. Holds tables, KPI metric grids, or form fields.</div>
+            </div>
+          </div>
+
+          <div class="legend-row" onmouseenter="spotlightSlot('slot-4')" onmouseleave="unspotlightSlot('slot-4')">
+            <span class="pin-num">4</span>
+            <div>
+              <strong style="font-size:13px; color:var(--text-primary)">&lt;CardFooter&gt;</strong>
+              <div class="mono" style="font-size:11px; color:var(--text-muted); margin-top:3px">border-t border-slate-800/80 pt-3</div>
+              <div style="font-size:11px; color:var(--slate-400); margin-top:4px">Dedicated slot for pagination, audit timestamps, or secondary buttons.</div>
+            </div>
+          </div>
+
+          <div class="legend-row">
+            <span class="pin-num">5</span>
+            <div>
+              <strong style="font-size:13px; color:var(--text-primary)">&lt;Card&gt; Shell</strong>
+              <div class="mono" style="font-size:11px; color:var(--text-muted); margin-top:3px">rounded-xl border border-border bg-surface</div>
+              <div style="font-size:11px; color:var(--slate-400); margin-top:4px">Root container providing dark-sm shadow and Level 1 elevation depth.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Behavior & Interaction Contracts -->
+    <div class="panel" style="margin-top:24px" data-dev="Behavior Interaction Contracts">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Interaction &amp; State Contracts</span>
+          <span class="figma-tag">8 Strict Rules</span>
+        </div>
+      </div>
+
+      <div class="principles-grid">
+        <div class="principle-card">
+          <span class="p-index">B1 · SINGULAR ACTION</span>
+          <h3>One Primary Action per View</h3>
+          <p>Each viewport region features exactly one solid Tech Blue button. Secondary controls are outline or ghost; destructive actions are red-tinted and isolated.</p>
+        </div>
+        <div class="principle-card">
+          <span class="p-index">B2 · TOUCH AREA</span>
+          <h3>≥ 44px Interactive Tap Targets</h3>
+          <p>In accordance with Fitts's Law, touch targets ship with minimum <code>min-h-[44px]</code> bounds. Desktop buttons are ≥36px with full keyboard accessibility.</p>
+        </div>
+        <div class="principle-card">
+          <span class="p-index">B3 · ASYNC LOCK</span>
+          <h3>Submission Spinners &amp; Form Lock</h3>
+          <p>Buttons performing network actions show an inline spinner, lock their width to prevent layout shifts, and temporarily disable the form.</p>
+        </div>
+        <div class="principle-card">
+          <span class="p-index">B4 · DIALOG MODAL</span>
+          <h3>Native &lt;dialog&gt; &amp; Focus Trap</h3>
+          <p>Modals render with <code>showModal()</code>, a dark backdrop with blur, and trap tab navigation. Pressing <code>Esc</code> smoothly closes the overlay.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       DS - 05 CORE COMPONENTS: COMPLETE NATIVE LIBRARY
+       ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="frame-section" id="ds05">
+    <div class="frame-meta-bar">
+      <div class="frame-id">DS - 05</div>
+      <div class="frame-specs">
+        <span>❖ Frame 05</span>
+        <span>·</span>
+        <span>Native UI Primitives &amp; Multiple States</span>
+        <span>·</span>
+        <span class="figma-badge">Production Library</span>
+      </div>
+    </div>
+    <h2 class="frame-title">Core Native Component Library</h2>
+    <p class="frame-lead">
+      Production UI elements across all interactive states: Default, Hover, Active, Focus, Loading, and Disabled.
+      Includes primary/secondary Buttons, form Text Fields, status Badges, Navigation items, and live Composition.
+    </p>
+
+    <!-- BUTTONS MATRIX -->
+    <div class="panel" data-dev="Button Component Matrix">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Buttons</span>
+          <span class="figma-tag">src/components/ui/Button.tsx · 6 Variants × 3 Sizes</span>
+        </div>
+        <div class="panel-header-actions">
+          <span>All states are live &amp; interactive</span>
+        </div>
+      </div>
+
+      <div class="state-head">Primary Button — Full State Lifecycle</div>
+      <div class="comp-matrix-row" style="margin-bottom:28px">
+        <div>
+          <div class="state-head">Default</div>
+          <button class="btn btn-primary" type="button">Yangi talaba</button>
+        </div>
+        <div>
+          <div class="state-head">Hover</div>
+          <button class="btn btn-primary is-hover" type="button">Yangi talaba</button>
+        </div>
+        <div>
+          <div class="state-head">Active / Pressed</div>
+          <button class="btn btn-primary is-active" type="button">Yangi talaba</button>
+        </div>
+        <div>
+          <div class="state-head">Focus-Visible</div>
+          <button class="btn btn-primary" style="outline:2px solid var(--blue-500); outline-offset:2px" type="button">Yangi talaba</button>
+        </div>
+        <div>
+          <div class="state-head">Loading State</div>
+          <button class="btn btn-primary" type="button" aria-busy="true"><span class="btn-spinner"></span>Saqlanmoqda…</button>
+        </div>
+        <div>
+          <div class="state-head">Disabled</div>
+          <button class="btn btn-primary is-disabled" type="button" disabled>Yangi talaba</button>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--border-default); padding-top:24px; margin-bottom:24px">
+        <div class="state-head">Variant Matrix (Default / Hover / Disabled)</div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+          <div>
+            <div class="state-head">Secondary Button</div>
+            <div class="comp-matrix-row">
+              <button class="btn btn-secondary" type="button">Bekor qilish</button>
+              <button class="btn btn-secondary is-hover" type="button">Hover</button>
+              <button class="btn btn-secondary" disabled>Disabled</button>
+            </div>
+          </div>
+          <div>
+            <div class="state-head">Outline Button</div>
+            <div class="comp-matrix-row">
+              <button class="btn btn-outline" type="button">Eksport</button>
+              <button class="btn btn-outline is-hover" type="button">Hover</button>
+              <button class="btn btn-outline" disabled>Disabled</button>
+            </div>
+          </div>
+          <div>
+            <div class="state-head">Ghost Button</div>
+            <div class="comp-matrix-row">
+              <button class="btn btn-ghost" type="button">Filtrni tozalash</button>
+              <button class="btn btn-ghost is-hover" type="button">Hover</button>
+              <button class="btn btn-ghost" disabled>Disabled</button>
+            </div>
+          </div>
+          <div>
+            <div class="state-head">Danger Button</div>
+            <div class="comp-matrix-row">
+              <button class="btn btn-danger" type="button">O'chirish</button>
+              <button class="btn btn-danger is-hover" type="button">Hover</button>
+              <button class="btn btn-danger" disabled>Disabled</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--border-default); padding-top:20px;">
+        <div class="state-head">Scale Hierarchy (sm 34px / md 40px / lg 48px)</div>
+        <div class="comp-matrix-row">
+          <button class="btn btn-primary btn-sm" type="button">Kichik (sm)</button>
+          <button class="btn btn-primary" type="button">Standart (md)</button>
+          <button class="btn btn-primary btn-lg" type="button">Katta (lg)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM TEXT FIELDS -->
+    <div class="panel" data-dev="Form Input Matrix">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Form Text Fields</span>
+          <span class="figma-tag">src/components/ui/Input.tsx</span>
+        </div>
+        <div class="panel-header-actions">
+          <span>Complete validation &amp; assistive states</span>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px;">
+        <div class="field-wrap">
+          <div class="state-head">Default State</div>
+          <div class="field-label">To'liq ism-sharif</div>
+          <div class="input-shell">
+            <input type="text" placeholder="Masalan: Aziza Karimova" />
+          </div>
+          <div class="field-helper">Talabaning pasport bo'yicha to'liq ismi</div>
+        </div>
+
+        <div class="field-wrap">
+          <div class="state-head">Focused State</div>
+          <div class="field-label">Telefon raqam</div>
+          <div class="input-shell is-focus">
+            <span class="mono" style="font-size:12px; color:var(--text-muted)">+998</span>
+            <input type="tel" value="90 123 45 67" />
+          </div>
+          <div class="field-helper" style="color:var(--blue-400)">Focus ring: 2px offset #3B82F6</div>
+        </div>
+
+        <div class="field-wrap">
+          <div class="state-head">Error Validation</div>
+          <div class="field-label">Elektron pochta</div>
+          <div class="input-shell is-error">
+            <input type="email" value="aziza@@nis.uz" />
+          </div>
+          <div class="field-helper err">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Noto'g'ri email formati. "@" belgisini tekshiring.
+          </div>
+        </div>
+
+        <div class="field-wrap">
+          <div class="state-head">Disabled State</div>
+          <div class="field-label">Sinf &amp; Guruh</div>
+          <div class="input-shell is-disabled">
+            <input type="text" value="11-A (Akademik)" disabled />
+          </div>
+          <div class="field-helper">Tizim administratori tomonidan qulflangan</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATUS BADGES -->
+    <div class="panel" data-dev="Status Badges Matrix">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Status Badges</span>
+          <span class="figma-tag">src/components/ui/Badge.tsx · Opacity Math</span>
+        </div>
+        <div class="panel-header-actions">
+          <span>10% background fill · 20% border · text-400</span>
+        </div>
+      </div>
+
+      <div class="state-head">Semantic Color Variants</div>
+      <div class="comp-matrix-row" style="margin-bottom:24px">
+        <span class="badge badge-success"><span class="b-dot"></span>Faol / To'langan</span>
+        <span class="badge badge-warning"><span class="b-dot"></span>Kutilmoqda / Qarz</span>
+        <span class="badge badge-error"><span class="b-dot"></span>Muddati o'tgan</span>
+        <span class="badge badge-info"><span class="b-dot"></span>Yangi ariza</span>
+        <span class="badge badge-cyan"><span class="b-dot"></span>Ma'lumot</span>
+        <span class="badge badge-neutral">Bekor qilingan</span>
+      </div>
+
+      <div style="border-top:1px solid var(--border-default); padding-top:20px;">
+        <div class="state-head">In Context: Financial Workflow States</div>
+        <div class="comp-matrix-row">
+          <span class="badge badge-success">To'liq to'langan (100%)</span>
+          <span class="badge badge-warning">Qisman to'langan (50%)</span>
+          <span class="badge badge-error">Qarzdorlik mavjud</span>
+          <span class="badge badge-neutral">Shartnoma bekor qilingan</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- NAVIGATION ITEMS -->
+    <div class="panel" data-dev="Navigation System">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Navigation Items</span>
+          <span class="figma-tag">AppShell Sidebar &amp; Collapsed Rail</span>
+        </div>
+        <div class="panel-header-actions">
+          <span>Icon 18px · Text 13px · Count badge</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:32px; flex-wrap:wrap; align-items:flex-start;">
+        <div>
+          <div class="state-head">Default State</div>
+          <div class="nav-stack-demo">
+            <a href="javascript:void(0)" class="nav-tile">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+              Boshqaruv paneli
+            </a>
+            <a href="javascript:void(0)" class="nav-tile">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Talabalar <span class="nav-cnt tnum">1 248</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-tile">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              To'lovlar
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <div class="state-head">Hover State</div>
+          <div class="nav-stack-demo">
+            <a href="javascript:void(0)" class="nav-tile is-hover">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+              Boshqaruv paneli
+            </a>
+            <a href="javascript:void(0)" class="nav-tile is-hover">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Talabalar <span class="nav-cnt tnum">1 248</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-tile is-hover">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              To'lovlar
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <div class="state-head">Active / Selected State</div>
+          <div class="nav-stack-demo">
+            <a href="javascript:void(0)" class="nav-tile">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+              Boshqaruv paneli
+            </a>
+            <a href="javascript:void(0)" class="nav-tile active">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Talabalar <span class="nav-cnt tnum">1 248</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-tile">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              To'lovlar
+            </a>
+          </div>
+        </div>
+
+        <div style="max-width:320px;">
+          <div class="state-head">Active Nav Formula</div>
+          <div class="pipe-code" style="margin-top:0">
+            bg-blue-600/16<br>
+            text-blue-400<br>
+            border border-blue-500/35<br>
+            h-10 rounded-md px-3
+          </div>
+          <p style="font-size:12px; color:var(--text-muted); margin-top:12px; line-height:18px">
+            Exactly one active link per sidebar. Supports collapsed 68px rail mode with Lucide icon tooltips. Keyboard navigation maps via arrow keys.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIVE COMPOSITION IN CONTEXT -->
+    <div class="panel" data-dev="Live Composition Context">
+      <div class="panel-header">
+        <div class="panel-header-title">
+          <span>Composition in Context</span>
+          <span class="figma-tag">Full Data Grid · Real Density</span>
+        </div>
+        <div class="panel-header-actions">
+          <span>Combines Card, Table, Status Badges, and Action Triggers</span>
+        </div>
+      </div>
+
+      <div class="anatomy-frame" style="border:0; box-shadow:none;">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--border-default); flex-wrap:wrap; gap:12px;">
+          <div>
+            <div style="font-size:15px; font-weight:700; color:var(--text-primary)">So'nggi kontrakt to'lovlari tranzaksiyalari</div>
+            <div style="font-size:12px; color:var(--text-muted); margin-top:2px">Bugun · 8 ta faol tranzaksiya qayd etildi</div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-ghost btn-sm" type="button" onclick="triggerToast('Filtr qo\'llanildi')">Filtr</button>
+            <button class="btn btn-primary btn-sm" type="button" onclick="triggerToast('Yangi to\'lov oynasi ochildi')">+ Yangi to'lov</button>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto">
+          <table class="data-grid">
+            <thead>
+              <tr>
+                <th>Talaba F.I.Sh</th>
+                <th>Sinf</th>
+                <th>Holat</th>
+                <th>Sana</th>
+                <th style="text-align:right">Summa (UZS)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="color:var(--slate-100); font-weight:600">Aziza Karimova</td>
+                <td class="mono">11-A</td>
+                <td><span class="badge badge-success"><span class="b-dot"></span>To'langan</span></td>
+                <td class="mono">2026-10-09</td>
+                <td class="money-cell">2 400 000</td>
+              </tr>
+              <tr>
+                <td style="color:var(--slate-100); font-weight:600">Bekzod Yusupov</td>
+                <td class="mono">9-B</td>
+                <td><span class="badge badge-warning"><span class="b-dot"></span>Qisman</span></td>
+                <td class="mono">2026-10-09</td>
+                <td class="money-cell">1 200 000</td>
+              </tr>
+              <tr>
+                <td style="color:var(--slate-100); font-weight:600">Malika Tosheva</td>
+                <td class="mono">10-C</td>
+                <td><span class="badge badge-error"><span class="b-dot"></span>Qarzdor</span></td>
+                <td class="mono">2026-10-08</td>
+                <td class="money-cell" style="color:var(--error-text)">−800 000</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-top:1px solid var(--border-default); flex-wrap:wrap; gap:12px;">
+          <span class="type-caption">Jami <span class="tnum" style="color:var(--text-primary)">1 248</span> tadan <span class="tnum" style="color:var(--text-primary)">1–3</span> ko'rsatilmoqda</span>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-secondary btn-sm" disabled>Oldingi</button>
+            <button class="btn btn-secondary btn-sm">Keyingi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════════════════════════════════════ -->
+  <footer style="margin-top:80px; padding:32px 0 64px; border-top:1px solid var(--border-default); display:flex; justify-content:space-between; align-items:center; color:var(--text-muted); font-size:12px; flex-wrap:wrap; gap:16px;">
+    <div>
+      <strong>NIS School CRM</strong> · Enterprise Automation Web App Design System Board
+    </div>
+    <div class="mono" style="font-size:11px;">
+      Extracted from <span style="color:var(--blue-400)">tailwind.config.ts</span> &amp; <span style="color:var(--blue-400)">docs/DESIGN_SYSTEM.md</span> · Handoff v2.2
+    </div>
+  </footer>
+
+</main>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     INTERACTIVE TOAST & COMMAND PALETTE OVERLAYS
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div id="toast" role="status" aria-live="polite">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-text">Token nusxalandi</span>
+</div>
+
+<div class="modal-backdrop" id="cmd-modal" onclick="closeCmd(event)">
+  <div class="cmd-palette" onclick="event.stopPropagation()">
+    <div class="cmd-input-wrap">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-muted)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="cmd-search-input" placeholder="Token yoki komponent qidiring (masalan: slate-900, button, radius)..." autofocus />
+      <kbd class="figma-badge">ESC</kbd>
+    </div>
+    <div class="cmd-list" id="cmd-results">
+      <div class="cmd-item" onclick="jumpSection('#ds00')"><span>❖ DS-00 Overview &amp; Principles</span><span class="cmd-tag">Section</span></div>
+      <div class="cmd-item" onclick="jumpSection('#ds01')"><span>❖ DS-01 Color Primitives &amp; Semantics</span><span class="cmd-tag">Tokens</span></div>
+      <div class="cmd-item" onclick="jumpSection('#ds02')"><span>❖ DS-02 Typography &amp; Writing Rules</span><span class="cmd-tag">Type</span></div>
+      <div class="cmd-item" onclick="jumpSection('#ds03')"><span>❖ DS-03 Foundations &amp; Motion</span><span class="cmd-tag">Grid</span></div>
+      <div class="cmd-item" onclick="jumpSection('#ds04')"><span>❖ DS-04 Component Anatomy &amp; Behavior</span><span class="cmd-tag">Anatomy</span></div>
+      <div class="cmd-item" onclick="jumpSection('#ds05')"><span>❖ DS-05 Components Library &amp; States</span><span class="cmd-tag">Components</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     SCRIPTS & INTERACTIVITY
+     ══════════════════════════════════════════════════════════════════════════ -->
+<script>
+  // Toast Helper
+  var toastTimer = null;
+  function triggerToast(msg) {
+    var toast = document.getElementById('toast');
+    var txt = document.getElementById('toast-text');
+    txt.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 1800);
+  }
+
+  // Copy to Clipboard
+  function copyText(val, label) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(val).then(function() {
+        triggerToast((label || val) + ' nusxalandi');
+      });
+    } else {
+      triggerToast(val + ' nusxalandi');
+    }
+  }
+
+  document.querySelectorAll('[data-copy]').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var hex = el.getAttribute('data-copy');
+      var token = el.getAttribute('data-token') || hex;
+      copyText(hex, token + ' (' + hex + ')');
+    });
+  });
+
+  // Grid & Dev Mode Toggles
+  var btnGrid = document.getElementById('btn-grid-toggle');
+  var btnDev = document.getElementById('btn-dev-toggle');
+
+  btnGrid.addEventListener('click', function() {
+    document.body.classList.toggle('show-grid');
+    btnGrid.classList.toggle('active', document.body.classList.contains('show-grid'));
+  });
+
+  btnDev.addEventListener('click', function() {
+    document.body.classList.toggle('dev-mode');
+    btnDev.classList.toggle('active', document.body.classList.contains('dev-mode'));
+  });
+
+  // Keyboard Shortcuts (G: Grid, D: Dev, Cmd+K: Command Palette, ESC: close)
+  window.addEventListener('keydown', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
+      if (e.key === 'Escape') closeCmd();
+      return;
+    }
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      openCmd();
+    } else if (e.key === 'g' || e.key === 'G') {
+      btnGrid.click();
+    } else if (e.key === 'd' || e.key === 'D') {
+      btnDev.click();
+    } else if (e.key === 'Escape') {
+      closeCmd();
+    }
+  });
+
+  // Command Palette
+  var cmdModal = document.getElementById('cmd-modal');
+  var cmdInput = document.getElementById('cmd-search-input');
+  document.getElementById('btn-cmd-toggle').addEventListener('click', openCmd);
+
+  function openCmd() {
+    cmdModal.classList.add('open');
+    setTimeout(function() { cmdInput.focus(); }, 50);
+  }
+  function closeCmd() {
+    cmdModal.classList.remove('open');
+  }
+  function jumpSection(id) {
+    closeCmd();
+    var target = document.querySelector(id);
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Export Tokens Click
+  document.getElementById('btn-copy-tokens').addEventListener('click', function() {
+    var tailwindTokens = "/* NIS CRM Tailwind Extend Tokens */\n{\n  colors: {\n    primary: { DEFAULT: '#2563EB', hover: '#3B82F6', active: '#1D4ED8' },\n    surface: '#0F172A',\n    canvas: '#090D16',\n    border: '#1E293B'\n  }\n}";
+    copyText(tailwindTokens, 'Tailwind config tokens');
+  });
+
+  // Interactive Contrast Checker Calculation
+  var contrastBg = document.getElementById('contrast-bg');
+  var contrastFg = document.getElementById('contrast-fg');
+  var contrastBox = document.getElementById('contrast-box');
+  var ratioVal = document.getElementById('contrast-ratio-val');
+  var badgeVal = document.getElementById('contrast-badge');
+
+  function hexToLum(hex) {
+    var c = hex.substring(1);
+    var rgb = parseInt(c, 16);
+    var r = (rgb >> 16) & 0xff;
+    var g = (rgb >>  8) & 0xff;
+    var b = (rgb >>  0) & 0xff;
+    var a = [r, g, b].map(function (v) {
+      v /= 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+  }
+
+  function updateContrast() {
+    var bg = contrastBg.value;
+    var fg = contrastFg.value;
+    contrastBox.style.background = bg;
+    contrastBox.style.color = fg;
+
+    var l1 = hexToLum(fg);
+    var l2 = hexToLum(bg);
+    var ratio = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+    var formatted = ratio.toFixed(1) + ':1';
+    ratioVal.textContent = formatted;
+
+    if (ratio >= 7.0) {
+      badgeVal.className = 'badge badge-success';
+      badgeVal.textContent = 'WCAG AAA PASS';
+      ratioVal.style.color = 'var(--success-text)';
+    } else if (ratio >= 4.5) {
+      badgeVal.className = 'badge badge-info';
+      badgeVal.textContent = 'WCAG AA PASS';
+      ratioVal.style.color = 'var(--blue-400)';
+    } else {
+      badgeVal.className = 'badge badge-error';
+      badgeVal.textContent = 'WCAG FAIL';
+      ratioVal.style.color = 'var(--error-text)';
+    }
+  }
+
+  contrastBg.addEventListener('change', updateContrast);
+  contrastFg.addEventListener('change', updateContrast);
+  updateContrast();
+
+  // Motion Sandbox Animation Trigger
+  function animateBall(id) {
+    var ball = document.getElementById(id);
+    if (!ball) return;
+    ball.style.transform = 'translateX(180px)';
+    setTimeout(function() {
+      ball.style.transform = 'translateX(0)';
+    }, 600);
+  }
+
+  // Anatomy Spotlight
+  function spotlightSlot(id) {
+    var slot = document.getElementById(id);
+    if (slot) slot.classList.add('highlight');
+  }
+  function unspotlightSlot(id) {
+    var slot = document.getElementById(id);
+    if (slot) slot.classList.remove('highlight');
+  }
+
+  // Active Navbar Intersection Observer
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-sections a'));
+  var sections = navLinks.map(function(a) { return document.querySelector(a.getAttribute('href')); });
+
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting) return;
+        var idx = sections.indexOf(entry.target);
+        if (idx !== -1) {
+          navLinks.forEach(function(l, i) {
+            l.classList.toggle('active', i === idx);
+          });
+        }
+      });
+    }, { rootMargin: '-35% 0px -55% 0px' });
+    sections.forEach(function(s) { if (s) obs.observe(s); });
+  }
+</script>
+</body>
+</html>

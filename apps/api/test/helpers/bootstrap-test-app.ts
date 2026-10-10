@@ -2,7 +2,11 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import type { INestApplication } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import type Redis from 'ioredis';
 import { AppModule } from '../../src/app.module';
+import { REDIS_CLIENT } from '../../src/common/redis/redis.constants';
+
+let cachedRedis: Redis | null = null;
 
 export interface TestAppHandle {
   app: INestApplication;
@@ -37,11 +41,23 @@ export async function bootstrapTestApp(): Promise<TestAppHandle> {
   if (!dataSource) {
     throw new Error('bootstrapTestApp: DataSource not resolved from AppModule');
   }
+  try {
+    cachedRedis = moduleRef.get<Redis>(REDIS_CLIENT);
+  } catch {
+    cachedRedis = null;
+  }
   return {
     app,
     dataSource,
     close: async () => {
-      await app.close();
+      try {
+        await app.close();
+      } catch {
+        // Ignore teardown errors to prevent test hang
+      }
+      if (dataSource.isInitialized) {
+        await dataSource.destroy().catch(() => undefined);
+      }
     },
   };
 }
@@ -51,6 +67,9 @@ export async function bootstrapTestApp(): Promise<TestAppHandle> {
  * Safe to call between tests; ordered by FK dependency.
  */
 export async function resetDatabase(dataSource: DataSource): Promise<void> {
+  if (cachedRedis) {
+    await cachedRedis.flushdb().catch(() => undefined);
+  }
   await dataSource.query(
     'TRUNCATE TABLE ' +
       '"schedule_substitutions", "schedule_entries", ' +

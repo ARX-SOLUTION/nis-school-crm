@@ -49,6 +49,7 @@ import { User } from '../users/entities/user.entity';
   ],
   exports: [
     AuthService,
+    RefreshTokenService,
     TelegramAuthService,
     TelegramLoginService,
     FeatureFlagsService,

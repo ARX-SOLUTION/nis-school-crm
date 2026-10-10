@@ -25,17 +25,46 @@ export function ClassesPage(): React.ReactElement {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Classes</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-tertiary">Classes</h1>
           <p className="text-sm text-neutral-500">Manage class sections across academic years.</p>
         </div>
         <Button onClick={() => setCreateOpen(true)}>Create class</Button>
       </div>
 
-      <Card>
+      <Card className="p-3 sm:p-4">
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-2">
+            <label htmlFor="classes-grade" className="text-sm font-medium text-slate-300">
+              Grade:
+            </label>
+            <select
+              id="classes-grade"
+              className="h-10 rounded-md border border-slate-700 bg-slate-900 px-3 text-sm text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              value={query.gradeLevel ?? ''}
+              onChange={(e) =>
+                setQuery((q) => ({
+                  ...q,
+                  gradeLevel: e.target.value ? Number(e.target.value) : undefined,
+                  page: 1,
+                }))
+              }
+            >
+              <option value="">All grades</option>
+              {Array.from({ length: 11 }, (_, i) => i + 1).map((g) => (
+                <option key={g} value={g}>
+                  Grade {g}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </Card>
+
+      <Card className="overflow-hidden p-0">
         {error ? (
-          <div role="alert" className="p-6 text-sm text-red-600">
+          <div role="alert" className="p-6 text-sm text-red-400">
             Failed to load classes:{' '}
             {Array.isArray(error.message) ? error.message.join('; ') : error.message}
           </div>

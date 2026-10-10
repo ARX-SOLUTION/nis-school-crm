@@ -51,7 +51,7 @@ export function CreateClassDialog({ open, onClose }: Props): React.ReactElement 
         <Field label="Name" htmlFor="class-name" error={errors.name?.message}>
           <Input id="class-name" placeholder="4-A" {...register('name')} />
         </Field>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Field label="Grade level" htmlFor="class-grade" error={errors.gradeLevel?.message}>
             <Input id="class-grade" type="number" min={1} max={11} {...register('gradeLevel')} />
           </Field>
@@ -67,7 +67,7 @@ export function CreateClassDialog({ open, onClose }: Props): React.ReactElement 
         </Field>
 
         {mutation.isError ? (
-          <p role="alert" className="text-sm text-red-600">
+          <p role="alert" className="text-sm text-red-400">
             {Array.isArray(mutation.error.message)
               ? mutation.error.message.join('; ')
               : mutation.error.message}

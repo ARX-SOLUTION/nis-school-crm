@@ -1,5 +1,6 @@
 import type { UserResponseDto } from '@nis/shared';
 import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 
 interface Props {
   data: UserResponseDto[];
@@ -48,25 +49,25 @@ export function UsersTable({
               key={u.id}
               className="border-b border-border hover:bg-muted-surface transition-colors bg-surface"
             >
-              <Td>{u.fullName}</Td>
-              <Td>{u.email}</Td>
+              <Td className="font-semibold text-slate-100">{u.fullName}</Td>
+              <Td className="text-slate-400">{u.email}</Td>
               <Td>
-                <span className="inline-block rounded-full bg-muted-surface px-2 py-0.5 text-xs font-medium">
+                <span className="inline-block rounded-full bg-slate-800 text-slate-300 border border-slate-700 px-2.5 py-0.5 text-xs font-medium">
                   {u.role}
                 </span>
               </Td>
               <Td>
-                <span
-                  className={
-                    u.isActive
-                      ? 'inline-block rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700'
-                      : 'inline-block rounded-full bg-border px-2 py-0.5 text-xs font-medium text-neutral-500'
-                  }
-                >
-                  {u.isActive ? 'Active' : 'Disabled'}
-                </span>
+                {u.isActive ? (
+                  <Badge variant="success" withDot>
+                    Active
+                  </Badge>
+                ) : (
+                  <Badge variant="neutral">Disabled</Badge>
+                )}
               </Td>
-              <Td>{u.telegramUsername ? `@${u.telegramUsername}` : '-'}</Td>
+              <Td className="text-slate-400">
+                {u.telegramUsername ? `@${u.telegramUsername}` : '-'}
+              </Td>
               <Td className="text-right space-x-2 whitespace-nowrap">
                 {onResetPassword ? (
                   <Button
@@ -99,13 +100,15 @@ export function UsersTable({
 
 const Th = ({ children, className }: { children: React.ReactNode; className?: string }) => (
   <th
-    className={`px-6 py-4 text-xs font-semibold uppercase tracking-wider text-neutral-500 bg-muted-surface border-y border-border ${className ?? ''}`}
+    className={`px-3 sm:px-4 py-2.5 sm:py-3 text-xs font-semibold uppercase tracking-wider text-slate-400 bg-slate-900/90 border-b border-slate-800 ${className ?? ''}`}
   >
     {children}
   </th>
 );
 const Td = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <td className={`px-6 py-4 align-middle text-sm text-neutral-500 ${className ?? ''}`}>
+  <td
+    className={`px-3 sm:px-4 py-2.5 sm:py-3 align-middle text-sm text-slate-300 ${className ?? ''}`}
+  >
     {children}
   </td>
 );
