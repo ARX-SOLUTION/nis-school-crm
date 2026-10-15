@@ -201,6 +201,19 @@ services:
     networks:
       - nis-net
 
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: nis-cloudflared
+    restart: unless-stopped
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:-}
+    command: tunnel --no-autoupdate run
+    networks:
+      - nis-net
+    depends_on:
+      api:
+        condition: service_healthy
+
 volumes:
   nis_postgres_data:
   nis_redis_data:
